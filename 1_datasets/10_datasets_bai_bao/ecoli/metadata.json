@@ -1,0 +1,63 @@
+{
+  "status": "ok",
+  "name": "Ecoli",
+  "slug": "ecoli",
+  "table1_order": 6,
+  "group": "su_dung",
+  "grouping_reason": "User requested first 10 for main experiments and last 4 for separate evaluation; the paper uses all 14.",
+  "n_samples": 336,
+  "n_features": 7,
+  "feature_columns": [
+    "mcg",
+    "gvh",
+    "lip",
+    "chg",
+    "aac",
+    "alm1",
+    "alm2"
+  ],
+  "label_column": "label",
+  "original_label_column": "label_original",
+  "label_mapping": {
+    "cp": 0,
+    "im": 1,
+    "imL": 2,
+    "imS": 3,
+    "imU": 4,
+    "om": 5,
+    "omL": 6,
+    "pp": 7
+  },
+  "class_counts": {
+    "cp": 143,
+    "im": 77,
+    "imS": 2,
+    "imL": 2,
+    "imU": 35,
+    "om": 20,
+    "omL": 5,
+    "pp": 52
+  },
+  "observed_classes": 8,
+  "paper_k": 8,
+  "paper_n": 336,
+  "paper_features": 7,
+  "matches_paper_n": true,
+  "matches_paper_features": true,
+  "matches_paper_k": true,
+  "source_homepage": "https://archive.ics.uci.edu/dataset/39/ecoli",
+  "source": {
+    "requested_url": "https://archive.ics.uci.edu/static/public/39/ecoli.zip",
+    "resolved_url": "https://archive.ics.uci.edu/static/public/39/ecoli.zip",
+    "downloaded_at_utc": "2026-10-04T17:02:46.243127+00:00",
+    "sha256": "a6580298b76828674a5197152da7a99f4bd09bc589dbf1142900f1698882ec32",
+    "bytes": 5660,
+    "source_type": "primary"
+  },
+  "data_path": "su_dung/ecoli/data.csv",
+  "data_sha256": "893f2835eac63d3388c56453c1cb232e1ae2d71ba7624787060c72ebe2aa7784",
+  "notes": [
+    "Parsed member: ecoli.data"
+  ],
+  "preprocessing": "Numeric parsing only; no scaling, imputation, row deletion or shuffle. Labels/ID/date are not X features."
+}

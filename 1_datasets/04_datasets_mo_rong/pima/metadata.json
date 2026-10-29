@@ -1,0 +1,52 @@
+{
+  "status": "ok",
+  "name": "Pima",
+  "slug": "pima",
+  "table1_order": 11,
+  "group": "khong_su_dung",
+  "grouping_reason": "User requested first 10 for main experiments and last 4 for separate evaluation; the paper uses all 14.",
+  "n_samples": 768,
+  "n_features": 8,
+  "feature_columns": [
+    "pregnancies",
+    "glucose",
+    "blood_pressure",
+    "skin_thickness",
+    "insulin",
+    "bmi",
+    "diabetes_pedigree",
+    "age"
+  ],
+  "label_column": "label",
+  "original_label_column": "label_original",
+  "label_mapping": {
+    "0": 0,
+    "1": 1
+  },
+  "class_counts": {
+    "1": 268,
+    "0": 500
+  },
+  "observed_classes": 2,
+  "paper_k": 2,
+  "paper_n": 768,
+  "paper_features": 8,
+  "matches_paper_n": true,
+  "matches_paper_features": true,
+  "matches_paper_k": true,
+  "source_homepage": "https://github.com/jbrownlee/Datasets",
+  "source": {
+    "requested_url": "https://raw.githubusercontent.com/jbrownlee/Datasets/master/pima-indians-diabetes.data.csv",
+    "resolved_url": "https://raw.githubusercontent.com/jbrownlee/Datasets/master/pima-indians-diabetes.data.csv",
+    "downloaded_at_utc": "2026-10-04T17:02:46.621888+00:00",
+    "sha256": "6bfe5d0f379d17a0e0819b996407e3c09bf80febd4287f2ed212190dfff154af",
+    "bytes": 23278,
+    "source_type": "mirror"
+  },
+  "data_path": "khong_su_dung/pima/data.csv",
+  "data_sha256": "fc6f759a4bf739e2c7413bf214d028914e1a9dd1fdd6d52ab30f89bbfc3fd503",
+  "notes": [
+    "Uses a jbrownlee/Datasets mirror because the old UCI Pima URL returns 404. Zero values are preserved; no imputation or filtering is applied."
+  ],
+  "preprocessing": "Numeric parsing only; no scaling, imputation, row deletion or shuffle. Labels/ID/date are not X features."
+}

@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Xem kết quả phân cụm</title>
+<style>
+:root{--ink:#182337;--muted:#5b6a80;--line:#dde5ef;--blue:#2563eb;--orange:#c2410c;--purple:#9333ea;--green:#0f766e;--red:#b42318}
+*{box-sizing:border-box}body{margin:0;background:#f3f6fb;color:var(--ink);font:15px/1.55 "Segoe UI",Arial,sans-serif}
+header{background:#13233d;color:white;padding:32px max(24px,calc((100vw - 1440px)/2))}
+header p{color:#c6d3e7;margin:10px 0}.eyebrow{font-size:12px;letter-spacing:.14em;color:#b8c8e5;font-weight:700}
+h1{font-size:34px;line-height:1.2;margin:9px 0}h2{font-size:23px;margin:0 0 8px}h3{margin:0 0 8px}
+main{max-width:1488px;margin:auto;padding:0 24px 36px}nav{position:sticky;top:0;background:#f3f6fbef;backdrop-filter:blur(10px);z-index:3;display:flex;gap:8px;flex-wrap:wrap;padding:14px 0}
+nav a,.button,button{border:1px solid var(--line);border-radius:8px;background:white;color:var(--ink);padding:9px 14px;text-decoration:none;font:inherit;cursor:pointer}
+nav a:hover,.button:hover,button:hover{border-color:#a9b9cf}section{scroll-margin-top:90px;background:white;border:1px solid var(--line);border-radius:14px;margin:10px 0 22px;padding:24px}
+a{color:var(--blue)}.muted,small,figcaption{color:var(--muted)}.muted{margin:5px 0 14px}.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:16px 0}
+select{max-width:100%;padding:10px 12px;border:1px solid #b9c7da;border-radius:8px;font:inherit;background:white;color:var(--ink)}
+#experiment{flex:1;min-width:260px}.pill{display:inline-block;border-radius:20px;padding:4px 11px;font-size:13px;font-weight:600}
+.pill.blue{background:#eaf1ff;color:var(--blue)}.pill.orange{background:#fff0e8;color:var(--orange)}.pill.purple{background:#f3e8ff;color:var(--purple)}
+.groups{display:flex;gap:8px;flex-wrap:wrap}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+.stat{background:#f8fafc;border:1px solid var(--line);padding:14px 18px;border-radius:10px}.stat strong{display:block;font-size:26px}.stat span{font-size:13px;color:var(--muted)}
+.note{border-left:4px solid var(--purple);background:#faf5ff;padding:12px 16px;border-radius:5px;margin-top:14px;font-size:14px}
+.metrics{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.metrics button.active{background:#182f50;color:white;border-color:#182f50}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}.card{border:1px solid var(--line);border-radius:12px;padding:20px;background:#fcfdff}
+.card.high{border-top:4px solid var(--blue)}.card.low{border-top:4px solid var(--orange)}.card .big{font-size:34px;font-weight:700;margin:4px 0}
+.positive{color:var(--green)}.negative{color:var(--red)}.delta{font-weight:700}.scroll{overflow:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:10px 11px;border-bottom:1px solid #e5ebf3;text-align:left;white-space:nowrap}
+th{background:#f7f9fc;color:#46556b}td.method{font-weight:600}.blue-text{color:var(--blue)}.orange-text{color:var(--orange)}.purple-text{color:var(--purple)}
+.best{box-shadow:inset 0 0 0 2px #0f766e;font-weight:700}.main-method{background:#faf5ff}.heat td{text-align:center}
+.heat th{font-size:12px}.heat th:first-child{position:sticky;left:0;z-index:1}.heat tr.extreme th:first-child{border-left:4px solid var(--purple)}
+figure{margin:18px 0 0}figure img{width:100%;height:auto;display:block;border:1px solid #e5ebf3;border-radius:8px}
+figcaption{font-size:13px;margin-top:7px}.empty{padding:20px;background:#f8fafc;border:1px dashed #becbdd;border-radius:9px;color:var(--muted)}
+.links{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}.table-title{font-size:17px;margin-top:20px}
+details{border-top:1px solid var(--line);padding-top:14px;margin-top:18px}summary{cursor:pointer;font-weight:600}footer{font-size:13px;color:var(--muted);padding:8px 2px}
+[hidden]{display:none!important}#history tr.selected{background:#f3e8ff}.history-name{font-family:Consolas,monospace;font-size:12px}
+@media(max-width:850px){.cards{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}header{padding:25px 18px}main{padding:0 12px 25px}section{padding:18px}h1{font-size:28px}nav{position:static}#experiment{min-width:180px}}
+@media print{nav,.toolbar,.metrics,.links{display:none}body{background:white}section{break-inside:avoid;border:0}.scroll{overflow:visible}header{background:white;color:black}header p{color:#333}}
+</style>
+</head>
+<body>
+<header><div class="eyebrow">DP-GA-PFCM · KẾT QUẢ THỰC NGHIỆM</div>
+<h1>Một trang để xem và so sánh kết quả</h1>
+<p>Mở file <b>00_XEM_KET_QUA.html</b> sau mỗi lần chạy. Các thí nghiệm và artifact chi tiết nằm trong <b>LUU_TRU</b>.</p>
+</header>
+<main>
+<nav><button id="gaussian-nav" hidden>Gaussian · bảng Nc/L</button><a href="#comparison">Hai bộ K-means cao / thấp</a><a href="#overview">Tất cả dataset</a><a href="#detail">Xem từng bộ</a><a href="#history">Lượt chạy khác</a></nav>
+<section id="current">
+<h2>Kết quả đang xem</h2><p class="muted">Mặc định chọn lượt đầy đủ 10 bộ × 9 phương pháp × 30 lần. Các lượt thử có nhãn riêng trong danh sách.</p>
+<div class="toolbar"><select id="experiment" aria-label="Chọn lượt chạy"></select><button id="primary">Kết quả chính</button><button id="newest">Lượt mới nhất</button></div>
+<div id="run-description"></div>
+<div class="groups"><span class="pill blue">Cơ sở</span><span class="pill orange">Phương pháp so sánh</span><span class="pill purple">DP-GA-PFCM · mô hình chính</span></div>
+<div class="stats" id="stats"></div><div class="note" id="assumptions"></div>
+</section>
+<section id="gaussian-study" hidden><h2>Gaussian có điểm ngoại lai</h2><p id="gaussian-description"></p><h3>ARI theo Nc và L · Mean / Best</h3><div class="scroll" id="ari-protocol-table"></div><p class="muted" id="ari-protocol-note"></p><details><summary>Tất cả phương pháp · Mean / Best ARI</summary><div class="scroll" id="ari-all-table"></div></details><div id="gaussian-figure"></div></section>
+<section id="comparison">
+<h2>So sánh trên hai bộ K-means cao nhất và thấp nhất</h2>
+<p class="muted" id="selection-rule"></p>
+<div class="metrics"><button data-metric="accuracy_purity" class="active">Accuracy / Purity</button><button data-metric="ari">ARI</button><button data-metric="nmi">NMI</button></div>
+<div class="cards" id="extreme-cards"></div>
+<div id="extreme-figure"></div>
+<p class="muted">Các bảng dưới đây đổi theo chỉ số bạn chọn. Δ = điểm phương pháp − điểm K-means; dấu + là cao hơn, dấu − là thấp hơn.</p>
+<div class="cards" id="extreme-tables"></div>
+</section>
+<section id="overview">
+<h2>Tổng quan tất cả dataset</h2><p class="muted">Bảng màu dùng chỉ số đang chọn ở phía trên. Ô viền xanh là giá trị tốt nhất trên từng bộ; rê chuột để xem mean, độ lệch chuẩn và số lần chạy.</p>
+<div class="scroll" id="heatmap"></div>
+<details><summary>Xem hình tổng hợp ba chỉ số · PNG để lưu hoặc chèn báo cáo</summary><div id="overview-figure"></div><div id="main-figure"></div></details>
+</section>
+<section id="detail">
+<h2>Chỉ số và phân cụm của từng bộ</h2>
+<div class="toolbar"><label for="dataset">Dataset</label><select id="dataset"></select></div>
+<div class="scroll" id="dataset-table"></div>
+<div id="dataset-figure"></div><details><summary>Xem hình phân cụm</summary><p class="muted">Dùng lần chạy đầu đã định trước; PCA 2D và đổi màu chỉ để hiển thị. Điểm số được tính từ nhãn ở toàn bộ không gian đặc trưng.</p><div id="cluster-figure"></div></details>
+<details><summary>Hội tụ GA và thời gian chạy</summary><div id="convergence-figure"></div><div id="runtime-figure"></div></details>
+</section>
+<section id="downloads"><h2>Số liệu chi tiết của lượt đang xem</h2><p class="muted">Mean ± sample SD, không phải khoảng tin cậy. Purity và NMI trong [0, 1]; ARI trong [−1, 1]; càng cao càng tốt.</p><div class="links" id="files"></div></section>
+<section id="history"><h2>Các lượt chạy đã lưu</h2><p class="muted">Mỗi dòng là một thí nghiệm riêng. Chọn “Xem” để đổi toàn bộ trang sang lượt đó; số liệu giữa các lượt không được gộp.</p><div class="scroll" id="history-table"></div></section>
+<footer>Hai ảnh PNG cạnh file HTML là bản xem nhanh của kết quả chính. Thư mục LUU_TRU giữ nguyên CSV, cấu hình, nhật ký và artifact để kiểm tra lại.</footer>
+</main>
+<script id="results-data" type="application/json">__RESULTS_DATA__</script>
+<script>
+const DATA=JSON.parse(document.getElementById('results-data').textContent);
+const $=id=>document.getElementById(id);
+const E=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const labels={accuracy_purity:'Purity',ari:'ARI',nmi:'NMI'};
+const fmt=value=>value==null?'—':Number(value).toLocaleString('vi-VN',{minimumFractionDigits:4,maximumFractionDigits:4});
+const pm=(r,m)=>fmt(r[m+'_mean'])+' ± '+fmt(r[m+'_std']);
+const date=s=>s?new Date(s).toLocaleString('vi-VN'):'Không ghi thời gian';
+const group=m=>m==='DP-GA-PFCM'?'purple':(['DP-PSO-PFCM','DP-SCA-PFCM','DP-FBI-PFCM','GA-IFWCOM','SCA-FPCOM'].includes(m)?'orange':'blue');
+let current=DATA.experiments.find(x=>x.id===DATA.primary), metric='accuracy_purity', selected=[];
+function image(key,caption){const src=current.assets[key];return src?'<figure><a href="'+E(src)+'" target="_blank" rel="noopener"><img loading="lazy" src="'+E(src)+'" alt="'+E(caption)+'"></a><figcaption>'+E(caption)+' · nhấp vào hình để mở kích thước đầy đủ</figcaption></figure>':'';}
+function delta(v){return '<span class="delta '+(v>1e-12?'positive':v< -1e-12?'negative':'')+'">'+(v>0?'+':'')+fmt(v)+'</span>';}
+function method(m){return '<span class="'+group(m)+'-text">'+E(m)+'</span>';}
+function datasetLabel(d){
+ const c=current.gaussian?.conditions?.find(x=>x.slug===d);
+ return c?'Ngoại lai '+(100*c.actual_ratio).toLocaleString('vi-VN')+'% ('+c.n_inliers+' Gaussian + '+c.n_outliers+' ngoại lai)':d;
+}
+function rowsFor(d){return current.summary.filter(r=>r.dataset===d);}
+function renderAriProtocol(){
+ const rows=current.ariProtocol||[],g=current.gaussian;
+ const cell=(r,best=false)=>{
+  if(!r)return '—';
+  const value=fmt(r[best?'ari_best_mean':'ari_mean'])+' ± '+fmt(r[best?'ari_best_std':'ari_std']);
+  const bold=!best&&String(r.highlight_mean).toLowerCase()==='true';
+  return bold?'<b>'+value+' (s)</b>':value;
+ };
+ let html='<table><thead><tr><th rowspan="2">Nc</th><th rowspan="2">L</th><th rowspan="2">Ngoại lai</th><th colspan="2" class="blue-text">K-means</th><th colspan="2" class="purple-text">DP-GA-PFCM</th><th rowspan="2">p Wilcoxon</th></tr><tr><th>Mean ARI</th><th>Best ARI</th><th>Mean ARI</th><th>Best ARI</th></tr></thead><tbody>';
+ for(const c of g.conditions){
+  const block=rows.filter(r=>Math.abs(Number(r.outlier_ratio)-c.actual_ratio)<1e-10);
+  const base=block.find(r=>r.method==='K-means'),main=block.find(r=>r.method==='DP-GA-PFCM');
+  html+='<tr><td>'+g.Nc+'</td><td>'+g.L+'</td><td>'+100*c.actual_ratio+'%</td><td>'+cell(base)+'</td><td>'+cell(base,true)+'</td><td>'+cell(main)+'</td><td>'+cell(main,true)+'</td><td>'+(main?.wilcoxon_p?Number(main.wilcoxon_p).toPrecision(4):'—')+'</td></tr>';
+ }
+ $('ari-protocol-table').innerHTML=html+'</tbody></table>';
+ $('ari-protocol-note').textContent='Mean ± SD: toàn bộ '+g.n_datasets+' dataset × '+g.runs_per_dataset+' lần chạy. Best ± SD: lấy ARI cao nhất của từng dataset, rồi tính mean/SD trên '+g.n_datasets+' giá trị. Wilcoxon ghép cặp trên mean ARI của từng dataset; (s) và chữ đậm chỉ phương pháp tốt hơn trong cặp K-means / DP-GA-PFCM khi p < 0,05. Kiểm định từng mức ngoại lai, chưa hiệu chỉnh đa kiểm định.';
+ $('ari-all-table').innerHTML='<table><tr><th>Nc</th><th>L</th><th>Ngoại lai</th><th>Phương pháp</th><th>Mean ARI</th><th>Best ARI</th></tr>'+rows.map(r=>'<tr><td>'+r.Nc+'</td><td>'+r.L+'</td><td>'+100*Number(r.outlier_ratio)+'%</td><td>'+method(r.method)+'</td><td>'+cell(r)+'</td><td>'+cell(r,true)+'</td></tr>').join('')+'</table>';
+}
+function renderComparison(){
+ const km=current.summary.filter(r=>r.method==='K-means').slice().sort((a,b)=>b.accuracy_purity_mean-a.accuracy_purity_mean||a.dataset.localeCompare(b.dataset,'en'));
+ selected=km.length?[km[0],...(km.length>1?[km[km.length-1]]:[])]:[];
+ $('selection-rule').textContent=km.length?'Chọn theo Purity trung bình của K-means trên '+km.length+' bộ, mỗi bộ '+current.repeats+' lần. Đổi chỉ số bên dưới chỉ đổi cách xem, giữ nguyên hai bộ đã chọn.':'Lượt này không chạy K-means, nên chưa chọn được bộ cao nhất và thấp nhất.';
+ $('extreme-cards').innerHTML=selected.map((r,i)=>{const ga=rowsFor(r.dataset).find(x=>x.method==='DP-GA-PFCM');return '<div class="card '+(i?'low':'high')+'"><small>'+(i?'THẤP NHẤT':'CAO NHẤT')+' THEO PURITY CỦA K-MEANS</small><h3>'+E(datasetLabel(r.dataset))+'</h3><div class="big">'+fmt(r[metric+'_mean'])+'</div><div>K-means · '+labels[metric]+' · SD '+fmt(r[metric+'_std'])+'</div>'+(ga?'<p>DP-GA-PFCM: <b>'+fmt(ga[metric+'_mean'])+'</b> &nbsp; '+delta(ga[metric+'_mean']-r[metric+'_mean'])+'</p>':'')+'</div>';}).join('');
+ $('extreme-figure').innerHTML=selected.length?image('kmeans_extremes_comparison','Tất cả phương pháp trên hai bộ đã chọn · cả ba chỉ số · mean ± sample SD'):'';
+ $('extreme-tables').innerHTML=selected.map(base=>'<div><h3 class="table-title">'+E(datasetLabel(base.dataset))+' · '+labels[metric]+'</h3><div class="scroll"><table><thead><tr><th>Phương pháp</th><th>Mean ± SD</th><th>Δ / K-means</th></tr></thead><tbody>'+rowsFor(base.dataset).map(r=>'<tr class="'+(r.method==='DP-GA-PFCM'?'main-method':'')+'"><td class="method">'+method(r.method)+'</td><td>'+pm(r,metric)+'</td><td>'+delta(r[metric+'_mean']-base[metric+'_mean'])+'</td></tr>').join('')+'</tbody></table></div></div>').join('');
+ document.querySelectorAll('[data-metric]').forEach(b=>b.classList.toggle('active',b.dataset.metric===metric));
+ if(current.kind==='gaussian_outliers'&&km.length)$('selection-rule').textContent='Chọn theo Purity trung bình K-means trên '+km.length+' mức ngoại lai. Nc và L giữ cố định; mỗi mức dùng '+current.gaussian.n_datasets+' dataset, mỗi dataset '+current.repeats+' lần khởi tạo, ghép cặp giữa các mức. Chỉ chấm điểm Gaussian thật.';
+ renderHeatmap();
+}
+function renderHeatmap(){
+ const methods=current.methods;
+ let out='<table class="heat"><thead><tr><th>'+labels[metric]+'</th>'+methods.map(m=>'<th>'+method(m)+'</th>').join('')+'</tr></thead><tbody>';
+ for(const d of current.datasets){
+  const rows=rowsFor(d),best=Math.max(...rows.map(r=>r[metric+'_mean']));
+  out+='<tr class="'+(selected.some(x=>x.dataset===d)?'extreme':'')+'"><th>'+E(datasetLabel(d))+'</th>';
+  for(const m of methods){const r=rows.find(x=>x.method===m);if(!r){out+='<td>—</td>';continue;}
+   const v=r[metric+'_mean'],f=Math.max(0,Math.min(1,metric==='ari'?(v+1)/2:v)),light=98-f*63;
+   out+='<td class="'+(Math.abs(v-best)<1e-12?'best':'')+'" style="background:hsl(214 70% '+light+'%);color:'+(f>.6?'white':'#172033')+'" title="'+E(pm(r,metric)+'; n='+r.runs)+'">'+fmt(v)+'</td>';
+  }out+='</tr>';
+ }$('heatmap').innerHTML=out+'</tbody></table>';
+}
+function renderDataset(){
+ const d=$('dataset').value;
+ $('dataset-table').innerHTML='<table><thead><tr><th>Phương pháp</th><th>Purity ± SD</th><th>ARI ± SD</th><th>NMI ± SD</th></tr></thead><tbody>'+rowsFor(d).map(r=>'<tr class="'+(r.method==='DP-GA-PFCM'?'main-method':'')+'"><td class="method">'+method(r.method)+'</td>'+['accuracy_purity','ari','nmi'].map(m=>'<td>'+pm(r,m)+'</td>').join('')+'</tr>').join('')+'</tbody></table>';
+ if(current.kind==='gaussian_outliers'){
+ const table=$('dataset-table').querySelector('table');
+ table.querySelector('thead tr').insertAdjacentHTML('beforeend','<th>RMSE tâm ± SD ↓</th>');
+ table.querySelectorAll('tbody tr').forEach((tr,i)=>tr.insertAdjacentHTML('beforeend','<td>'+pm(rowsFor(d)[i],'center_rmse')+'</td>'));
+ }
+ $('dataset-figure').innerHTML=image('metrics_'+d,'Ba chỉ số trên '+d);
+ $('cluster-figure').innerHTML=image('clusters_'+d,'Hình phân cụm · '+d)||'<div class="empty">Lượt cũ chưa xuất hình phân cụm; bảng phía trên vẫn có số đo thực tế.</div>';
+}
+function renderHistory(){
+ $('history-table').innerHTML='<table><thead><tr><th>Lượt chạy</th><th>Phạm vi</th><th>Trạng thái</th><th>Thời gian</th><th></th></tr></thead><tbody>'+DATA.experiments.map(e=>'<tr class="'+(e.id===current.id?'selected':'')+'"><td class="history-name">'+E(e.name)+'</td><td>'+(e.kind==='gaussian_outliers'?e.datasets.length+' mức × '+e.gaussian.n_datasets+' dataset × '+e.methods.length+' PP × '+e.repeats+' lần':e.datasets.length+' bộ × '+e.methods.length+' phương pháp × '+e.repeats+' lần')+'</td><td>'+(e.complete?(e.kind==='gaussian_outliers'?'Gaussian có ngoại lai':e.full?'Đầy đủ 10 bộ, 30 lần':'Chạy thử / phạm vi riêng'):'Chưa hoàn tất')+'</td><td>'+E(date(e.created))+'</td><td>'+(e.complete?'<button data-run="'+E(e.id)+'">Xem</button>':'—')+'</td></tr>').join('')+'</tbody></table>';
+ document.querySelectorAll('[data-run]').forEach(b=>b.onclick=()=>{choose(b.dataset.run);$('current').scrollIntoView({behavior:'smooth'});});
+}
+function choose(id){
+ current=DATA.experiments.find(e=>e.id===id&&e.complete)||current;
+ $('experiment').value=current.id;
+ $('run-description').innerHTML='<p><b>'+E(current.name)+'</b> · '+E(date(current.created))+' · '+(current.kind==='gaussian_outliers'?'Gaussian có ngoại lai · '+current.gaussian.n_datasets+' dataset × '+current.repeats+' lần chạy':current.full?'Kết quả đầy đủ 10 bộ / 30 lần':'Phạm vi riêng; không thay cho lượt đủ 10 bộ / 30 lần')+'</p>';
+ $('stats').innerHTML=[[current.datasets.length,current.kind==='gaussian_outliers'?'Mức ngoại lai':'Dataset'],[current.methods.length,'Phương pháp'],[current.repeats,current.kind==='gaussian_outliers'?'Lần khởi tạo / dataset':'Lần / bộ / phương pháp'],[current.actualRuns,'Tổng lần chạy']].map(x=>'<div class="stat"><strong>'+Number(x[0]).toLocaleString('vi-VN')+'</strong><span>'+x[1]+'</span></div>').join('');
+ $('assumptions').textContent=(current.fitness==='fcm_reference'?'Fitness tham chiếu là hiệu chỉnh thực nghiệm có ghi giả định; chưa xác nhận trùng objective của tác giả. ':'Profile: '+current.profile+'. ')+(current.unimplemented.length?'Chưa triển khai: '+current.unimplemented.join(', ')+'. ':'')+'Đây là số đo thực chạy của phiên bản đã lưu.';
+ if(current.profile.includes('quick'))$('assumptions').textContent='CHẠY THỬ: ngân sách giảm, không dùng để kết luận. '+$('assumptions').textContent;
+ const synthetic=current.kind==='gaussian_outliers',g=current.gaussian||{};
+ $('gaussian-study').hidden=!synthetic;
+ document.querySelector('nav a[href="#comparison"]').textContent=synthetic?'Hai mức ngoại lai cao / thấp':'Hai bộ K-means cao / thấp';
+ document.querySelector('#overview h2').textContent=synthetic?'Tổng quan các mức ngoại lai':'Tổng quan tất cả dataset';
+ document.querySelector('#detail h2').textContent=synthetic?'Chỉ số và phân cụm theo mức ngoại lai':'Chỉ số và phân cụm của từng bộ';
+ document.querySelector('label[for="dataset"]').textContent=synthetic?'Mức ngoại lai':'Dataset';
+ document.querySelector('#comparison h2').textContent=synthetic?'Hai mức ngoại lai có K-means cao nhất / thấp nhất':'So sánh trên hai bộ K-means cao nhất và thấp nhất';
+ document.querySelector('#current > .muted').textContent=synthetic?'Thí nghiệm Gaussian: 3 mức cân bằng cụm × '+g.datasets_per_balance+' dataset ngẫu nhiên; giữ từng dataset cố định trong '+g.runs_per_dataset+' lần chạy độc lập. Mọi phương pháp dùng chung dữ liệu.':'Mặc định chọn lượt đầy đủ 10 bộ × 9 phương pháp × 30 lần. Các lượt thử có nhãn riêng trong danh sách.';
+ if(synthetic){
+ $('gaussian-description').textContent='Nc = '+g.Nc+' cụm; L = '+g.L+' thuộc tính; tổng '+g.n_samples+' điểm/mức ngoại lai. '+g.n_datasets+' dataset = '+g.datasets_per_balance+' dataset/mức cân bằng × 3 mức: '+g.balance_levels.map(w=>w.map(x=>Math.round(100*x)).join('/')).join(', ')+'. Mỗi dataset chạy '+g.runs_per_dataset+' lần. Mức ngoại lai: '+g.conditions.map(c=>(100*c.actual_ratio)+'%').join(' / ')+'. ARI/Purity/NMI chỉ tính trên điểm Gaussian thật. Các thông số sinh dữ liệu và mức cân bằng là giả định có ghi lại; không phải số công bố trong hình mẫu.';
+ renderAriProtocol();
+ $('gaussian-figure').innerHTML=image('gaussian_robustness','Ảnh hưởng của ngoại lai tới chất lượng phân cụm và tâm');
+ if(DATA.experiments.length===1)document.querySelector('footer').textContent='Dữ liệu tổng hợp nằm trong data/, nhãn dự đoán và tâm trong artifacts/. Tệp nc_l_ari.csv lưu bảng Mean/Best ARI; đây là thí nghiệm riêng theo cấu hình đã ghi.';
+ if(DATA.experiments.length===1)document.querySelector('header p').textContent='Gaussian có ngoại lai · Nc='+g.Nc+' · L='+g.L+' · '+g.n_datasets+' dataset × '+current.repeats+' lần / mức · '+current.actualRuns+' lần fit.';
+ }
+ renderComparison();
+ $('overview-figure').innerHTML=image('all_models_heatmap','Heatmap tổng hợp Purity, ARI và NMI');
+ $('main-figure').innerHTML=image('main_comparison','K-means, FCM, PFCM và mô hình chính');
+ const old=$('dataset').value;
+ $('dataset').innerHTML=current.datasets.map(d=>'<option value="'+E(d)+'">'+E(datasetLabel(d))+'</option>').join('');
+ $('dataset').value=current.datasets.includes(old)?old:(selected[0]?.dataset||current.datasets[0]);
+ renderDataset();
+ $('convergence-figure').innerHTML=image('ga_convergence','Hội tụ GA · trung vị và dải tứ phân vị');
+ $('runtime-figure').innerHTML=image('runtime_comparison','Thời gian và ngân sách đánh giá fitness');
+ const fileLabels={'summary.csv':'Bảng mean / SD','nc_l_ari.csv':'Bảng Nc / L: Mean / Best ARI','ari_by_dataset.csv':'Mean / Best từng dataset','wilcoxon.csv':'Kiểm định Wilcoxon','gaussian_protocol.json':'Quy tắc sinh Gaussian / ngoại lai','degradation_vs_clean.csv':'Độ lệch so với 0% ngoại lai','runs.csv':'Điểm từng lần chạy','extremes_comparison.csv':'So sánh hai bộ','paper_differences.csv':'Chênh lệch với bài báo','experiment.json':'Cấu hình / nguồn gốc','report.html':'Đối chiếu bài báo','index.html':'Dashboard gốc'};
+ $('files').innerHTML=Object.entries(fileLabels).filter(([n])=>current.files[n]).map(([n,t])=>'<a class="button" href="'+E(current.files[n])+'" target="_blank" rel="noopener">'+t+'</a>').join('');
+ renderHistory();
+}
+$('experiment').innerHTML=DATA.experiments.filter(e=>e.complete).map(e=>'<option value="'+E(e.id)+'">'+E(e.name)+' — '+(e.kind==='gaussian_outliers'?e.datasets.length+' mức × '+e.gaussian.n_datasets+' dataset × '+e.methods.length+' PP × '+e.repeats+' lần':e.datasets.length+' bộ × '+e.methods.length+' PP × '+e.repeats+' lần')+(e.id===DATA.primary?' · KẾT QUẢ CHÍNH':'')+'</option>').join('');
+const latestGaussian=DATA.experiments.find(e=>e.complete&&e.kind==='gaussian_outliers'&&!e.profile.includes('quick'))||DATA.experiments.find(e=>e.complete&&e.kind==='gaussian_outliers');
+if(latestGaussian){
+ $('gaussian-nav').hidden=false;
+ $('gaussian-nav').onclick=()=>{choose(latestGaussian.id);$('gaussian-study').scrollIntoView({behavior:'smooth'});};
+}
+$('experiment').onchange=()=>choose($('experiment').value);
+$('dataset').onchange=renderDataset;
+$('primary').onclick=()=>choose(DATA.primary);$('newest').onclick=()=>choose(DATA.newest);
+document.querySelectorAll('[data-metric]').forEach(b=>b.onclick=()=>{metric=b.dataset.metric;renderComparison();});
+choose(new URLSearchParams(location.search).get('run')||DATA.primary);
+</script>
+</body>
+</html>
+

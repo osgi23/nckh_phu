@@ -1,0 +1,53 @@
+{
+  "status": "ok",
+  "name": "Seed",
+  "slug": "seed",
+  "table1_order": 8,
+  "group": "su_dung",
+  "grouping_reason": "User requested first 10 for main experiments and last 4 for separate evaluation; the paper uses all 14.",
+  "n_samples": 210,
+  "n_features": 7,
+  "feature_columns": [
+    "area",
+    "perimeter",
+    "compactness",
+    "kernel_length",
+    "kernel_width",
+    "asymmetry",
+    "groove_length"
+  ],
+  "label_column": "label",
+  "original_label_column": "label_original",
+  "label_mapping": {
+    "1": 0,
+    "2": 1,
+    "3": 2
+  },
+  "class_counts": {
+    "1": 70,
+    "2": 70,
+    "3": 70
+  },
+  "observed_classes": 3,
+  "paper_k": 3,
+  "paper_n": 210,
+  "paper_features": 7,
+  "matches_paper_n": true,
+  "matches_paper_features": true,
+  "matches_paper_k": true,
+  "source_homepage": "https://archive.ics.uci.edu/dataset/236/seeds",
+  "source": {
+    "requested_url": "https://archive.ics.uci.edu/static/public/236/seeds.zip",
+    "resolved_url": "https://archive.ics.uci.edu/static/public/236/seeds.zip",
+    "downloaded_at_utc": "2026-10-04T17:02:47.313596+00:00",
+    "sha256": "5033bd71b24592fa70d9b3cc5be02332dc6d03d0b27e6655e6d553f39afab323",
+    "bytes": 9432,
+    "source_type": "primary"
+  },
+  "data_path": "su_dung/seed/data.csv",
+  "data_sha256": "17272a63a7e043491df22971dc87d34b818612ae3249fd97f99f0c2c4d196f1e",
+  "notes": [
+    "Parsed member: seeds_dataset.txt"
+  ],
+  "preprocessing": "Numeric parsing only; no scaling, imputation, row deletion or shuffle. Labels/ID/date are not X features."
+}

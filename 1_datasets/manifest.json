@@ -1,0 +1,783 @@
+{
+  "paper_doi": "10.1016/j.jestch.2023.101525",
+  "expected_datasets": 14,
+  "grouping": {
+    "su_dung": [
+      "iris",
+      "flame",
+      "jain",
+      "wine",
+      "glass",
+      "ecoli",
+      "compound",
+      "seed",
+      "breast_tissue",
+      "aggregation"
+    ],
+    "khong_su_dung": [
+      "pima",
+      "room_occupancy",
+      "rice",
+      "wifi"
+    ]
+  },
+  "grouping_is_from_user_not_paper": true,
+  "updated_at_utc": "2026-10-04T17:04:21.093031+00:00",
+  "datasets": [
+    {
+      "status": "ok",
+      "name": "Iris",
+      "slug": "iris",
+      "table1_order": 1,
+      "group": "su_dung",
+      "grouping_reason": "User requested first 10 for main experiments and last 4 for separate evaluation; the paper uses all 14.",
+      "n_samples": 150,
+      "n_features": 4,
+      "feature_columns": [
+        "sepal_length",
+        "sepal_width",
+        "petal_length",
+        "petal_width"
+      ],
+      "label_column": "label",
+      "original_label_column": "label_original",
+      "label_mapping": {
+        "Iris-setosa": 0,
+        "Iris-versicolor": 1,
+        "Iris-virginica": 2
+      },
+      "class_counts": {
+        "Iris-setosa": 50,
+        "Iris-versicolor": 50,
+        "Iris-virginica": 50
+      },
+      "observed_classes": 3,
+      "paper_k": 3,
+      "paper_n": 150,
+      "paper_features": 4,
+      "matches_paper_n": true,
+      "matches_paper_features": true,
+      "matches_paper_k": true,
+      "source_homepage": "https://archive.ics.uci.edu/dataset/53/iris",
+      "source": {
+        "requested_url": "https://archive.ics.uci.edu/static/public/53/iris.zip",
+        "resolved_url": "https://archive.ics.uci.edu/static/public/53/iris.zip",
+        "downloaded_at_utc": "2026-10-04T17:02:45.940750+00:00",
+        "sha256": "d11fe30213d36434a0879aab7cb00ce3c812eb7ba2495874438abff7b7b762e9",
+        "bytes": 3738,
+        "source_type": "primary"
+      },
+      "data_path": "su_dung/iris/data.csv",
+      "data_sha256": "c1f471d21e94aa9295958e47d1b3cf5d0caafbe9abdadde0d06d8c5dbb7c3c82",
+      "notes": [
+        "Chosen Iris variant: iris.data; the paper does not identify the variant. Both variants remain in source.zip.",
+        "Parsed member: iris.data"
+      ],
+      "preprocessing": "Numeric parsing only; no scaling, imputation, row deletion or shuffle. Labels/ID/date are not X features."
+    },
+    {
+      "status": "ok",
+      "name": "Flame",
+      "slug": "flame",
+      "table1_order": 2,
+      "group": "su_dung",
+      "grouping_reason": "User requested first 10 for main experiments and last 4 for separate evaluation; the paper uses all 14.",
+      "n_samples": 240,
+      "n_features": 2,
+      "feature_columns": [
+        "x1",
+        "x2"
+      ],
+      "label_column": "label",
+      "original_label_column": "label_original",
+      "label_mapping": {
+        "1": 0,
+        "2": 1
+      },
+      "class_counts": {
+        "1": 87,
+        "2": 153
+      },
+      "observed_classes": 2,
+      "paper_k": 2,
+      "paper_n": 240,
+      "paper_features": 2,
+      "matches_paper_n": true,
+      "matches_paper_features": true,
+      "matches_paper_k": true,
+      "source_homepage": "https://cs.joensuu.fi/sipu/datasets/",
+      "source": {
+        "requested_url": "https://cs.joensuu.fi/sipu/datasets/flame.txt",
+        "resolved_url": "https://cs.joensuu.fi/sipu/datasets/flame.txt",
+        "downloaded_at_utc": "2026-10-04T17:02:45.261439+00:00",
+        "sha256": "1be9b0826ff867abe49726f5e738548dc4f000e37c4af946a497fd26b1bbb1d7",
+        "bytes": 3127,
+        "source_type": "primary"
+      },
+      "data_path": "su_dung/flame/data.csv",
+      "data_sha256": "93ac421a8db95c4b347fd9be3816e1b3c28bf7089d39d9580062331da9afbb57",
+      "notes": [],
+      "preprocessing": "Numeric parsing only; no scaling, imputation, row deletion or shuffle. Labels/ID/date are not X features."
+    },
+    {
+      "status": "ok",
+      "name": "Jain",
+      "slug": "jain",
+      "table1_order": 3,
+      "group": "su_dung",
+      "grouping_reason": "User requested first 10 for main experiments and last 4 for separate evaluation; the paper uses all 14.",
+      "n_samples": 373,
+      "n_features": 2,
+      "feature_columns": [
+        "x1",
+        "x2"
+      ],
+      "label_column": "label",
+      "original_label_column": "label_original",
+      "label_mapping": {
+        "1": 0,
+        "2": 1
+      },
+      "class_counts": {
+        "2": 97,
+        "1": 276
+      },
+      "observed_classes": 2,
+      "paper_k": 2,
+      "paper_n": 373,
+      "paper_features": 2,
+      "matches_paper_n": true,
+      "matches_paper_features": true,
+      "matches_paper_k": true,
+      "source_homepage": "https://cs.joensuu.fi/sipu/datasets/",
+      "source": {
+        "requested_url": "https://cs.joensuu.fi/sipu/datasets/jain.txt",
+        "resolved_url": "https://cs.joensuu.fi/sipu/datasets/jain.txt",
+        "downloaded_at_utc": "2026-10-04T17:02:45.224950+00:00",
+        "sha256": "8df07103b9f0b72b523eedaac75ca445f2e9c1712c023ae13f0796c80e82660f",
+        "bytes": 4933,
+        "source_type": "primary"
+      },
+      "data_path": "su_dung/jain/data.csv",
+      "data_sha256": "cc138f52c25021d43f5d81d8d50a7768522dd1c4400f4953d5648c23a3666713",
+      "notes": [],
+      "preprocessing": "Numeric parsing only; no scaling, imputation, row deletion or shuffle. Labels/ID/date are not X features."
+    },
+    {
+      "status": "ok",
+      "name": "Wine",
+      "slug": "wine",
+      "table1_order": 4,
+      "group": "su_dung",
+      "grouping_reason": "User requested first 10 for main experiments and last 4 for separate evaluation; the paper uses all 14.",
+      "n_samples": 178,
+      "n_features": 13,
+      "feature_columns": [
+        "alcohol",
+        "malic_acid",
+        "ash",
+        "alcalinity_of_ash",
+        "magnesium",
+        "total_phenols",
+        "flavanoids",
+        "nonflavanoid_phenols",
+        "proanthocyanins",
+        "color_intensity",
+        "hue",
+        "od280_od315",
+        "proline"
+      ],
+      "label_column": "label",
+      "original_label_column": "label_original",
+      "label_mapping": {
+        "1": 0,
+        "2": 1,
+        "3": 2
+      },
+      "class_counts": {
+        "1": 59,
+        "2": 71,
+        "3": 48
+      },
+      "observed_classes": 3,
+      "paper_k": 3,
+      "paper_n": 178,
+      "paper_features": 13,
+      "matches_paper_n": true,
+      "matches_paper_features": true,
+      "matches_paper_k": true,
+      "source_homepage": "https://archive.ics.uci.edu/dataset/109/wine",
+      "source": {
+        "requested_url": "https://archive.ics.uci.edu/static/public/109/wine.zip",
+        "resolved_url": "https://archive.ics.uci.edu/static/public/109/wine.zip",
+        "downloaded_at_utc": "2026-10-04T17:02:45.019920+00:00",
+        "sha256": "2bae62c4481220623579d4c4fb36b55652b6b75e06e49fa1981b8198362dfdab",
+        "bytes": 6038,
+        "source_type": "primary"
+      },
+      "data_path": "su_dung/wine/data.csv",
+      "data_sha256": "d4e23762131171c15267ec3b4f90512ac135ca65deb9f375be1c2fc69f8f7246",
+      "notes": [
+        "Parsed member: wine.data"
+      ],
+      "preprocessing": "Numeric parsing only; no scaling, imputation, row deletion or shuffle. Labels/ID/date are not X features."
+    },
+    {
+      "status": "ok",
+      "name": "Glass",
+      "slug": "glass",
+      "table1_order": 5,
+      "group": "su_dung",
+      "grouping_reason": "User requested first 10 for main experiments and last 4 for separate evaluation; the paper uses all 14.",
+      "n_samples": 214,
+      "n_features": 9,
+      "feature_columns": [
+        "refractive_index",
+        "Na",
+        "Mg",
+        "Al",
+        "Si",
+        "K",
+        "Ca",
+        "Ba",
+        "Fe"
+      ],
+      "label_column": "label",
+      "original_label_column": "label_original",
+      "label_mapping": {
+        "1": 0,
+        "2": 1,
+        "3": 2,
+        "5": 3,
+        "6": 4,
+        "7": 5
+      },
+      "class_counts": {
+        "1": 70,
+        "2": 76,
+        "3": 17,
+        "5": 13,
+        "6": 9,
+        "7": 29
+      },
+      "observed_classes": 6,
+      "paper_k": 7,
+      "paper_n": 214,
+      "paper_features": 9,
+      "matches_paper_n": true,
+      "matches_paper_features": true,
+      "matches_paper_k": false,
+      "source_homepage": "https://archive.ics.uci.edu/dataset/42/glass+identification",
+      "source": {
+        "requested_url": "https://archive.ics.uci.edu/static/public/42/glass+identification.zip",
+        "resolved_url": "https://archive.ics.uci.edu/static/public/42/glass+identification.zip",
+        "downloaded_at_utc": "2026-10-04T17:02:45.630671+00:00",
+        "sha256": "499c07a17115bf63100bb19cc1fdefad7f464bf5dc2b168930fa2071fd6b6e65",
+        "bytes": 6380,
+        "source_type": "primary"
+      },
+      "data_path": "su_dung/glass/data.csv",
+      "data_sha256": "1ab0f4e3cb2ab13b235eade179561e496f06eca1371b7c48c1471bc46e024af3",
+      "notes": [
+        "Table 1 sets k=7, but the source contains 6 observed classes (class 4 is absent). paper_k=7 and observed_classes=6 are kept separately.",
+        "Parsed member: glass.data"
+      ],
+      "preprocessing": "Numeric parsing only; no scaling, imputation, row deletion or shuffle. Labels/ID/date are not X features."
+    },
+    {
+      "status": "ok",
+      "name": "Ecoli",
+      "slug": "ecoli",
+      "table1_order": 6,
+      "group": "su_dung",
+      "grouping_reason": "User requested first 10 for main experiments and last 4 for separate evaluation; the paper uses all 14.",
+      "n_samples": 336,
+      "n_features": 7,
+      "feature_columns": [
+        "mcg",
+        "gvh",
+        "lip",
+        "chg",
+        "aac",
+        "alm1",
+        "alm2"
+      ],
+      "label_column": "label",
+      "original_label_column": "label_original",
+      "label_mapping": {
+        "cp": 0,
+        "im": 1,
+        "imL": 2,
+        "imS": 3,
+        "imU": 4,
+        "om": 5,
+        "omL": 6,
+        "pp": 7
+      },
+      "class_counts": {
+        "cp": 143,
+        "im": 77,
+        "imS": 2,
+        "imL": 2,
+        "imU": 35,
+        "om": 20,
+        "omL": 5,
+        "pp": 52
+      },
+      "observed_classes": 8,
+      "paper_k": 8,
+      "paper_n": 336,
+      "paper_features": 7,
+      "matches_paper_n": true,
+      "matches_paper_features": true,
+      "matches_paper_k": true,
+      "source_homepage": "https://archive.ics.uci.edu/dataset/39/ecoli",
+      "source": {
+        "requested_url": "https://archive.ics.uci.edu/static/public/39/ecoli.zip",
+        "resolved_url": "https://archive.ics.uci.edu/static/public/39/ecoli.zip",
+        "downloaded_at_utc": "2026-10-04T17:02:46.243127+00:00",
+        "sha256": "a6580298b76828674a5197152da7a99f4bd09bc589dbf1142900f1698882ec32",
+        "bytes": 5660,
+        "source_type": "primary"
+      },
+      "data_path": "su_dung/ecoli/data.csv",
+      "data_sha256": "893f2835eac63d3388c56453c1cb232e1ae2d71ba7624787060c72ebe2aa7784",
+      "notes": [
+        "Parsed member: ecoli.data"
+      ],
+      "preprocessing": "Numeric parsing only; no scaling, imputation, row deletion or shuffle. Labels/ID/date are not X features."
+    },
+    {
+      "status": "ok",
+      "name": "Compound",
+      "slug": "compound",
+      "table1_order": 7,
+      "group": "su_dung",
+      "grouping_reason": "User requested first 10 for main experiments and last 4 for separate evaluation; the paper uses all 14.",
+      "n_samples": 399,
+      "n_features": 2,
+      "feature_columns": [
+        "x1",
+        "x2"
+      ],
+      "label_column": "label",
+      "original_label_column": "label_original",
+      "label_mapping": {
+        "1": 0,
+        "2": 1,
+        "3": 2,
+        "4": 3,
+        "5": 4,
+        "6": 5
+      },
+      "class_counts": {
+        "1": 50,
+        "2": 92,
+        "3": 38,
+        "4": 45,
+        "5": 158,
+        "6": 16
+      },
+      "observed_classes": 6,
+      "paper_k": 6,
+      "paper_n": 399,
+      "paper_features": 2,
+      "matches_paper_n": true,
+      "matches_paper_features": true,
+      "matches_paper_k": true,
+      "source_homepage": "https://cs.joensuu.fi/sipu/datasets/",
+      "source": {
+        "requested_url": "https://cs.joensuu.fi/sipu/datasets/Compound.txt",
+        "resolved_url": "https://cs.joensuu.fi/sipu/datasets/Compound.txt",
+        "downloaded_at_utc": "2026-10-04T17:02:46.252120+00:00",
+        "sha256": "1afe7c73f4a742a816f550fe61af12d7f5b9b3d63991a3ec185247a96bf824bd",
+        "bytes": 5421,
+        "source_type": "primary"
+      },
+      "data_path": "su_dung/compound/data.csv",
+      "data_sha256": "3ed8e177e24db0d307656cbee5148727a2f903361188bfebe7c9fdde549a9576",
+      "notes": [],
+      "preprocessing": "Numeric parsing only; no scaling, imputation, row deletion or shuffle. Labels/ID/date are not X features."
+    },
+    {
+      "status": "ok",
+      "name": "Seed",
+      "slug": "seed",
+      "table1_order": 8,
+      "group": "su_dung",
+      "grouping_reason": "User requested first 10 for main experiments and last 4 for separate evaluation; the paper uses all 14.",
+      "n_samples": 210,
+      "n_features": 7,
+      "feature_columns": [
+        "area",
+        "perimeter",
+        "compactness",
+        "kernel_length",
+        "kernel_width",
+        "asymmetry",
+        "groove_length"
+      ],
+      "label_column": "label",
+      "original_label_column": "label_original",
+      "label_mapping": {
+        "1": 0,
+        "2": 1,
+        "3": 2
+      },
+      "class_counts": {
+        "1": 70,
+        "2": 70,
+        "3": 70
+      },
+      "observed_classes": 3,
+      "paper_k": 3,
+      "paper_n": 210,
+      "paper_features": 7,
+      "matches_paper_n": true,
+      "matches_paper_features": true,
+      "matches_paper_k": true,
+      "source_homepage": "https://archive.ics.uci.edu/dataset/236/seeds",
+      "source": {
+        "requested_url": "https://archive.ics.uci.edu/static/public/236/seeds.zip",
+        "resolved_url": "https://archive.ics.uci.edu/static/public/236/seeds.zip",
+        "downloaded_at_utc": "2026-10-04T17:02:47.313596+00:00",
+        "sha256": "5033bd71b24592fa70d9b3cc5be02332dc6d03d0b27e6655e6d553f39afab323",
+        "bytes": 9432,
+        "source_type": "primary"
+      },
+      "data_path": "su_dung/seed/data.csv",
+      "data_sha256": "17272a63a7e043491df22971dc87d34b818612ae3249fd97f99f0c2c4d196f1e",
+      "notes": [
+        "Parsed member: seeds_dataset.txt"
+      ],
+      "preprocessing": "Numeric parsing only; no scaling, imputation, row deletion or shuffle. Labels/ID/date are not X features."
+    },
+    {
+      "status": "ok",
+      "name": "Breast Tissue",
+      "slug": "breast_tissue",
+      "table1_order": 9,
+      "group": "su_dung",
+      "grouping_reason": "User requested first 10 for main experiments and last 4 for separate evaluation; the paper uses all 14.",
+      "n_samples": 106,
+      "n_features": 9,
+      "feature_columns": [
+        "I0",
+        "PA500",
+        "HFS",
+        "DA",
+        "Area",
+        "A_DA",
+        "Max_IP",
+        "DR",
+        "P"
+      ],
+      "label_column": "label",
+      "original_label_column": "label_original",
+      "label_mapping": {
+        "adi": 0,
+        "car": 1,
+        "con": 2,
+        "fad": 3,
+        "gla": 4,
+        "mas": 5
+      },
+      "class_counts": {
+        "car": 21,
+        "fad": 15,
+        "mas": 18,
+        "gla": 16,
+        "con": 14,
+        "adi": 22
+      },
+      "observed_classes": 6,
+      "paper_k": 6,
+      "paper_n": 106,
+      "paper_features": 9,
+      "matches_paper_n": true,
+      "matches_paper_features": true,
+      "matches_paper_k": true,
+      "source_homepage": "https://archive.ics.uci.edu/dataset/192/breast+tissue",
+      "source": {
+        "requested_url": "https://archive.ics.uci.edu/static/public/192/breast+tissue.zip",
+        "resolved_url": "https://archive.ics.uci.edu/static/public/192/breast+tissue.zip",
+        "downloaded_at_utc": "2026-10-04T17:02:47.614706+00:00",
+        "sha256": "fee45ef499f1028829c6f29c8ab05cf51f8042c6dde135c1ded29853e9e83593",
+        "bytes": 29513,
+        "source_type": "primary"
+      },
+      "data_path": "su_dung/breast_tissue/data.csv",
+      "data_sha256": "4b4544b2ba3cdb197b6c80c4af0ce6ca494304f0e92e1c55685d699a0987b0fc",
+      "notes": [
+        "Original six classes are preserved; fad/mas/gla are not merged into four classes.",
+        "Parsed member: BreastTissue.xls"
+      ],
+      "preprocessing": "Numeric parsing only; no scaling, imputation, row deletion or shuffle. Labels/ID/date are not X features."
+    },
+    {
+      "status": "ok",
+      "name": "Aggregation",
+      "slug": "aggregation",
+      "table1_order": 10,
+      "group": "su_dung",
+      "grouping_reason": "User requested first 10 for main experiments and last 4 for separate evaluation; the paper uses all 14.",
+      "n_samples": 788,
+      "n_features": 2,
+      "feature_columns": [
+        "x1",
+        "x2"
+      ],
+      "label_column": "label",
+      "original_label_column": "label_original",
+      "label_mapping": {
+        "1": 0,
+        "2": 1,
+        "3": 2,
+        "4": 3,
+        "5": 4,
+        "6": 5,
+        "7": 6
+      },
+      "class_counts": {
+        "2": 170,
+        "7": 34,
+        "4": 273,
+        "3": 102,
+        "6": 130,
+        "1": 45,
+        "5": 34
+      },
+      "observed_classes": 7,
+      "paper_k": 7,
+      "paper_n": 788,
+      "paper_features": 2,
+      "matches_paper_n": true,
+      "matches_paper_features": true,
+      "matches_paper_k": true,
+      "source_homepage": "https://cs.joensuu.fi/sipu/datasets/",
+      "source": {
+        "requested_url": "https://cs.joensuu.fi/sipu/datasets/Aggregation.txt",
+        "resolved_url": "https://cs.joensuu.fi/sipu/datasets/Aggregation.txt",
+        "downloaded_at_utc": "2026-10-04T17:02:47.264673+00:00",
+        "sha256": "216ae781417468a749f9d265a17004ac300055c7cea7b0d4d4731dde895ab187",
+        "bytes": 10427,
+        "source_type": "primary"
+      },
+      "data_path": "su_dung/aggregation/data.csv",
+      "data_sha256": "8868ac5ee4407917c4cffe6d276e86c62c3face500db270d06a4a600ec4d606a",
+      "notes": [],
+      "preprocessing": "Numeric parsing only; no scaling, imputation, row deletion or shuffle. Labels/ID/date are not X features."
+    },
+    {
+      "status": "ok",
+      "name": "Pima",
+      "slug": "pima",
+      "table1_order": 11,
+      "group": "khong_su_dung",
+      "grouping_reason": "User requested first 10 for main experiments and last 4 for separate evaluation; the paper uses all 14.",
+      "n_samples": 768,
+      "n_features": 8,
+      "feature_columns": [
+        "pregnancies",
+        "glucose",
+        "blood_pressure",
+        "skin_thickness",
+        "insulin",
+        "bmi",
+        "diabetes_pedigree",
+        "age"
+      ],
+      "label_column": "label",
+      "original_label_column": "label_original",
+      "label_mapping": {
+        "0": 0,
+        "1": 1
+      },
+      "class_counts": {
+        "1": 268,
+        "0": 500
+      },
+      "observed_classes": 2,
+      "paper_k": 2,
+      "paper_n": 768,
+      "paper_features": 8,
+      "matches_paper_n": true,
+      "matches_paper_features": true,
+      "matches_paper_k": true,
+      "source_homepage": "https://github.com/jbrownlee/Datasets",
+      "source": {
+        "requested_url": "https://raw.githubusercontent.com/jbrownlee/Datasets/master/pima-indians-diabetes.data.csv",
+        "resolved_url": "https://raw.githubusercontent.com/jbrownlee/Datasets/master/pima-indians-diabetes.data.csv",
+        "downloaded_at_utc": "2026-10-04T17:02:46.621888+00:00",
+        "sha256": "6bfe5d0f379d17a0e0819b996407e3c09bf80febd4287f2ed212190dfff154af",
+        "bytes": 23278,
+        "source_type": "mirror"
+      },
+      "data_path": "khong_su_dung/pima/data.csv",
+      "data_sha256": "fc6f759a4bf739e2c7413bf214d028914e1a9dd1fdd6d52ab30f89bbfc3fd503",
+      "notes": [
+        "Uses a jbrownlee/Datasets mirror because the old UCI Pima URL returns 404. Zero values are preserved; no imputation or filtering is applied."
+      ],
+      "preprocessing": "Numeric parsing only; no scaling, imputation, row deletion or shuffle. Labels/ID/date are not X features."
+    },
+    {
+      "status": "ok",
+      "name": "Room Occupancy",
+      "slug": "room_occupancy",
+      "table1_order": 12,
+      "group": "khong_su_dung",
+      "grouping_reason": "User requested first 10 for main experiments and last 4 for separate evaluation; the paper uses all 14.",
+      "n_samples": 20560,
+      "n_features": 5,
+      "feature_columns": [
+        "Temperature",
+        "Humidity",
+        "Light",
+        "CO2",
+        "HumidityRatio"
+      ],
+      "label_column": "label",
+      "original_label_column": "label_original",
+      "label_mapping": {
+        "0": 0,
+        "1": 1
+      },
+      "class_counts": {
+        "1": 4750,
+        "0": 15810
+      },
+      "observed_classes": 2,
+      "paper_k": 2,
+      "paper_n": 20560,
+      "paper_features": 7,
+      "matches_paper_n": true,
+      "matches_paper_features": false,
+      "matches_paper_k": true,
+      "source_homepage": "https://archive.ics.uci.edu/dataset/357/occupancy+detection",
+      "source": {
+        "requested_url": "https://archive.ics.uci.edu/static/public/357/occupancy+detection.zip",
+        "resolved_url": "https://archive.ics.uci.edu/static/public/357/occupancy+detection.zip",
+        "downloaded_at_utc": "2026-10-04T17:02:50.394198+00:00",
+        "sha256": "4ae3f46aa98eedff564a9f6924d1635173e2fd2c816004342a9be93076d3a81a",
+        "bytes": 335713,
+        "source_type": "primary"
+      },
+      "data_path": "khong_su_dung/room_occupancy/data.csv",
+      "data_sha256": "d04254d3a02a1686d175e92bd2f93839596fdadf16cc2b1334b2dd8f8ce4f41d",
+      "notes": [
+        "All three original files are concatenated in training,test,test2 order to obtain 20560 rows. Original split/ID/date are saved in sample_info.csv.",
+        "Table 1 reports F=7. This CSV uses only the 5 numeric sensor features; ID, date and target are excluded from X. The paper's exact seven-feature encoding is unknown.",
+        "Parsed member: datatraining.txt",
+        "Parsed member: datatest.txt",
+        "Parsed member: datatest2.txt"
+      ],
+      "preprocessing": "Numeric parsing only; no scaling, imputation, row deletion or shuffle. Labels/ID/date are not X features."
+    },
+    {
+      "status": "ok",
+      "name": "Rice",
+      "slug": "rice",
+      "table1_order": 13,
+      "group": "khong_su_dung",
+      "grouping_reason": "User requested first 10 for main experiments and last 4 for separate evaluation; the paper uses all 14.",
+      "n_samples": 3810,
+      "n_features": 7,
+      "feature_columns": [
+        "Area",
+        "Perimeter",
+        "Major_Axis_Length",
+        "Minor_Axis_Length",
+        "Eccentricity",
+        "Convex_Area",
+        "Extent"
+      ],
+      "label_column": "label",
+      "original_label_column": "label_original",
+      "label_mapping": {
+        "Cammeo": 0,
+        "Osmancik": 1
+      },
+      "class_counts": {
+        "Cammeo": 1630,
+        "Osmancik": 2180
+      },
+      "observed_classes": 2,
+      "paper_k": 2,
+      "paper_n": 3810,
+      "paper_features": 7,
+      "matches_paper_n": true,
+      "matches_paper_features": true,
+      "matches_paper_k": true,
+      "source_homepage": "https://archive.ics.uci.edu/dataset/545/rice+cammeo+and+osmancik",
+      "source": {
+        "requested_url": "https://archive.ics.uci.edu/static/public/545/rice+cammeo+and+osmancik.zip",
+        "resolved_url": "https://archive.ics.uci.edu/static/public/545/rice+cammeo+and+osmancik.zip",
+        "downloaded_at_utc": "2026-10-04T17:02:49.814915+00:00",
+        "sha256": "fe94e42046b829de21b92b0ffb6a22774fde021328cae799faa802a14e8dbed9",
+        "bytes": 171738,
+        "source_type": "primary"
+      },
+      "data_path": "khong_su_dung/rice/data.csv",
+      "data_sha256": "06b6643aeee4375d57ed54fe86455529a8220541bb96b6e52dbe26cd367ec6a8",
+      "notes": [
+        "Parsed member: Rice_Cammeo_Osmancik.arff"
+      ],
+      "preprocessing": "Numeric parsing only; no scaling, imputation, row deletion or shuffle. Labels/ID/date are not X features."
+    },
+    {
+      "status": "ok",
+      "name": "Wifi",
+      "slug": "wifi",
+      "table1_order": 14,
+      "group": "khong_su_dung",
+      "grouping_reason": "User requested first 10 for main experiments and last 4 for separate evaluation; the paper uses all 14.",
+      "n_samples": 2000,
+      "n_features": 7,
+      "feature_columns": [
+        "rssi_1",
+        "rssi_2",
+        "rssi_3",
+        "rssi_4",
+        "rssi_5",
+        "rssi_6",
+        "rssi_7"
+      ],
+      "label_column": "label",
+      "original_label_column": "label_original",
+      "label_mapping": {
+        "1": 0,
+        "2": 1,
+        "3": 2,
+        "4": 3
+      },
+      "class_counts": {
+        "1": 500,
+        "2": 500,
+        "3": 500,
+        "4": 500
+      },
+      "observed_classes": 4,
+      "paper_k": 4,
+      "paper_n": 2000,
+      "paper_features": 7,
+      "matches_paper_n": true,
+      "matches_paper_features": true,
+      "matches_paper_k": true,
+      "source_homepage": "https://archive.ics.uci.edu/dataset/422/wireless+indoor+localization",
+      "source": {
+        "requested_url": "https://archive.ics.uci.edu/static/public/422/wireless+indoor+localization.zip",
+        "resolved_url": "https://archive.ics.uci.edu/static/public/422/wireless+indoor+localization.zip",
+        "downloaded_at_utc": "2026-10-04T17:02:48.678756+00:00",
+        "sha256": "afb3e4f3674409642e6606e14faf4cb66edc3a8c74034839f1cee4e017c59a4e",
+        "bytes": 62140,
+        "source_type": "primary"
+      },
+      "data_path": "khong_su_dung/wifi/data.csv",
+      "data_sha256": "bad2234723396ea592a5615f57f3285cb53d589265e301a2b1c132a4ba6de341",
+      "notes": [
+        "Parsed member: wifi_localization.txt"
+      ],
+      "preprocessing": "Numeric parsing only; no scaling, imputation, row deletion or shuffle. Labels/ID/date are not X features."
+    }
+  ]
+}

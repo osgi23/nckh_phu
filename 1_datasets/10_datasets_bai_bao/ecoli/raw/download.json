@@ -1,0 +1,8 @@
+{
+  "requested_url": "https://archive.ics.uci.edu/static/public/39/ecoli.zip",
+  "resolved_url": "https://archive.ics.uci.edu/static/public/39/ecoli.zip",
+  "downloaded_at_utc": "2026-10-04T17:02:46.243127+00:00",
+  "sha256": "a6580298b76828674a5197152da7a99f4bd09bc589dbf1142900f1698882ec32",
+  "bytes": 5660,
+  "source_type": "primary"
+}

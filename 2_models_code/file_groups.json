@@ -1,0 +1,248 @@
+[
+  {
+    "file": "blue_baselines/__init__.py",
+    "group": "blue_baselines",
+    "color": "#2563eb",
+    "description": "Khai báo package"
+  },
+  {
+    "file": "blue_baselines/dp_fcm.py",
+    "group": "blue_baselines",
+    "color": "#2563eb",
+    "description": "Mô hình đã triển khai"
+  },
+  {
+    "file": "blue_baselines/dp_pfcm.py",
+    "group": "blue_baselines",
+    "color": "#2563eb",
+    "description": "Mô hình đã triển khai"
+  },
+  {
+    "file": "blue_baselines/fcm.py",
+    "group": "blue_baselines",
+    "color": "#2563eb",
+    "description": "Mô hình đã triển khai"
+  },
+  {
+    "file": "blue_baselines/kmeans.py",
+    "group": "blue_baselines",
+    "color": "#2563eb",
+    "description": "Mô hình đã triển khai"
+  },
+  {
+    "file": "blue_baselines/pfcm.py",
+    "group": "blue_baselines",
+    "color": "#2563eb",
+    "description": "Mô hình đã triển khai"
+  },
+  {
+    "file": "blue_baselines/README.md",
+    "group": "blue_baselines",
+    "color": "#2563eb",
+    "description": "Hướng dẫn nhóm"
+  },
+  {
+    "file": "blue_baselines/run.py",
+    "group": "blue_baselines",
+    "color": "#2563eb",
+    "description": "Lệnh chạy và in chất lượng"
+  },
+  {
+    "file": "orange_comparisons/__init__.py",
+    "group": "orange_comparisons",
+    "color": "#c2410c",
+    "description": "Khai báo package"
+  },
+  {
+    "file": "orange_comparisons/dp_fbi_pfcm.py",
+    "group": "orange_comparisons",
+    "color": "#c2410c",
+    "description": "Mô hình đã triển khai"
+  },
+  {
+    "file": "orange_comparisons/dp_pso_pfcm.py",
+    "group": "orange_comparisons",
+    "color": "#c2410c",
+    "description": "Mô hình đã triển khai"
+  },
+  {
+    "file": "orange_comparisons/dp_sca_pfcm.py",
+    "group": "orange_comparisons",
+    "color": "#c2410c",
+    "description": "Mô hình đã triển khai"
+  },
+  {
+    "file": "orange_comparisons/ga_ifwcom.py",
+    "group": "orange_comparisons",
+    "color": "#c2410c",
+    "description": "CHƯA TRIỂN KHAI — thiếu công thức đầy đủ từ bài tham khảo"
+  },
+  {
+    "file": "orange_comparisons/README.md",
+    "group": "orange_comparisons",
+    "color": "#c2410c",
+    "description": "Hướng dẫn nhóm"
+  },
+  {
+    "file": "orange_comparisons/run.py",
+    "group": "orange_comparisons",
+    "color": "#c2410c",
+    "description": "Lệnh chạy và in chất lượng"
+  },
+  {
+    "file": "orange_comparisons/sca_fpcom.py",
+    "group": "orange_comparisons",
+    "color": "#c2410c",
+    "description": "CHƯA TRIỂN KHAI — thiếu công thức đầy đủ từ bài tham khảo"
+  },
+  {
+    "file": "purple_main_model/__init__.py",
+    "group": "purple_main_model",
+    "color": "#9333ea",
+    "description": "Khai báo package"
+  },
+  {
+    "file": "purple_main_model/dp_ga_pfcm.py",
+    "group": "purple_main_model",
+    "color": "#9333ea",
+    "description": "Mô hình đã triển khai"
+  },
+  {
+    "file": "purple_main_model/README.md",
+    "group": "purple_main_model",
+    "color": "#9333ea",
+    "description": "Hướng dẫn nhóm"
+  },
+  {
+    "file": "purple_main_model/run.py",
+    "group": "purple_main_model",
+    "color": "#9333ea",
+    "description": "Lệnh chạy và in chất lượng"
+  },
+  {
+    "file": "common/__init__.py",
+    "group": "shared",
+    "color": "#64748b",
+    "description": "common"
+  },
+  {
+    "file": "common/data.py",
+    "group": "shared",
+    "color": "#64748b",
+    "description": "common"
+  },
+  {
+    "file": "common/density_peak.py",
+    "group": "shared",
+    "color": "#64748b",
+    "description": "common"
+  },
+  {
+    "file": "common/meta_pfcm.py",
+    "group": "shared",
+    "color": "#64748b",
+    "description": "common"
+  },
+  {
+    "file": "common/metrics.py",
+    "group": "shared",
+    "color": "#64748b",
+    "description": "common"
+  },
+  {
+    "file": "common/numerics.py",
+    "group": "shared",
+    "color": "#64748b",
+    "description": "common"
+  },
+  {
+    "file": "common/registry.py",
+    "group": "shared",
+    "color": "#64748b",
+    "description": "common"
+  },
+  {
+    "file": "common/reporting.py",
+    "group": "shared",
+    "color": "#64748b",
+    "description": "common"
+  },
+  {
+    "file": "common/runner.py",
+    "group": "shared",
+    "color": "#64748b",
+    "description": "common"
+  },
+  {
+    "file": "common/statistics.py",
+    "group": "shared",
+    "color": "#64748b",
+    "description": "common"
+  },
+  {
+    "file": "configs/paper_table5.json",
+    "group": "shared",
+    "color": "#64748b",
+    "description": "configs"
+  },
+  {
+    "file": "configs/sensitivity_fitness_pfcm.json",
+    "group": "shared",
+    "color": "#64748b",
+    "description": "configs"
+  },
+  {
+    "file": "configs/sensitivity_fitness_sse.json",
+    "group": "shared",
+    "color": "#64748b",
+    "description": "configs"
+  },
+  {
+    "file": "configs/sensitivity_mutation001.json",
+    "group": "shared",
+    "color": "#64748b",
+    "description": "configs"
+  },
+  {
+    "file": "reference/extract_tables.py",
+    "group": "shared",
+    "color": "#64748b",
+    "description": "reference"
+  },
+  {
+    "file": "reference/paper_metrics.csv",
+    "group": "shared",
+    "color": "#64748b",
+    "description": "reference"
+  },
+  {
+    "file": "tests/test_reproduction.py",
+    "group": "shared",
+    "color": "#64748b",
+    "description": "tests"
+  },
+  {
+    "file": "tools/build_file_index.py",
+    "group": "shared",
+    "color": "#64748b",
+    "description": "tools"
+  },
+  {
+    "file": "tools/build_validation.py",
+    "group": "shared",
+    "color": "#64748b",
+    "description": "tools"
+  },
+  {
+    "file": "tools/package_code.py",
+    "group": "shared",
+    "color": "#64748b",
+    "description": "tools"
+  },
+  {
+    "file": "tools/verify_artifacts.py",
+    "group": "shared",
+    "color": "#64748b",
+    "description": "tools"
+  }
+]

@@ -1,0 +1,52 @@
+{
+  "status": "ok",
+  "name": "Compound",
+  "slug": "compound",
+  "table1_order": 7,
+  "group": "su_dung",
+  "grouping_reason": "User requested first 10 for main experiments and last 4 for separate evaluation; the paper uses all 14.",
+  "n_samples": 399,
+  "n_features": 2,
+  "feature_columns": [
+    "x1",
+    "x2"
+  ],
+  "label_column": "label",
+  "original_label_column": "label_original",
+  "label_mapping": {
+    "1": 0,
+    "2": 1,
+    "3": 2,
+    "4": 3,
+    "5": 4,
+    "6": 5
+  },
+  "class_counts": {
+    "1": 50,
+    "2": 92,
+    "3": 38,
+    "4": 45,
+    "5": 158,
+    "6": 16
+  },
+  "observed_classes": 6,
+  "paper_k": 6,
+  "paper_n": 399,
+  "paper_features": 2,
+  "matches_paper_n": true,
+  "matches_paper_features": true,
+  "matches_paper_k": true,
+  "source_homepage": "https://cs.joensuu.fi/sipu/datasets/",
+  "source": {
+    "requested_url": "https://cs.joensuu.fi/sipu/datasets/Compound.txt",
+    "resolved_url": "https://cs.joensuu.fi/sipu/datasets/Compound.txt",
+    "downloaded_at_utc": "2026-10-04T17:02:46.252120+00:00",
+    "sha256": "1afe7c73f4a742a816f550fe61af12d7f5b9b3d63991a3ec185247a96bf824bd",
+    "bytes": 5421,
+    "source_type": "primary"
+  },
+  "data_path": "su_dung/compound/data.csv",
+  "data_sha256": "3ed8e177e24db0d307656cbee5148727a2f903361188bfebe7c9fdde549a9576",
+  "notes": [],
+  "preprocessing": "Numeric parsing only; no scaling, imputation, row deletion or shuffle. Labels/ID/date are not X features."
+}

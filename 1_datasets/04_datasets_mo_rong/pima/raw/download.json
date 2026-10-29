@@ -1,0 +1,8 @@
+{
+  "requested_url": "https://raw.githubusercontent.com/jbrownlee/Datasets/master/pima-indians-diabetes.data.csv",
+  "resolved_url": "https://raw.githubusercontent.com/jbrownlee/Datasets/master/pima-indians-diabetes.data.csv",
+  "downloaded_at_utc": "2026-10-04T17:02:46.621888+00:00",
+  "sha256": "6bfe5d0f379d17a0e0819b996407e3c09bf80febd4287f2ed212190dfff154af",
+  "bytes": 23278,
+  "source_type": "mirror"
+}

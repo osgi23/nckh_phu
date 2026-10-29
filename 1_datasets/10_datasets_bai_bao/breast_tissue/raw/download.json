@@ -1,0 +1,8 @@
+{
+  "requested_url": "https://archive.ics.uci.edu/static/public/192/breast+tissue.zip",
+  "resolved_url": "https://archive.ics.uci.edu/static/public/192/breast+tissue.zip",
+  "downloaded_at_utc": "2026-10-04T17:02:47.614706+00:00",
+  "sha256": "fee45ef499f1028829c6f29c8ab05cf51f8042c6dde135c1ded29853e9e83593",
+  "bytes": 29513,
+  "source_type": "primary"
+}

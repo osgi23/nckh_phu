@@ -1,0 +1,28 @@
+Review date: 2026-10-10
+Workspace: D:/DA_NCKHphu
+Model code was not modified by this review.
+
+Command: code/.venv/Scripts/python.exe code/tests/test_reproduction.py
+Result: 14 tests passed; exit code 0.
+
+Command: code/.venv/Scripts/python.exe -m pip check
+Result: No broken requirements found; exit code 0.
+
+Artifact verification during review:
+code/results/quick_main10: 180 actual runs verified.
+code/results/paper_iris30: 270 actual runs verified.
+Checks: predictions/metrics/seeds/numerical source hashes/data checksums,
+       504 reference cells; exit code 0 for both folders.
+
+Command: code/.venv/Scripts/python.exe output/code_review_2026-10-10/review_probes.py
+Result: exit code 0; evidence.json generated.
+Non-symmetric PFCM scalar fixture: center error <= 1.11e-16, gamma error 0.
+Fixed centers, varying w: FCM fitness drops while label hashes remain identical.
+30 GA artifacts: median w=5; 17 runs with two observed clusters for requested K=3.
+7 runs meet center-shift tolerance but objective delta exceeds the same 1e-6 value.
+Both fixed/dynamic gamma replays use frozen GA genes; GA is not rerun.
+Validation accepts NaN and Infinity in four probed numeric settings.
+tol=Infinity: solver returns after one step with converged=True.
+
+The review does not equate passing these checks with matching the author's code.
+Full reproduction experiments were not rerun; saved artifacts were verified.

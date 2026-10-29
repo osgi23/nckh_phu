@@ -1,0 +1,44 @@
+{
+  "status": "ok",
+  "name": "Flame",
+  "slug": "flame",
+  "table1_order": 2,
+  "group": "su_dung",
+  "grouping_reason": "User requested first 10 for main experiments and last 4 for separate evaluation; the paper uses all 14.",
+  "n_samples": 240,
+  "n_features": 2,
+  "feature_columns": [
+    "x1",
+    "x2"
+  ],
+  "label_column": "label",
+  "original_label_column": "label_original",
+  "label_mapping": {
+    "1": 0,
+    "2": 1
+  },
+  "class_counts": {
+    "1": 87,
+    "2": 153
+  },
+  "observed_classes": 2,
+  "paper_k": 2,
+  "paper_n": 240,
+  "paper_features": 2,
+  "matches_paper_n": true,
+  "matches_paper_features": true,
+  "matches_paper_k": true,
+  "source_homepage": "https://cs.joensuu.fi/sipu/datasets/",
+  "source": {
+    "requested_url": "https://cs.joensuu.fi/sipu/datasets/flame.txt",
+    "resolved_url": "https://cs.joensuu.fi/sipu/datasets/flame.txt",
+    "downloaded_at_utc": "2026-10-04T17:02:45.261439+00:00",
+    "sha256": "1be9b0826ff867abe49726f5e738548dc4f000e37c4af946a497fd26b1bbb1d7",
+    "bytes": 3127,
+    "source_type": "primary"
+  },
+  "data_path": "su_dung/flame/data.csv",
+  "data_sha256": "93ac421a8db95c4b347fd9be3816e1b3c28bf7089d39d9580062331da9afbb57",
+  "notes": [],
+  "preprocessing": "Numeric parsing only; no scaling, imputation, row deletion or shuffle. Labels/ID/date are not X features."
+}

@@ -1,0 +1,60 @@
+{
+  "profile": "paper_table5_with_documented_assumptions",
+  "runs": 30,
+  "seed": 2026,
+  "max_iter": 100,
+  "tol": 1e-06,
+  "a": 1,
+  "b": 1,
+  "w": 2,
+  "eta": 2,
+  "gamma_scale": 1,
+  "gamma_refresh": "each_step",
+  "dc_quantile": 0.02,
+  "dpc_block_size": 512,
+  "dc_exact_limit": 5000,
+  "dc_sample_pairs": 200000,
+  "population": 80,
+  "generations": 100,
+  "crossover_rate": 0.8,
+  "mutation_rate": 0.1,
+  "mutation_range": 0.1,
+  "mutation_precision": 10,
+  "elite_count": 1,
+  "seed_jitter": 0.05,
+  "parameter_bounds": {
+    "a": [
+      0.1,
+      5
+    ],
+    "b": [
+      0.1,
+      5
+    ],
+    "w": [
+      1.1,
+      5
+    ],
+    "eta": [
+      1.1,
+      5
+    ]
+  },
+  "fitness": "fcm",
+  "lamarckian": false,
+  "pso_inertia_start": 0.4,
+  "pso_inertia_end": 0.9,
+  "pso_c1": 2,
+  "pso_c2": 2,
+  "pso_velocity_fraction": 0.2,
+  "sca_amplitude": 2,
+  "k_policy": "paper",
+  "hard_labels": "membership",
+  "statistical_alpha": 0.05,
+  "threads": 1,
+  "stop_criterion": "objective",
+  "stop_mode": "absolute",
+  "fitness_reference_w": 2.0,
+  "device": "auto",
+  "use_gpu": true
+}

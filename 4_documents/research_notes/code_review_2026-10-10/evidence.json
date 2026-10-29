@@ -1,0 +1,952 @@
+{
+  "review_date": "2026-10-10",
+  "reviewed_directory": "D:\\DA_NCKHphu\\code",
+  "fixed_centers_vary_w": [
+    {
+      "w": 1.5,
+      "fcm_loss": 17.448104074041478,
+      "label_sha256": "94f9028b4dc133abd057fc48a57ce1c92b822df39603b1ef25bf4b3049dfd286",
+      "accuracy_purity": 0.6666666666666666,
+      "ari": 0.44987300809963465,
+      "nmi": 0.6570153297702852,
+      "accuracy_hungarian": 0.5466666666666666,
+      "observed_clusters": 3
+    },
+    {
+      "w": 2.0,
+      "fcm_loss": 12.79837482465032,
+      "label_sha256": "94f9028b4dc133abd057fc48a57ce1c92b822df39603b1ef25bf4b3049dfd286",
+      "accuracy_purity": 0.6666666666666666,
+      "ari": 0.44987300809963465,
+      "nmi": 0.6570153297702852,
+      "accuracy_hungarian": 0.5466666666666666,
+      "observed_clusters": 3
+    },
+    {
+      "w": 3.0,
+      "fcm_loss": 5.0859817779395895,
+      "label_sha256": "94f9028b4dc133abd057fc48a57ce1c92b822df39603b1ef25bf4b3049dfd286",
+      "accuracy_purity": 0.6666666666666666,
+      "ari": 0.44987300809963465,
+      "nmi": 0.6570153297702852,
+      "accuracy_hungarian": 0.5466666666666666,
+      "observed_clusters": 3
+    },
+    {
+      "w": 5.0,
+      "fcm_loss": 0.6258236134771009,
+      "label_sha256": "94f9028b4dc133abd057fc48a57ce1c92b822df39603b1ef25bf4b3049dfd286",
+      "accuracy_purity": 0.6666666666666666,
+      "ari": 0.44987300809963465,
+      "nmi": 0.6570153297702852,
+      "accuracy_hungarian": 0.5466666666666666,
+      "observed_clusters": 3
+    }
+  ],
+  "scalar_pfcm_fixture": {
+    "max_center_error": 1.1102230246251565e-16,
+    "max_gamma_error": 0.0
+  },
+  "iris30": {
+    "n_runs": 30,
+    "comparison": {
+      "accuracy_purity": {
+        "paper": 0.914,
+        "reproduction": 0.7155555555555556,
+        "difference": -0.19844444444444442
+      },
+      "ari": {
+        "paper": 0.774,
+        "reproduction": 0.5101930924248613,
+        "difference": -0.2638069075751387
+      },
+      "nmi": {
+        "paper": 0.775,
+        "reproduction": 0.5927502365655136,
+        "difference": -0.1822497634344864
+      }
+    },
+    "median_w": 5.0,
+    "runs_with_two_observed_clusters": 17
+  },
+  "stopping_probe": [
+    {
+      "run": 1,
+      "iterations": 68,
+      "center_shift": 8.917287208642932e-07,
+      "absolute_objective_change": 3.444928717044604e-05
+    },
+    {
+      "run": 2,
+      "iterations": 37,
+      "center_shift": 7.891535060977617e-07,
+      "absolute_objective_change": 7.197018092597318e-08
+    },
+    {
+      "run": 3,
+      "iterations": 44,
+      "center_shift": 8.241860658397826e-07,
+      "absolute_objective_change": 9.487470293834122e-07
+    },
+    {
+      "run": 4,
+      "iterations": 34,
+      "center_shift": 8.918551606118541e-07,
+      "absolute_objective_change": 1.6899434029937765e-07
+    },
+    {
+      "run": 5,
+      "iterations": 45,
+      "center_shift": 8.412440885008365e-07,
+      "absolute_objective_change": 8.840608245463955e-10
+    },
+    {
+      "run": 6,
+      "iterations": 38,
+      "center_shift": 9.354836777442088e-07,
+      "absolute_objective_change": 2.2538817034956082e-08
+    },
+    {
+      "run": 7,
+      "iterations": 32,
+      "center_shift": 6.31603194189978e-07,
+      "absolute_objective_change": 4.0511001841991856e-07
+    },
+    {
+      "run": 8,
+      "iterations": 39,
+      "center_shift": 8.123701779050307e-07,
+      "absolute_objective_change": 9.008488177641993e-09
+    },
+    {
+      "run": 9,
+      "iterations": 63,
+      "center_shift": 9.755818636131286e-07,
+      "absolute_objective_change": 9.566226566448677e-08
+    },
+    {
+      "run": 10,
+      "iterations": 43,
+      "center_shift": 8.252486667359449e-07,
+      "absolute_objective_change": 2.873523641255815e-10
+    },
+    {
+      "run": 11,
+      "iterations": 38,
+      "center_shift": 9.942082695724164e-07,
+      "absolute_objective_change": 2.0067682410029875e-05
+    },
+    {
+      "run": 12,
+      "iterations": 35,
+      "center_shift": 9.427543468110144e-07,
+      "absolute_objective_change": 2.1752884649117732e-07
+    },
+    {
+      "run": 13,
+      "iterations": 49,
+      "center_shift": 9.532824739588719e-07,
+      "absolute_objective_change": 2.7950864733838898e-08
+    },
+    {
+      "run": 14,
+      "iterations": 40,
+      "center_shift": 7.78156125424978e-07,
+      "absolute_objective_change": 1.1243841413488553e-09
+    },
+    {
+      "run": 15,
+      "iterations": 45,
+      "center_shift": 8.09974560089799e-07,
+      "absolute_objective_change": 3.602001896751972e-08
+    },
+    {
+      "run": 16,
+      "iterations": 57,
+      "center_shift": 7.760698798042753e-07,
+      "absolute_objective_change": 2.9823766638514826e-06
+    },
+    {
+      "run": 17,
+      "iterations": 35,
+      "center_shift": 7.921502693797322e-07,
+      "absolute_objective_change": 1.6205489075105106e-06
+    },
+    {
+      "run": 18,
+      "iterations": 55,
+      "center_shift": 9.700686920410817e-07,
+      "absolute_objective_change": 3.9761290103967895e-05
+    },
+    {
+      "run": 19,
+      "iterations": 36,
+      "center_shift": 8.579792352136906e-07,
+      "absolute_objective_change": 2.8217926022477968e-05
+    },
+    {
+      "run": 20,
+      "iterations": 30,
+      "center_shift": 7.489916605818436e-07,
+      "absolute_objective_change": 2.407507082580196e-09
+    },
+    {
+      "run": 21,
+      "iterations": 41,
+      "center_shift": 7.642568049526233e-07,
+      "absolute_objective_change": 1.8791794786920946e-09
+    },
+    {
+      "run": 22,
+      "iterations": 46,
+      "center_shift": 8.706952722287165e-07,
+      "absolute_objective_change": 3.9363487047694434e-06
+    },
+    {
+      "run": 23,
+      "iterations": 37,
+      "center_shift": 7.066084493079217e-07,
+      "absolute_objective_change": 2.8092564718917856e-08
+    },
+    {
+      "run": 24,
+      "iterations": 40,
+      "center_shift": 7.705474347474706e-07,
+      "absolute_objective_change": 1.6122122303841024e-08
+    },
+    {
+      "run": 25,
+      "iterations": 41,
+      "center_shift": 7.200683520558471e-07,
+      "absolute_objective_change": 2.5628621358464443e-07
+    },
+    {
+      "run": 26,
+      "iterations": 38,
+      "center_shift": 9.267431765325185e-07,
+      "absolute_objective_change": 1.0523467963707844e-07
+    },
+    {
+      "run": 27,
+      "iterations": 26,
+      "center_shift": 5.66015742387016e-07,
+      "absolute_objective_change": 8.71144482772479e-07
+    },
+    {
+      "run": 28,
+      "iterations": 40,
+      "center_shift": 7.300530866505284e-07,
+      "absolute_objective_change": 1.0324382415660693e-07
+    },
+    {
+      "run": 29,
+      "iterations": 48,
+      "center_shift": 9.536478720040265e-07,
+      "absolute_objective_change": 4.479233339793609e-08
+    },
+    {
+      "run": 30,
+      "iterations": 66,
+      "center_shift": 9.195580943921478e-07,
+      "absolute_objective_change": 1.9724672029042267e-07
+    }
+  ],
+  "converged_center_but_objective_delta_above_config_tol": 7,
+  "gamma_replay": [
+    {
+      "run": 1,
+      "policies": {
+        "each_step": {
+          "iterations": 68,
+          "accuracy_purity": 0.6666666666666666,
+          "ari": 0.434916225093906,
+          "nmi": 0.6259581171591108,
+          "accuracy_hungarian": 0.5266666666666666,
+          "observed_clusters": 3
+        },
+        "fixed": {
+          "iterations": 59,
+          "accuracy_purity": 0.6666666666666666,
+          "ari": 0.44135129541658846,
+          "nmi": 0.6528873840250099,
+          "accuracy_hungarian": 0.52,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 2,
+      "policies": {
+        "each_step": {
+          "iterations": 37,
+          "accuracy_purity": 0.66,
+          "ari": 0.4219886317147244,
+          "nmi": 0.4926824477163979,
+          "accuracy_hungarian": 0.66,
+          "observed_clusters": 2
+        },
+        "fixed": {
+          "iterations": 45,
+          "accuracy_purity": 0.68,
+          "ari": 0.43366693076970825,
+          "nmi": 0.49535013474911027,
+          "accuracy_hungarian": 0.68,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 3,
+      "policies": {
+        "each_step": {
+          "iterations": 44,
+          "accuracy_purity": 0.66,
+          "ari": 0.42562954901190564,
+          "nmi": 0.49726218245591713,
+          "accuracy_hungarian": 0.66,
+          "observed_clusters": 2
+        },
+        "fixed": {
+          "iterations": 46,
+          "accuracy_purity": 0.66,
+          "ari": 0.39864512075861663,
+          "nmi": 0.45185474389394037,
+          "accuracy_hungarian": 0.66,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 4,
+      "policies": {
+        "each_step": {
+          "iterations": 34,
+          "accuracy_purity": 0.66,
+          "ari": 0.42277443618969957,
+          "nmi": 0.4937246940500042,
+          "accuracy_hungarian": 0.66,
+          "observed_clusters": 2
+        },
+        "fixed": {
+          "iterations": 42,
+          "accuracy_purity": 0.6933333333333334,
+          "ari": 0.4532582065814267,
+          "nmi": 0.5296316508349811,
+          "accuracy_hungarian": 0.6933333333333334,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 5,
+      "policies": {
+        "each_step": {
+          "iterations": 45,
+          "accuracy_purity": 0.66,
+          "ari": 0.42170473204955966,
+          "nmi": 0.49202100985966846,
+          "accuracy_hungarian": 0.66,
+          "observed_clusters": 2
+        },
+        "fixed": {
+          "iterations": 72,
+          "accuracy_purity": 0.6733333333333333,
+          "ari": 0.4265387643234102,
+          "nmi": 0.4881830397641986,
+          "accuracy_hungarian": 0.6733333333333333,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 6,
+      "policies": {
+        "each_step": {
+          "iterations": 38,
+          "accuracy_purity": 0.66,
+          "ari": 0.4216318881502692,
+          "nmi": 0.4921157444605641,
+          "accuracy_hungarian": 0.66,
+          "observed_clusters": 2
+        },
+        "fixed": {
+          "iterations": 52,
+          "accuracy_purity": 0.6733333333333333,
+          "ari": 0.4169279809262187,
+          "nmi": 0.46026758053696987,
+          "accuracy_hungarian": 0.6733333333333333,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 7,
+      "policies": {
+        "each_step": {
+          "iterations": 32,
+          "accuracy_purity": 0.66,
+          "ari": 0.42562954901190564,
+          "nmi": 0.49726218245591713,
+          "accuracy_hungarian": 0.66,
+          "observed_clusters": 2
+        },
+        "fixed": {
+          "iterations": 33,
+          "accuracy_purity": 0.6733333333333333,
+          "ari": 0.42998239923196646,
+          "nmi": 0.4930565450829787,
+          "accuracy_hungarian": 0.6733333333333333,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 8,
+      "policies": {
+        "each_step": {
+          "iterations": 39,
+          "accuracy_purity": 0.66,
+          "ari": 0.4216318881502692,
+          "nmi": 0.49211574446056416,
+          "accuracy_hungarian": 0.66,
+          "observed_clusters": 2
+        },
+        "fixed": {
+          "iterations": 69,
+          "accuracy_purity": 0.6666666666666666,
+          "ari": 0.4236056946404451,
+          "nmi": 0.48813300544638966,
+          "accuracy_hungarian": 0.6666666666666666,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 9,
+      "policies": {
+        "each_step": {
+          "iterations": 63,
+          "accuracy_purity": 0.6666666666666666,
+          "ari": 0.5342973608681925,
+          "nmi": 0.6845171089274011,
+          "accuracy_hungarian": 0.66,
+          "observed_clusters": 3
+        },
+        "fixed": {
+          "iterations": 35,
+          "accuracy_purity": 0.68,
+          "ari": 0.5517553852833211,
+          "nmi": 0.7031201708357564,
+          "accuracy_hungarian": 0.68,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 10,
+      "policies": {
+        "each_step": {
+          "iterations": 43,
+          "accuracy_purity": 0.6666666666666666,
+          "ari": 0.44135129541658846,
+          "nmi": 0.5316874854297459,
+          "accuracy_hungarian": 0.6666666666666666,
+          "observed_clusters": 2
+        },
+        "fixed": {
+          "iterations": 84,
+          "accuracy_purity": 0.6666666666666666,
+          "ari": 0.44135129541658846,
+          "nmi": 0.5316874854297459,
+          "accuracy_hungarian": 0.6666666666666666,
+          "observed_clusters": 2
+        }
+      }
+    },
+    {
+      "run": 11,
+      "policies": {
+        "each_step": {
+          "iterations": 38,
+          "accuracy_purity": 0.8866666666666667,
+          "ari": 0.7183576141196959,
+          "nmi": 0.7629748788054994,
+          "accuracy_hungarian": 0.8866666666666667,
+          "observed_clusters": 3
+        },
+        "fixed": {
+          "iterations": 48,
+          "accuracy_purity": 0.6666666666666666,
+          "ari": 0.4246835684073322,
+          "nmi": 0.4912915604099329,
+          "accuracy_hungarian": 0.66,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 12,
+      "policies": {
+        "each_step": {
+          "iterations": 35,
+          "accuracy_purity": 0.66,
+          "ari": 0.4219886317147244,
+          "nmi": 0.4926824477163979,
+          "accuracy_hungarian": 0.66,
+          "observed_clusters": 2
+        },
+        "fixed": {
+          "iterations": 45,
+          "accuracy_purity": 0.6666666666666666,
+          "ari": 0.41293720171540865,
+          "nmi": 0.4688406088262372,
+          "accuracy_hungarian": 0.6666666666666666,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 13,
+      "policies": {
+        "each_step": {
+          "iterations": 49,
+          "accuracy_purity": 0.8933333333333333,
+          "ari": 0.7302382722834697,
+          "nmi": 0.7582057278194196,
+          "accuracy_hungarian": 0.8933333333333333,
+          "observed_clusters": 3
+        },
+        "fixed": {
+          "iterations": 51,
+          "accuracy_purity": 0.6733333333333333,
+          "ari": 0.42998239923196646,
+          "nmi": 0.4930565450829787,
+          "accuracy_hungarian": 0.6733333333333333,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 14,
+      "policies": {
+        "each_step": {
+          "iterations": 40,
+          "accuracy_purity": 0.66,
+          "ari": 0.42170473204955966,
+          "nmi": 0.49202100985966846,
+          "accuracy_hungarian": 0.66,
+          "observed_clusters": 2
+        },
+        "fixed": {
+          "iterations": 59,
+          "accuracy_purity": 0.6666666666666666,
+          "ari": 0.41858570186127814,
+          "nmi": 0.4698373006630174,
+          "accuracy_hungarian": 0.6666666666666666,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 15,
+      "policies": {
+        "each_step": {
+          "iterations": 45,
+          "accuracy_purity": 0.8866666666666667,
+          "ari": 0.7172759168337549,
+          "nmi": 0.7507805708266375,
+          "accuracy_hungarian": 0.8866666666666667,
+          "observed_clusters": 3
+        },
+        "fixed": {
+          "iterations": 47,
+          "accuracy_purity": 0.66,
+          "ari": 0.3936826233166106,
+          "nmi": 0.43356574280876065,
+          "accuracy_hungarian": 0.66,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 16,
+      "policies": {
+        "each_step": {
+          "iterations": 57,
+          "accuracy_purity": 0.8866666666666667,
+          "ari": 0.7172759168337549,
+          "nmi": 0.7507805708266375,
+          "accuracy_hungarian": 0.8866666666666667,
+          "observed_clusters": 3
+        },
+        "fixed": {
+          "iterations": 46,
+          "accuracy_purity": 0.6666666666666666,
+          "ari": 0.4336183344711706,
+          "nmi": 0.5005891884738409,
+          "accuracy_hungarian": 0.6666666666666666,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 17,
+      "policies": {
+        "each_step": {
+          "iterations": 35,
+          "accuracy_purity": 0.66,
+          "ari": 0.42562954901190564,
+          "nmi": 0.49726218245591713,
+          "accuracy_hungarian": 0.66,
+          "observed_clusters": 2
+        },
+        "fixed": {
+          "iterations": 40,
+          "accuracy_purity": 0.6666666666666666,
+          "ari": 0.4253247184645917,
+          "nmi": 0.4905372518704481,
+          "accuracy_hungarian": 0.6666666666666666,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 18,
+      "policies": {
+        "each_step": {
+          "iterations": 55,
+          "accuracy_purity": 0.6666666666666666,
+          "ari": 0.4402831388889892,
+          "nmi": 0.6523831160940962,
+          "accuracy_hungarian": 0.5133333333333333,
+          "observed_clusters": 3
+        },
+        "fixed": {
+          "iterations": 45,
+          "accuracy_purity": 0.6666666666666666,
+          "ari": 0.48687804298776866,
+          "nmi": 0.6775524454299113,
+          "accuracy_hungarian": 0.6,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 19,
+      "policies": {
+        "each_step": {
+          "iterations": 36,
+          "accuracy_purity": 0.6666666666666666,
+          "ari": 0.5227450181013653,
+          "nmi": 0.6653399259235838,
+          "accuracy_hungarian": 0.66,
+          "observed_clusters": 3
+        },
+        "fixed": {
+          "iterations": 35,
+          "accuracy_purity": 0.6666666666666666,
+          "ari": 0.5251941844254132,
+          "nmi": 0.6748599214441386,
+          "accuracy_hungarian": 0.6533333333333333,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 20,
+      "policies": {
+        "each_step": {
+          "iterations": 30,
+          "accuracy_purity": 0.6666666666666666,
+          "ari": 0.44135129541658846,
+          "nmi": 0.5316874854297459,
+          "accuracy_hungarian": 0.6666666666666666,
+          "observed_clusters": 2
+        },
+        "fixed": {
+          "iterations": 31,
+          "accuracy_purity": 0.6933333333333334,
+          "ari": 0.45065742316585,
+          "nmi": 0.5266987091295297,
+          "accuracy_hungarian": 0.6933333333333334,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 21,
+      "policies": {
+        "each_step": {
+          "iterations": 41,
+          "accuracy_purity": 0.66,
+          "ari": 0.42170473204955966,
+          "nmi": 0.49202100985966846,
+          "accuracy_hungarian": 0.66,
+          "observed_clusters": 2
+        },
+        "fixed": {
+          "iterations": 56,
+          "accuracy_purity": 0.68,
+          "ari": 0.4195191364933927,
+          "nmi": 0.4608233224505085,
+          "accuracy_hungarian": 0.68,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 22,
+      "policies": {
+        "each_step": {
+          "iterations": 46,
+          "accuracy_purity": 0.6666666666666666,
+          "ari": 0.5251941844254132,
+          "nmi": 0.6748599214441386,
+          "accuracy_hungarian": 0.6533333333333333,
+          "observed_clusters": 3
+        },
+        "fixed": {
+          "iterations": 32,
+          "accuracy_purity": 0.68,
+          "ari": 0.5517553852833211,
+          "nmi": 0.7031201708357564,
+          "accuracy_hungarian": 0.68,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 23,
+      "policies": {
+        "each_step": {
+          "iterations": 37,
+          "accuracy_purity": 0.66,
+          "ari": 0.4219886317147244,
+          "nmi": 0.4926824477163979,
+          "accuracy_hungarian": 0.66,
+          "observed_clusters": 2
+        },
+        "fixed": {
+          "iterations": 47,
+          "accuracy_purity": 0.68,
+          "ari": 0.4317929642634863,
+          "nmi": 0.49306024574003854,
+          "accuracy_hungarian": 0.68,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 24,
+      "policies": {
+        "each_step": {
+          "iterations": 40,
+          "accuracy_purity": 0.66,
+          "ari": 0.4216318881502692,
+          "nmi": 0.4921157444605641,
+          "accuracy_hungarian": 0.66,
+          "observed_clusters": 2
+        },
+        "fixed": {
+          "iterations": 58,
+          "accuracy_purity": 0.68,
+          "ari": 0.4287636326820873,
+          "nmi": 0.48916138062620085,
+          "accuracy_hungarian": 0.68,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 25,
+      "policies": {
+        "each_step": {
+          "iterations": 41,
+          "accuracy_purity": 0.66,
+          "ari": 0.42562954901190564,
+          "nmi": 0.49726218245591713,
+          "accuracy_hungarian": 0.66,
+          "observed_clusters": 2
+        },
+        "fixed": {
+          "iterations": 50,
+          "accuracy_purity": 0.66,
+          "ari": 0.3468743569534444,
+          "nmi": 0.4119631060937588,
+          "accuracy_hungarian": 0.6,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 26,
+      "policies": {
+        "each_step": {
+          "iterations": 38,
+          "accuracy_purity": 0.8933333333333333,
+          "ari": 0.7302382722834697,
+          "nmi": 0.7582057278194196,
+          "accuracy_hungarian": 0.8933333333333333,
+          "observed_clusters": 3
+        },
+        "fixed": {
+          "iterations": 36,
+          "accuracy_purity": 0.8933333333333333,
+          "ari": 0.7311985567707746,
+          "nmi": 0.7701409905732125,
+          "accuracy_hungarian": 0.8933333333333333,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 27,
+      "policies": {
+        "each_step": {
+          "iterations": 26,
+          "accuracy_purity": 0.9,
+          "ari": 0.7419782010797596,
+          "nmi": 0.7476347021327789,
+          "accuracy_hungarian": 0.9,
+          "observed_clusters": 3
+        },
+        "fixed": {
+          "iterations": 29,
+          "accuracy_purity": 0.94,
+          "ari": 0.8345340129274752,
+          "nmi": 0.8333754612062992,
+          "accuracy_hungarian": 0.94,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 28,
+      "policies": {
+        "each_step": {
+          "iterations": 40,
+          "accuracy_purity": 0.66,
+          "ari": 0.42277443618969957,
+          "nmi": 0.4937246940500042,
+          "accuracy_hungarian": 0.66,
+          "observed_clusters": 2
+        },
+        "fixed": {
+          "iterations": 53,
+          "accuracy_purity": 0.6733333333333333,
+          "ari": 0.422387336456146,
+          "nmi": 0.47152315891248553,
+          "accuracy_hungarian": 0.6733333333333333,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 29,
+      "policies": {
+        "each_step": {
+          "iterations": 48,
+          "accuracy_purity": 0.8866666666666667,
+          "ari": 0.7172759168337549,
+          "nmi": 0.7507805708266375,
+          "accuracy_hungarian": 0.8866666666666667,
+          "observed_clusters": 3
+        },
+        "fixed": {
+          "iterations": 48,
+          "accuracy_purity": 0.8933333333333333,
+          "ari": 0.7311985567707746,
+          "nmi": 0.7701409905732125,
+          "accuracy_hungarian": 0.8933333333333333,
+          "observed_clusters": 3
+        }
+      }
+    },
+    {
+      "run": 30,
+      "policies": {
+        "each_step": {
+          "iterations": 66,
+          "accuracy_purity": 0.6666666666666666,
+          "ari": 0.5489713200964548,
+          "nmi": 0.7297554634669865,
+          "accuracy_hungarian": 0.6533333333333333,
+          "observed_clusters": 3
+        },
+        "fixed": {
+          "iterations": 52,
+          "accuracy_purity": 0.8933333333333333,
+          "ari": 0.7311985567707746,
+          "nmi": 0.7701409905732125,
+          "accuracy_hungarian": 0.8933333333333333,
+          "observed_clusters": 3
+        }
+      }
+    }
+  ],
+  "gamma_replay_mean": {
+    "each_step": {
+      "accuracy_purity": 0.7155555555555556,
+      "ari": 0.5101930924248613,
+      "nmi": 0.5927502365655136
+    },
+    "fixed": {
+      "accuracy_purity": 0.7033333333333335,
+      "ari": 0.48159499222557856,
+      "nmi": 0.5564816944107522
+    }
+  },
+  "nonfinite_validation": [
+    {
+      "key": "tol",
+      "value": "NaN",
+      "status": "accepted"
+    },
+    {
+      "key": "tol",
+      "value": "positive_infinity",
+      "status": "accepted"
+    },
+    {
+      "key": "gamma_scale",
+      "value": "NaN",
+      "status": "accepted"
+    },
+    {
+      "key": "gamma_scale",
+      "value": "positive_infinity",
+      "status": "accepted"
+    },
+    {
+      "key": "seed_jitter",
+      "value": "NaN",
+      "status": "accepted"
+    },
+    {
+      "key": "seed_jitter",
+      "value": "positive_infinity",
+      "status": "accepted"
+    },
+    {
+      "key": "mutation_range",
+      "value": "NaN",
+      "status": "accepted"
+    },
+    {
+      "key": "mutation_range",
+      "value": "positive_infinity",
+      "status": "accepted"
+    }
+  ],
+  "infinite_tol_execution": {
+    "iterations": 1,
+    "converged": true
+  },
+  "model_sha256": {
+    "common/numerics.py": "11243f70a59d49b5020e01667d5f537b55463934d14b8f83c8d9a533fbee6971",
+    "common/meta_pfcm.py": "71878ca1841acda2c9092daeca5bbfdbdb368fdfb8f080df76dc087fe3c9dcab",
+    "common/density_peak.py": "2b98fa83ea8254bdff5f492c6288fffa2897f04ad292fd62819b246a31648b29",
+    "purple_main_model/dp_ga_pfcm.py": "54f1adf17b5e5985ec492461e21c24128bc60e61fe0c7a949dd3bfb7659aa32f",
+    "configs/paper_table5.json": "d517e87a432c0b6dacb41cd628f968ad388e99f12be64e18c36cd634f7ca86fb"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "status": "ok",
+  "name": "Room Occupancy",
+  "slug": "room_occupancy",
+  "table1_order": 12,
+  "group": "khong_su_dung",
+  "grouping_reason": "User requested first 10 for main experiments and last 4 for separate evaluation; the paper uses all 14.",
+  "n_samples": 20560,
+  "n_features": 5,
+  "feature_columns": [
+    "Temperature",
+    "Humidity",
+    "Light",
+    "CO2",
+    "HumidityRatio"
+  ],
+  "label_column": "label",
+  "original_label_column": "label_original",
+  "label_mapping": {
+    "0": 0,
+    "1": 1
+  },
+  "class_counts": {
+    "1": 4750,
+    "0": 15810
+  },
+  "observed_classes": 2,
+  "paper_k": 2,
+  "paper_n": 20560,
+  "paper_features": 7,
+  "matches_paper_n": true,
+  "matches_paper_features": false,
+  "matches_paper_k": true,
+  "source_homepage": "https://archive.ics.uci.edu/dataset/357/occupancy+detection",
+  "source": {
+    "requested_url": "https://archive.ics.uci.edu/static/public/357/occupancy+detection.zip",
+    "resolved_url": "https://archive.ics.uci.edu/static/public/357/occupancy+detection.zip",
+    "downloaded_at_utc": "2026-10-04T17:02:50.394198+00:00",
+    "sha256": "4ae3f46aa98eedff564a9f6924d1635173e2fd2c816004342a9be93076d3a81a",
+    "bytes": 335713,
+    "source_type": "primary"
+  },
+  "data_path": "khong_su_dung/room_occupancy/data.csv",
+  "data_sha256": "d04254d3a02a1686d175e92bd2f93839596fdadf16cc2b1334b2dd8f8ce4f41d",
+  "notes": [
+    "All three original files are concatenated in training,test,test2 order to obtain 20560 rows. Original split/ID/date are saved in sample_info.csv.",
+    "Table 1 reports F=7. This CSV uses only the 5 numeric sensor features; ID, date and target are excluded from X. The paper's exact seven-feature encoding is unknown.",
+    "Parsed member: datatraining.txt",
+    "Parsed member: datatest.txt",
+    "Parsed member: datatest2.txt"
+  ],
+  "preprocessing": "Numeric parsing only; no scaling, imputation, row deletion or shuffle. Labels/ID/date are not X features."
+}

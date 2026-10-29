@@ -1,0 +1,44 @@
+{
+  "status": "ok",
+  "name": "Jain",
+  "slug": "jain",
+  "table1_order": 3,
+  "group": "su_dung",
+  "grouping_reason": "User requested first 10 for main experiments and last 4 for separate evaluation; the paper uses all 14.",
+  "n_samples": 373,
+  "n_features": 2,
+  "feature_columns": [
+    "x1",
+    "x2"
+  ],
+  "label_column": "label",
+  "original_label_column": "label_original",
+  "label_mapping": {
+    "1": 0,
+    "2": 1
+  },
+  "class_counts": {
+    "2": 97,
+    "1": 276
+  },
+  "observed_classes": 2,
+  "paper_k": 2,
+  "paper_n": 373,
+  "paper_features": 2,
+  "matches_paper_n": true,
+  "matches_paper_features": true,
+  "matches_paper_k": true,
+  "source_homepage": "https://cs.joensuu.fi/sipu/datasets/",
+  "source": {
+    "requested_url": "https://cs.joensuu.fi/sipu/datasets/jain.txt",
+    "resolved_url": "https://cs.joensuu.fi/sipu/datasets/jain.txt",
+    "downloaded_at_utc": "2026-10-04T17:02:45.224950+00:00",
+    "sha256": "8df07103b9f0b72b523eedaac75ca445f2e9c1712c023ae13f0796c80e82660f",
+    "bytes": 4933,
+    "source_type": "primary"
+  },
+  "data_path": "su_dung/jain/data.csv",
+  "data_sha256": "cc138f52c25021d43f5d81d8d50a7768522dd1c4400f4953d5648c23a3666713",
+  "notes": [],
+  "preprocessing": "Numeric parsing only; no scaling, imputation, row deletion or shuffle. Labels/ID/date are not X features."
+}

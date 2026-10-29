@@ -1,0 +1,59 @@
+{
+  "status": "ok",
+  "name": "Wine",
+  "slug": "wine",
+  "table1_order": 4,
+  "group": "su_dung",
+  "grouping_reason": "User requested first 10 for main experiments and last 4 for separate evaluation; the paper uses all 14.",
+  "n_samples": 178,
+  "n_features": 13,
+  "feature_columns": [
+    "alcohol",
+    "malic_acid",
+    "ash",
+    "alcalinity_of_ash",
+    "magnesium",
+    "total_phenols",
+    "flavanoids",
+    "nonflavanoid_phenols",
+    "proanthocyanins",
+    "color_intensity",
+    "hue",
+    "od280_od315",
+    "proline"
+  ],
+  "label_column": "label",
+  "original_label_column": "label_original",
+  "label_mapping": {
+    "1": 0,
+    "2": 1,
+    "3": 2
+  },
+  "class_counts": {
+    "1": 59,
+    "2": 71,
+    "3": 48
+  },
+  "observed_classes": 3,
+  "paper_k": 3,
+  "paper_n": 178,
+  "paper_features": 13,
+  "matches_paper_n": true,
+  "matches_paper_features": true,
+  "matches_paper_k": true,
+  "source_homepage": "https://archive.ics.uci.edu/dataset/109/wine",
+  "source": {
+    "requested_url": "https://archive.ics.uci.edu/static/public/109/wine.zip",
+    "resolved_url": "https://archive.ics.uci.edu/static/public/109/wine.zip",
+    "downloaded_at_utc": "2026-10-04T17:02:45.019920+00:00",
+    "sha256": "2bae62c4481220623579d4c4fb36b55652b6b75e06e49fa1981b8198362dfdab",
+    "bytes": 6038,
+    "source_type": "primary"
+  },
+  "data_path": "su_dung/wine/data.csv",
+  "data_sha256": "d4e23762131171c15267ec3b4f90512ac135ca65deb9f375be1c2fc69f8f7246",
+  "notes": [
+    "Parsed member: wine.data"
+  ],
+  "preprocessing": "Numeric parsing only; no scaling, imputation, row deletion or shuffle. Labels/ID/date are not X features."
+}

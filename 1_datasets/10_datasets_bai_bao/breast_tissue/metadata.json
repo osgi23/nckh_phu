@@ -1,0 +1,62 @@
+{
+  "status": "ok",
+  "name": "Breast Tissue",
+  "slug": "breast_tissue",
+  "table1_order": 9,
+  "group": "su_dung",
+  "grouping_reason": "User requested first 10 for main experiments and last 4 for separate evaluation; the paper uses all 14.",
+  "n_samples": 106,
+  "n_features": 9,
+  "feature_columns": [
+    "I0",
+    "PA500",
+    "HFS",
+    "DA",
+    "Area",
+    "A_DA",
+    "Max_IP",
+    "DR",
+    "P"
+  ],
+  "label_column": "label",
+  "original_label_column": "label_original",
+  "label_mapping": {
+    "adi": 0,
+    "car": 1,
+    "con": 2,
+    "fad": 3,
+    "gla": 4,
+    "mas": 5
+  },
+  "class_counts": {
+    "car": 21,
+    "fad": 15,
+    "mas": 18,
+    "gla": 16,
+    "con": 14,
+    "adi": 22
+  },
+  "observed_classes": 6,
+  "paper_k": 6,
+  "paper_n": 106,
+  "paper_features": 9,
+  "matches_paper_n": true,
+  "matches_paper_features": true,
+  "matches_paper_k": true,
+  "source_homepage": "https://archive.ics.uci.edu/dataset/192/breast+tissue",
+  "source": {
+    "requested_url": "https://archive.ics.uci.edu/static/public/192/breast+tissue.zip",
+    "resolved_url": "https://archive.ics.uci.edu/static/public/192/breast+tissue.zip",
+    "downloaded_at_utc": "2026-10-04T17:02:47.614706+00:00",
+    "sha256": "fee45ef499f1028829c6f29c8ab05cf51f8042c6dde135c1ded29853e9e83593",
+    "bytes": 29513,
+    "source_type": "primary"
+  },
+  "data_path": "su_dung/breast_tissue/data.csv",
+  "data_sha256": "4b4544b2ba3cdb197b6c80c4af0ce6ca494304f0e92e1c55685d699a0987b0fc",
+  "notes": [
+    "Original six classes are preserved; fad/mas/gla are not merged into four classes.",
+    "Parsed member: BreastTissue.xls"
+  ],
+  "preprocessing": "Numeric parsing only; no scaling, imputation, row deletion or shuffle. Labels/ID/date are not X features."
+}

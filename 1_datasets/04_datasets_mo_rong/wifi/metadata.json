@@ -1,0 +1,55 @@
+{
+  "status": "ok",
+  "name": "Wifi",
+  "slug": "wifi",
+  "table1_order": 14,
+  "group": "khong_su_dung",
+  "grouping_reason": "User requested first 10 for main experiments and last 4 for separate evaluation; the paper uses all 14.",
+  "n_samples": 2000,
+  "n_features": 7,
+  "feature_columns": [
+    "rssi_1",
+    "rssi_2",
+    "rssi_3",
+    "rssi_4",
+    "rssi_5",
+    "rssi_6",
+    "rssi_7"
+  ],
+  "label_column": "label",
+  "original_label_column": "label_original",
+  "label_mapping": {
+    "1": 0,
+    "2": 1,
+    "3": 2,
+    "4": 3
+  },
+  "class_counts": {
+    "1": 500,
+    "2": 500,
+    "3": 500,
+    "4": 500
+  },
+  "observed_classes": 4,
+  "paper_k": 4,
+  "paper_n": 2000,
+  "paper_features": 7,
+  "matches_paper_n": true,
+  "matches_paper_features": true,
+  "matches_paper_k": true,
+  "source_homepage": "https://archive.ics.uci.edu/dataset/422/wireless+indoor+localization",
+  "source": {
+    "requested_url": "https://archive.ics.uci.edu/static/public/422/wireless+indoor+localization.zip",
+    "resolved_url": "https://archive.ics.uci.edu/static/public/422/wireless+indoor+localization.zip",
+    "downloaded_at_utc": "2026-10-04T17:02:48.678756+00:00",
+    "sha256": "afb3e4f3674409642e6606e14faf4cb66edc3a8c74034839f1cee4e017c59a4e",
+    "bytes": 62140,
+    "source_type": "primary"
+  },
+  "data_path": "khong_su_dung/wifi/data.csv",
+  "data_sha256": "bad2234723396ea592a5615f57f3285cb53d589265e301a2b1c132a4ba6de341",
+  "notes": [
+    "Parsed member: wifi_localization.txt"
+  ],
+  "preprocessing": "Numeric parsing only; no scaling, imputation, row deletion or shuffle. Labels/ID/date are not X features."
+}

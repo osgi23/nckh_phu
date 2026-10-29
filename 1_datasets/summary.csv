@@ -1,0 +1,15 @@
+name,group,status,n_samples,n_features,observed_classes,paper_k,paper_features,matches_paper_features,data_path
+Iris,su_dung,ok,150,4,3,3,4,True,su_dung/iris/data.csv
+Flame,su_dung,ok,240,2,2,2,2,True,su_dung/flame/data.csv
+Jain,su_dung,ok,373,2,2,2,2,True,su_dung/jain/data.csv
+Wine,su_dung,ok,178,13,3,3,13,True,su_dung/wine/data.csv
+Glass,su_dung,ok,214,9,6,7,9,True,su_dung/glass/data.csv
+Ecoli,su_dung,ok,336,7,8,8,7,True,su_dung/ecoli/data.csv
+Compound,su_dung,ok,399,2,6,6,2,True,su_dung/compound/data.csv
+Seed,su_dung,ok,210,7,3,3,7,True,su_dung/seed/data.csv
+Breast Tissue,su_dung,ok,106,9,6,6,9,True,su_dung/breast_tissue/data.csv
+Aggregation,su_dung,ok,788,2,7,7,2,True,su_dung/aggregation/data.csv
+Pima,khong_su_dung,ok,768,8,2,2,8,True,khong_su_dung/pima/data.csv
+Room Occupancy,khong_su_dung,ok,20560,5,2,2,7,False,khong_su_dung/room_occupancy/data.csv
+Rice,khong_su_dung,ok,3810,7,2,2,7,True,khong_su_dung/rice/data.csv
+Wifi,khong_su_dung,ok,2000,7,4,4,7,True,khong_su_dung/wifi/data.csv

@@ -1,0 +1,47 @@
+# ==============================================================================
+# Git Ignore Configuration for DP-GA-PFCM Project
+# ==============================================================================
+
+# Python Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python Cache & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+*.so
+
+# Large Backup Archives (>50MB, exceeds GitHub limits)
+*.zip
+*.tar.gz
+*.7z
+*.rar
+4_documents/archive_backups/
+
+# Raw Execution Logs and Heavy Run Artifacts (tens of thousands of npz/json files)
+**/results/LUU_TRU/
+results/LUU_TRU/
+
+# Windows Directory Junction Duplicates (avoid tracking duplicate files)
+code/
+2_models_code/datasets/
+2_models_code/results/
+
+# Temporary and Cache Directories
+tmp/
+.tmp/
+matplotlib_cache/
+.pytest_cache/
+
+# OS and IDE Files
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+*.swo

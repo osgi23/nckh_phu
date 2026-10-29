@@ -1,0 +1,51 @@
+{
+  "status": "ok",
+  "name": "Iris",
+  "slug": "iris",
+  "table1_order": 1,
+  "group": "su_dung",
+  "grouping_reason": "User requested first 10 for main experiments and last 4 for separate evaluation; the paper uses all 14.",
+  "n_samples": 150,
+  "n_features": 4,
+  "feature_columns": [
+    "sepal_length",
+    "sepal_width",
+    "petal_length",
+    "petal_width"
+  ],
+  "label_column": "label",
+  "original_label_column": "label_original",
+  "label_mapping": {
+    "Iris-setosa": 0,
+    "Iris-versicolor": 1,
+    "Iris-virginica": 2
+  },
+  "class_counts": {
+    "Iris-setosa": 50,
+    "Iris-versicolor": 50,
+    "Iris-virginica": 50
+  },
+  "observed_classes": 3,
+  "paper_k": 3,
+  "paper_n": 150,
+  "paper_features": 4,
+  "matches_paper_n": true,
+  "matches_paper_features": true,
+  "matches_paper_k": true,
+  "source_homepage": "https://archive.ics.uci.edu/dataset/53/iris",
+  "source": {
+    "requested_url": "https://archive.ics.uci.edu/static/public/53/iris.zip",
+    "resolved_url": "https://archive.ics.uci.edu/static/public/53/iris.zip",
+    "downloaded_at_utc": "2026-10-04T17:02:45.940750+00:00",
+    "sha256": "d11fe30213d36434a0879aab7cb00ce3c812eb7ba2495874438abff7b7b762e9",
+    "bytes": 3738,
+    "source_type": "primary"
+  },
+  "data_path": "su_dung/iris/data.csv",
+  "data_sha256": "c1f471d21e94aa9295958e47d1b3cf5d0caafbe9abdadde0d06d8c5dbb7c3c82",
+  "notes": [
+    "Chosen Iris variant: iris.data; the paper does not identify the variant. Both variants remain in source.zip.",
+    "Parsed member: iris.data"
+  ],
+  "preprocessing": "Numeric parsing only; no scaling, imputation, row deletion or shuffle. Labels/ID/date are not X features."
+}

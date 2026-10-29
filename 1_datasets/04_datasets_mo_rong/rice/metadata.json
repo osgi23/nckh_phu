@@ -1,0 +1,51 @@
+{
+  "status": "ok",
+  "name": "Rice",
+  "slug": "rice",
+  "table1_order": 13,
+  "group": "khong_su_dung",
+  "grouping_reason": "User requested first 10 for main experiments and last 4 for separate evaluation; the paper uses all 14.",
+  "n_samples": 3810,
+  "n_features": 7,
+  "feature_columns": [
+    "Area",
+    "Perimeter",
+    "Major_Axis_Length",
+    "Minor_Axis_Length",
+    "Eccentricity",
+    "Convex_Area",
+    "Extent"
+  ],
+  "label_column": "label",
+  "original_label_column": "label_original",
+  "label_mapping": {
+    "Cammeo": 0,
+    "Osmancik": 1
+  },
+  "class_counts": {
+    "Cammeo": 1630,
+    "Osmancik": 2180
+  },
+  "observed_classes": 2,
+  "paper_k": 2,
+  "paper_n": 3810,
+  "paper_features": 7,
+  "matches_paper_n": true,
+  "matches_paper_features": true,
+  "matches_paper_k": true,
+  "source_homepage": "https://archive.ics.uci.edu/dataset/545/rice+cammeo+and+osmancik",
+  "source": {
+    "requested_url": "https://archive.ics.uci.edu/static/public/545/rice+cammeo+and+osmancik.zip",
+    "resolved_url": "https://archive.ics.uci.edu/static/public/545/rice+cammeo+and+osmancik.zip",
+    "downloaded_at_utc": "2026-10-04T17:02:49.814915+00:00",
+    "sha256": "fe94e42046b829de21b92b0ffb6a22774fde021328cae799faa802a14e8dbed9",
+    "bytes": 171738,
+    "source_type": "primary"
+  },
+  "data_path": "khong_su_dung/rice/data.csv",
+  "data_sha256": "06b6643aeee4375d57ed54fe86455529a8220541bb96b6e52dbe26cd367ec6a8",
+  "notes": [
+    "Parsed member: Rice_Cammeo_Osmancik.arff"
+  ],
+  "preprocessing": "Numeric parsing only; no scaling, imputation, row deletion or shuffle. Labels/ID/date are not X features."
+}
