@@ -74,8 +74,27 @@ def validate_config(cfg):
             raise ValueError(f"Initial {key} outside bounds.")
     if cfg["gamma_refresh"] not in ("each_step","fixed"):
         raise ValueError("gamma_refresh: each_step or fixed.")
-    if cfg["fitness"] not in ("fcm","pfcm","sse","fcm_reference"):
+    if cfg["fitness"] not in ("fcm","pfcm","sse","fcm_reference","ch","db","silhouette"):
         raise ValueError("fitness: fcm, pfcm, sse or fcm_reference.")
+    if cfg.get("density_mode","gaussian") not in ("gaussian","local_scaled"):
+        raise ValueError("density_mode: gaussian or local_scaled.")
+    if cfg.get("init_mode","jitter") not in ("jitter","diverse"):
+        raise ValueError("init_mode: jitter or diverse.")
+    cp=cfg.get("collapse_penalty",0.0)
+    if isinstance(cp,bool) or not isinstance(cp,(int,float)) or not np.isfinite(cp) or cp<0:
+        raise ValueError("collapse_penalty must be a finite number >= 0.")
+    if not isinstance(cfg.get("collapse_repair",False),bool):
+        raise ValueError("collapse_repair must be a boolean.")
+    if not isinstance(cfg.get("final_collapse_guard",False),bool):
+        raise ValueError("final_collapse_guard must be a boolean.")
+    for key in ("fitness_horizon","final_guard_max_rounds"):
+        v=cfg.get(key)
+        if v is not None and (isinstance(v,bool) or not isinstance(v,int) or v<1):
+            raise ValueError(f"{key} must be a positive integer.")
+    for key in ("ks_neighbors","candidate_pool"):
+        value=cfg.get(key)
+        if value is not None and (isinstance(value,bool) or not isinstance(value,int) or value<1):
+            raise ValueError(f"{key} must be a positive integer.")
     if cfg["k_policy"] not in ("paper","observed"):
         raise ValueError("k_policy: paper or observed.")
     if cfg["hard_labels"] not in ("membership","typicality"):
