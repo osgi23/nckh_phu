@@ -38,7 +38,7 @@ def toy_bank(X, clusters=3, seed=1):
 class AfNkgaProperties(unittest.TestCase):
     def setUp(self):
         self.X = toy()
-        self.graph = Graph(self.X, neighbours=3, ks=5, adaptive=True)
+        self.graph = Graph(self.X, neighbours=3, ks=5, adaptive=False)
         self.bank = toy_bank(self.X)
         self.evidence = fuzzy_evidence(self.graph, self.bank)
         self.rng = np.random.default_rng(7)
