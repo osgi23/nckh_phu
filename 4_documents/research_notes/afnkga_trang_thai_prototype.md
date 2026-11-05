@@ -279,3 +279,36 @@ có nêu hay không.
 
 Prototype là package riêng, **không** thay đổi gì pipeline DP-GA-PFCM. Cả 4 bộ test của dự
 án vẫn đạt.
+
+---
+
+## 8. Đổi nguồn bằng chứng: ngân hàng đa dạng — sửa được cả hạn chế 1
+
+Giả thuyết ở mục 4.6 là bằng chứng theo cặp từ ngân hàng **chỉ gồm DP-PFCM** không chứa đủ
+thông tin. Kiểm chứng bằng cách thêm thành viên **thất bại theo cách khác**: k-means (3 mức
+C), spectral clustering với affinity nearest-neighbors (2 mức C), và DBSCAN ở hai mức eps.
+Một phân hoạch cứng được bọc thành (U, T) one-hot, nên `h_i = 1` — một thành viên không biểu
+đạt bất định thì bỏ phiếu với độ tin cậy đầy đủ, đó là cách đọc trung thực. Nhiễu `-1` của
+DBSCAN thành một cột riêng để các điểm đó không lặng lẽ nhập vào cụm 0.
+
+Pima và Wifi, 2 run, miền bằng chứng tách, λ=0.4:
+
+| Cấu hình | Cỡ ngân hàng | Cạnh BC | A1 | A3 | Δ | Số cụm | pima / wifi |
+|---|---:|---:|---:|---:|---:|---:|---|
+| PFCM, agree=0 | 6 | 1046 | 0.0273 | 0.0824 | +0.0550 | 14.0 | 0.034(12) / 0.131(16) |
+| **Đa dạng, agree=0** | 10 | 2008 | 0.0277 | **0.1225** | **+0.0948** | **4.5** | 0.007(3) / 0.239(6) |
+| PFCM, agree=2 | 6 | 3733 | 0.0273 | 0.0188 | −0.0085 | 5.7 | 0.029(5) / 0.009(6) |
+| **Đa dạng, agree=2** | 10 | 4486 | 0.0277 | **0.0863** | **+0.0587** | **3.2** | 0.011(3) / 0.162(4) |
+
+**Hạn chế 1 nay đã được xử lý về cơ chế.** Ngân hàng đa dạng cho **4.5 cụm** (k thật là 2 và
+4) mà Δ **vẫn dương và gần gấp đôi** (+0.0948 so với +0.0550). Trước đó, cách duy nhất hạ
+được số cụm là thêm cặp đồng thuận, và nó làm ARI sụp (−0.0085). Nay với `agree=2` số cụm về
+**3.2** mà Δ vẫn **+0.0587**. Số cạnh bằng chứng tăng gấp đôi (2008 so với 1046), tức `b`
+cuối cùng đã có khối lượng thật.
+
+Điều này xác nhận chẩn đoán ở 4.6: vấn đề nằm ở **nguồn** bằng chứng, không ở tham số. Một
+ngân hàng toàn PFCM đồng thuận quá nhiều để nói được điều gì về việc tách cụm.
+
+**Vẫn chưa thắng baseline:** wifi 0.239 so với 0.850, và pima **xấu đi** (0.007 so với
+0.034). Nên đây là bước tiến về cơ chế, **không phải** một phương pháp đã dùng được. Việc
+tiếp theo: quét cỡ và thành phần ngân hàng, và chạy đủ seed trên toàn tập dev.

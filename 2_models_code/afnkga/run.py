@@ -36,6 +36,58 @@ from afnkga.model import Fitness, Graph, evidence_edges, fuzzy_evidence
 from common.data import load_dataset
 from common.metrics import quality
 from common.registry import fit_method
+from sklearn.cluster import DBSCAN, KMeans, SpectralClustering
+
+
+def crisp_member(labels, k_hint):
+    """Wrap a hard partition as (U, T) so it can join the fuzzy bank.
+
+    One-hot U gives margin 1 and T=None gives typicality 1, so h_i = 1: a crisp
+    member votes with full confidence, which is the honest reading of a method
+    that expresses no uncertainty. Noise (-1 from DBSCAN) becomes its own
+    column so those points do not silently join cluster 0.
+    """
+    labels = np.asarray(labels)
+    uniq = np.unique(labels)
+    if len(uniq) < 2:
+        return None
+    index = {v: c for c, v in enumerate(uniq)}
+    U = np.zeros((len(labels), len(uniq)))
+    U[np.arange(len(labels)), [index[v] for v in labels]] = 1.0
+    return (U, None)
+
+
+def diverse_members(X, k, rng):
+    """Members that fail DIFFERENTLY from DP-PFCM.
+
+    Measured motivation: with a DP-PFCM-only bank the references separate just
+    4-11% of the NK-graph pairs, so the different-cluster evidence b had almost
+    no mass. Spectral clustering uses connectivity rather than centroid
+    distance, and DBSCAN can leave points unassigned, so both disagree with
+    PFCM in places a fuzzifier sweep never will.
+    """
+    out = []
+    for c in (max(2, k-1), k, k+1):
+        try:
+            m = crisp_member(KMeans(n_clusters=c, n_init=4,
+                                    random_state=int(rng.integers(2**31))).fit_predict(X), c)
+            if m: out.append(m)
+        except Exception: pass
+    for c in (k, k+1):
+        try:
+            m = crisp_member(SpectralClustering(n_clusters=c, affinity="nearest_neighbors",
+                                                n_neighbors=10, assign_labels="kmeans",
+                                                random_state=int(rng.integers(2**31))).fit_predict(X), c)
+            if m: out.append(m)
+        except Exception: pass
+    from scipy.spatial.distance import pdist
+    scale = float(np.quantile(pdist(X[rng.choice(len(X), min(len(X), 400), replace=False)]), 0.02))
+    for mult in (1.0, 2.0):
+        try:
+            m = crisp_member(DBSCAN(eps=max(scale*mult, 1e-6), min_samples=5).fit_predict(X), k)
+            if m: out.append(m)
+        except Exception: pass
+    return out
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -105,6 +157,9 @@ def main(argv=None):
                              "which is what left b empty in the first prototype")
     parser.add_argument("--evidence-per-point", type=int, default=3)
     parser.add_argument("--evidence-pool", type=int, default=30)
+    parser.add_argument("--bank", choices=("pfcm","diverse"), default="pfcm",
+                        help="'diverse' adds k-means, spectral and DBSCAN members so the "
+                             "bank disagrees in places a DP-PFCM-only bank never does")
     parser.add_argument("--evidence-agree", type=int, default=0,
                         help="also keep this many far pairs per point that every reference "
                              "agrees belong together; these carry a_ij and are what penalises "
@@ -130,6 +185,8 @@ def main(argv=None):
                 [args.seed, meta["table1_order"], run]).generate_state(1)[0])
             bank_rng = np.random.default_rng(seed)
             bank, bank_labels = build_bank(X, k, cfg, bank_rng, sizes)
+            if args.bank == "diverse":
+                bank = bank + diverse_members(X, k, bank_rng)
             graphs = {flag: Graph(X, neighbours=args.neighbours, ks=args.ks, adaptive=flag)
                       for flag in {VARIANTS[v]["adaptive"] for v in args.variants}}
             for name in args.variants:
@@ -158,6 +215,7 @@ def main(argv=None):
                     "dataset": slug, "variant": name, "run": run+1, "seed": seed,
                     "k_true": k, "adaptive": spec["adaptive"], "lam": lam,
                     "seeded": spec["seeded"], "balance": bool(args.balance),
+                    "bank": args.bank, "bank_size": len(bank),
                     "evidence_domain": args.evidence_domain if lam > 0 else "n/a",
                     "evidence_edges": int(fitness.fz_count) if lam > 0 else 0,
                     "dependency_edges": int(len(fitness.dep_i)),
