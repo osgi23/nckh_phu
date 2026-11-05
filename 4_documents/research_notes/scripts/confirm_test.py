@@ -17,7 +17,7 @@ from common.numerics import solve_pfcm
 from common.registry import fit_method
 BASE=json.loads((CODE/"configs"/"corrected_reference.json").read_text())
 BASE["population"]=80; BASE["generations"]=100
-WS=[1.1,1.2,1.5,2.0,3.0,5.0]; B=8; FRAC=.8; RUNS=5
+WS=[1.1,1.2,1.5,2.0,3.0,5.0]; B=8; FRAC=.8; RUNS=int(sys.argv[1]) if len(sys.argv)>1 else 5
 
 def cheap(X,k,seed):
     rng=np.random.default_rng(seed); n=len(X); m=int(FRAC*n)

@@ -1,5 +1,11 @@
+import sys
 import unittest
+from pathlib import Path
+
 import numpy as np
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 from common.meta_pfcm import PFCMSearch
 from common.gpu_evaluator import is_gpu_supported, GPUBatchedPFCM
 

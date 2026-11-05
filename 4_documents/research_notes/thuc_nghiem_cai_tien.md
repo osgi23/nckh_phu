@@ -130,7 +130,44 @@ trước** trong bài toán này (`paper_k`), ràng buộc này **không dùng n
 
 ---
 
-## 5. Xác nhận trên 10 bộ của bài báo (báo cáo một lần)
+## 5b. Kết quả chính thức: 30 seed và Wilcoxon ghép cặp
+
+Mục 5 dưới đây là vòng 5 seed. Sau đó tôi chạy lại **30 seed** trên cả 10 bộ (300 lần chạy
+mỗi phương pháp) và kiểm định đúng cách. Đây là số nên dùng khi công bố.
+
+| Dataset | ARI GA baseline | ARI phương pháp rẻ | Δ | Wilcoxon p (thô) | p sau Holm |
+|---|---:|---:|---:|---:|---:|
+| **iris** | 0.5488 ± 0.143 | **0.7484 ± 0.027** | **+0.1997** | 2.2e-06 | 1.4e-05 ✱ |
+| **breast_tissue** | 0.2995 ± 0.039 | **0.4310 ± 0.007** | **+0.1315** | 1.8e-06 | 1.4e-05 ✱ |
+| seed | 0.7052 ± 0.002 | 0.7056 ± 0.004 | +0.0004 | 0.99 | 0.99 |
+| compound | 0.5343 ± 0.016 | 0.5300 ± 0.007 | −0.0043 | 6.8e-03 | 2.0e-02 ✱ |
+| glass | 0.1631 ± 0.018 | 0.1548 ± 0.000 | −0.0083 | 8.2e-03 | 2.0e-02 ✱ |
+| flame | 0.4753 ± 0.014 | 0.4649 ± 0.000 | −0.0104 | 7.0e-04 | 2.8e-03 ✱ |
+| jain | 0.5768 ± 0.004 | 0.5507 ± 0.053 | −0.0261 | 1.5e-06 | 1.4e-05 ✱ |
+| aggregation | 0.7064 ± 0.010 | 0.6761 ± 0.000 | −0.0304 | 1.7e-06 | 1.4e-05 ✱ |
+| wine | 0.8525 ± 0.013 | 0.8160 ± 0.013 | −0.0365 | 2.2e-06 | 1.4e-05 ✱ |
+| **ecoli** | **0.5061 ± 0.084** | 0.3651 ± 0.000 | **−0.1410** | 2.6e-08 | 2.6e-07 ✱ |
+| **Trung bình** | **0.5368** | **0.5443** | **+0.0075** | | |
+
+(✱ = có ý nghĩa ở mức 0.05 sau hiệu chỉnh Holm cho 10 so sánh. Trung bình bài báo: 0.5581.)
+
+**Kiểm định ở mức dataset** — đây là đơn vị phân tích đúng, như chính ghi chú nghiên cứu
+của dự án yêu cầu ("không coi 30 seed của cùng một dataset là 30 dataset độc lập"):
+
+> Wilcoxon signed-rank trên 10 trung bình mỗi dataset: **p = 0.4316**.
+> Phương pháp rẻ tốt hơn ở **3/10** dataset.
+
+**Kết luận thống kê: hai phương pháp không phân biệt được ở mức dataset** (p = 0.43), dù
+chênh lệch trên từng dataset gần như đều có ý nghĩa (9/10 bộ) — vì phương sai trong mỗi
+dataset rất nhỏ. Đây đúng là tình huống mà hai mức kiểm định cho hai câu trả lời khác nhau,
+và câu trả lời ở mức dataset mới là câu được phép dùng để so sánh hai phương pháp.
+
+Chi phí giữ nguyên như vòng 5 seed: 8080 lần chấm fitness và 2.60 s so với **54** lần giải
+PFCM và **0.80 s**.
+
+---
+
+## 5. Xác nhận trên 10 bộ của bài báo (vòng 5 seed, giữ lại để đối chiếu)
 
 So baseline DP-GA-PFCM với phương pháp rẻ: 6 giá trị w từ cùng tâm DPC, chọn bằng độ ổn
 định có ràng buộc đúng k cụm. 5 seed ghép cặp, không dùng nhãn ở cả hai bên.
@@ -179,8 +216,9 @@ Chi phí:
   lượng tương đương, cộng với hai dataset được cải thiện lớn.
 - **Không được nói GA là vô dụng.** Nó đạt oracle của không gian tham số của nó, và thắng
   phương pháp rẻ ở 30/50 cặp.
-- **Không được dùng con số 5 seed để công bố.** Cần 30 seed và kiểm định ghép cặp
-  (Wilcoxon có hiệu chỉnh nhiều so sánh). Chưa làm.
+- **Không được dùng con số 5 seed để công bố** — đã có 30 seed ở mục 5b, dùng số đó.
+  Và không được dẫn p-value của từng dataset như bằng chứng rằng một phương pháp tốt hơn:
+  ở mức dataset, p = 0.4316, tức **không phân biệt được**.
 - **Ràng buộc đúng k cụm chỉ dùng được khi k được cho trước.** Với bài toán tự xác định số
   cụm, nó không áp dụng được, và kết quả Ecoli cho thấy nó có thể cấm mất nghiệm tốt.
 - **Chưa thử:** ensemble/consensus nhiều lần chạy, và hướng AF-NKGA (đổi hẳn biểu diễn
