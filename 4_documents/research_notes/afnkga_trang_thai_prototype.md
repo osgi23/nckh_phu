@@ -119,6 +119,53 @@ nên nó đo đúng hệ quả của lỗi đó.
 
 Mốc so sánh: DP-GA-PFCM baseline cho pima 0.1023 và wifi 0.8500. **Prototype kém xa.**
 
+### 4.4. ĐÃ SỬA: cân lại `b` theo độ hiếm, và λ bắt đầu có tác dụng thật
+
+Sửa theo đúng chẩn đoán ở 4.2: chia mỗi phía cho khối lượng của chính nó
+(`balance=True`), để `a` và `b` góp phần bằng nhau về tổng và độ hiếm không còn quyết định
+hướng. Đây là **hiệu chỉnh công khai cho một thiên lệch lấy mẫu của tập cạnh**, không phải
+xác suất đã hiệu chuẩn, và nó không làm bằng chứng giàu thông tin hơn — chỉ ngăn mất cân
+bằng chi phối.
+
+Câu hỏi quyết định — `F(nhãn thật)` có thấp hơn `F(tất cả một nhãn)` chưa:
+
+| Dataset | Chưa cân, λ=0.4…0.95 | Đã cân, λ=0.4 | λ=0.8 | λ=0.95 |
+|---|---|---|---|---|
+| iris | không | **CÓ** | **CÓ** | **CÓ** |
+| wifi | không | không | không | **CÓ** |
+| pima | không | không | không | **CÓ** |
+
+Và ablation thật, cặp có kiểm soát A1 (λ=0) → A3 (fuzzy bật), cùng đồ thị, cùng bank, cùng
+quần thể khởi tạo:
+
+| λ | Dataset | A1 | A3 | Δ |
+|---|---|---:|---:|---:|
+| 0.8 | pima | 0.0435 | **0.1103** | +0.0668 |
+| 0.8 | wifi | 0.0112 | **0.3636** | +0.3524 |
+| 0.8 | **trung bình** | 0.0273 | **0.2369** | **+0.2096** |
+| 0.95 | pima | 0.0435 | 0.1071 | +0.0636 |
+| 0.95 | wifi | 0.0112 | 0.3696 | +0.3584 |
+| 0.95 | **trung bình** | 0.0273 | **0.2383** | **+0.2110** |
+
+So với **−0.0000** trước khi sửa. Đây là lần đầu **hướng dẫn fuzzy thực sự làm đổi phân
+hoạch**, tức là RQ1 của ghi chú bắt đầu trả lời được: có, nhưng chỉ sau khi hiệu chỉnh
+thiên lệch của tập cạnh.
+
+Trên **pima**, prototype nay **vượt nhẹ** DP-GA-PFCM: 0.1103 so với 0.1023. Trên **wifi**
+vẫn kém xa: 0.3636 so với 0.8500.
+
+**Ba điều phải nêu kèm, không được bỏ:**
+
+1. **Số cụm vẫn quá cao**: 13.7–30.5 khi k là 2 và 4. Vấn đề phân mảnh **chưa** được giải
+   quyết; nó chỉ được chứng minh là **độc lập** với số hạng fuzzy.
+2. **λ phải rất lớn** (0.8–0.95) mới đảo được dấu trên wifi và pima. Ở λ=0.95, phần NK chỉ
+   góp 5%, nên phương pháp gần như suy biến thành **consensus của ngân hàng tham chiếu**, và
+   mất đúng những thứ NK mang lại: cụm hình dạng bất kỳ và phát hiện nhiễu. Phải đo riêng
+   xem ở λ cao nó còn hơn gì so với việc chỉ chạy consensus.
+3. Phép thử `F(nhãn thật)` **dùng nhãn**, và tôi đã chạy nó trên cả **iris** là bộ thuộc
+   tập test. Nó là phép chẩn đoán địa hình hàm mục tiêu, **không** dùng để chọn tham số;
+   mọi lựa chọn (balance, λ) đều quyết định trên pima và wifi thuộc tập dev.
+
 ## 5. Kết luận về thiết kế trong ghi chú
 
 Giả thuyết trung tâm của ghi chú là hướng dẫn fuzzy sẽ **giảm hiện tượng gộp cụm**. Số liệu
@@ -127,17 +174,19 @@ thị NK**, mà E chỉ chứa các cặp gần, nên bằng chứng "cùng cụ
 số hạng fuzzy **cũng** đẩy về phía gộp. Đây không phải vấn đề tham số λ; đây là hệ quả của
 việc chọn E làm miền tính bằng chứng.
 
-**Hướng sửa, theo đúng chẩn đoán:** bằng chứng phải được tính trên những cặp mà các mô hình
-tham chiếu **thực sự bất đồng**. Ba lựa chọn, cần thử theo thứ tự:
+**Hướng sửa, theo đúng chẩn đoán.** Lựa chọn (2) **đã thử và có tác dụng** (mục 4.4): cân
+lại `b` theo độ hiếm đưa Δ của cặp có kiểm soát từ −0.0000 lên **+0.2096**. Hai lựa chọn
+còn lại chưa thử, và nay là việc tiếp theo vì vấn đề **phân mảnh** vẫn còn:
 
 1. Tách miền bằng chứng khỏi E: giữ E cho phần NK, nhưng tính `a, b` trên một tập cặp khác
    có bao gồm cặp tầm xa và cặp ở biên giữa các cụm tham chiếu. Ghi chú có cảnh báo rằng
    mọi cạnh phụ thuộc của fitness phải nằm trong đồ thị tách component của PX, nên nếu thêm
-   cặp thì **phải thêm cả vào đồ thị PX**, nếu không PX sẽ không còn đúng.
-2. Cân lại trọng số `b` theo độ hiếm của nó (ví dụ chia `b` cho tỷ lệ cặp khác cụm), và công
-   bố đây là một hiệu chỉnh, không phải xác suất.
+   cặp thì **phải thêm cả vào đồ thị PX**, nếu không PX sẽ không còn đúng. Đây là lựa chọn
+   đúng về nguyên lý hơn (2), vì (2) chỉ hiệu chỉnh hệ quả còn (1) sửa nguyên nhân.
+2. ~~Cân lại trọng số `b` theo độ hiếm~~ — **đã làm**, `balance=True`.
 3. Xem lại chính `V_ij`: hiện cùng nhãn phải trả `b` và khác nhãn phải trả `a`. Với `a ≫ b`
-   thì công thức này vốn đã thiên về gộp, bất kể dữ liệu.
+   thì công thức này vốn đã thiên về gộp, bất kể dữ liệu. Sau khi cân thì `a = b` về tổng,
+   nhưng phân bố theo từng cạnh vẫn lệch.
 
 Và một điều phải ghi rõ cho cả hướng nghiên cứu: **NKCV2 trên các bộ này có tối ưu ở phân
 hoạch tầm thường** (`F(một nhãn) < F(nhãn thật)` trên wifi, và 64.4% cạnh có `d ≤ dt0` nên

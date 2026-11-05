@@ -99,6 +99,10 @@ def main(argv=None):
     parser.add_argument("--neighbours", type=int, default=3, help="NK group size K")
     parser.add_argument("--ks", type=int, default=7, help="neighbour index for local scaling")
     parser.add_argument("--lam", type=float, default=None, help="override lambda")
+    parser.add_argument("--balance", action="store_true",
+                        help="rebalance b against a (see fuzzy_evidence); the NK edge set "
+                             "makes b 100x scarcer than a, which otherwise lets the fuzzy "
+                             "term push toward merging just like the NK term")
     parser.add_argument("--config", type=Path, default=ROOT/"configs"/"corrected_reference.json")
     parser.add_argument("--seed", type=int, default=2026)
     args = parser.parse_args(argv)
@@ -122,7 +126,7 @@ def main(argv=None):
                 spec = VARIANTS[name]
                 lam = spec["lam"] if args.lam is None else (args.lam if spec["lam"] > 0 else 0.0)
                 graph = graphs[spec["adaptive"]]
-                evidence = fuzzy_evidence(graph, bank) if lam > 0 else None
+                evidence = fuzzy_evidence(graph, bank, balance=args.balance) if lam > 0 else None
                 fitness = Fitness(graph, evidence, lam=lam)
                 started = time.perf_counter()
                 best, best_f, trace = ga_run(
@@ -134,7 +138,7 @@ def main(argv=None):
                 print(json.dumps({
                     "dataset": slug, "variant": name, "run": run+1, "seed": seed,
                     "k_true": k, "adaptive": spec["adaptive"], "lam": lam,
-                    "seeded": spec["seeded"], "fitness": best_f,
+                    "seeded": spec["seeded"], "balance": bool(args.balance), "fitness": best_f,
                     "fitness_gen0": trace[0]["best_fitness"],
                     "evaluations": fitness.evaluations, "seconds": elapsed,
                     **score(y, best)}), flush=True)

@@ -143,7 +143,28 @@ class Graph:
         return pool
 
 
-def fuzzy_evidence(graph, bank, weights=None):
+def fuzzy_evidence(graph, bank, weights=None, balance=False):
+    """See the docstring below; `balance` rebalances b against a.
+
+    MEASURED PROBLEM that `balance` addresses. The evidence lives on the NK
+    graph's edges, and those edges join near neighbours, which every reference
+    model puts in the same cluster. Over the NK edges the models separate only
+    4-11% of the pairs (wifi 5.9%, pima 9.9%, iris 11.6%), so
+    mean(b) = 0.0001 against mean(a) = 0.0149. Since V_ij charges b for a
+    same-label pair and a for a different-label pair, the fuzzy term is then
+    CHEAPER when everything is merged - it pushes the same way as the NK part
+    instead of against it, and no value of lambda reverses that.
+
+    balance=True divides each side by its own total mass, so a and b contribute
+    equally in aggregate and scarcity no longer decides the direction. This is
+    a declared correction for a sampling artefact of the edge set, NOT a
+    calibrated probability, and it does not make the evidence more informative
+    - it only stops the imbalance from dominating.
+    """
+    return _fuzzy_evidence(graph, bank, weights=weights, balance=balance)
+
+
+def _fuzzy_evidence(graph, bank, weights=None, balance=False):
     """Per-edge same-cluster (a) and different-cluster (b) evidence.
 
     For reference model r: l_i = argmax membership, m_i = top1 - top2 margin,
@@ -190,6 +211,12 @@ def fuzzy_evidence(graph, bank, weights=None):
         prod = pi*h[ei]*h[ej]
         a += np.where(same, prod, 0.0)
         b += np.where(same, 0.0, prod)
+    if balance:
+        a_mass, b_mass = float(a.sum()), float(b.sum())
+        if a_mass > 0.0 and b_mass > 0.0:
+            scale = 0.5*(a_mass+b_mass)
+            a = a*(scale/a_mass)
+            b = b*(scale/b_mass)
     return a, b
 
 
