@@ -143,7 +143,73 @@ class Graph:
         return pool
 
 
-def fuzzy_evidence(graph, bank, weights=None, balance=False):
+def evidence_edges(graph, bank, per_point=3, pool=30, agree_per_point=0):
+    """Choose the pairs the fuzzy evidence is computed on - NOT the NK edges.
+
+    WHY A SEPARATE EDGE SET. Measured: over the NK graph's edges the reference
+    models separate only 4-11% of the pairs (wifi 5.9%, pima 9.9%,
+    iris 11.6%), because those edges join near neighbours that every model
+    keeps together. So b_ij, the different-cluster evidence, had almost no mass
+    (mean 0.0001 against a's 0.0149) and the fuzzy term pushed toward merging
+    exactly like the NK term. Rebalancing a and b afterwards treats the
+    symptom; this addresses the cause by evaluating the evidence where the
+    references actually have something to say.
+
+    SELECTION RULE, label-free. For each i, scan its `pool` nearest objects and
+    keep the `per_point` nearest ones that at least one reference model assigns
+    to a DIFFERENT cluster than i. These are boundary pairs: close enough that
+    the partition's choice matters, yet separated by the references, which is
+    precisely where b carries information.
+
+    Returns (ei, ej) with i < j, de-duplicated.
+    """
+    if not bank:
+        raise ValueError("The reference bank is empty.")
+    labels = [np.asarray(U, float).argmax(axis=1) for U, _ in bank]
+    n = graph.n
+    pool = min(max(int(pool), 1), n-1)
+    order = np.argsort(np.where(np.eye(n, dtype=bool), np.inf, graph.dist),
+                       axis=1, kind="stable")[:, :pool]
+    # agree_per_point > 0 also keeps the FARTHEST pairs in the pool that every
+    # reference agrees belong together. Those carry a_ij, which V_ij charges
+    # when the partition separates them, so they are what penalises splitting.
+    # Without them the evidence only contains disagreement pairs, which charge
+    # b_ij for merging and therefore push one way only - measured: the fuzzy
+    # term then raises ARI but the cluster count keeps climbing (19.2 clusters
+    # at lambda 0.8 for true k of 2 and 4).
+    nk_pairs = {(min(u, v), max(u, v)) for u, v in zip(graph.edge_i, graph.edge_j)}
+    pairs = set()
+    for i in range(n):
+        kept = 0
+        for j in order[i]:
+            if kept >= int(per_point):
+                break
+            j = int(j)
+            if j == i:
+                continue
+            if any(lab[i] != lab[j] for lab in labels):
+                pairs.add((i, j) if i < j else (j, i))
+                kept += 1
+        kept_agree = 0
+        for j in order[i][::-1]:
+            if kept_agree >= int(agree_per_point):
+                break
+            j = int(j)
+            key = (min(i, j), max(i, j))
+            if j == i or key in nk_pairs:
+                continue    # the NK term already constrains its own neighbours
+            if all(lab[i] == lab[j] for lab in labels):
+                pairs.add(key)
+                kept_agree += 1
+    if not pairs:
+        # Every reference agrees about every near pair. Nothing to add; the
+        # caller must fall back to the NK edges and know that b will be empty.
+        return np.empty(0, dtype=int), np.empty(0, dtype=int)
+    arr = np.array(sorted(pairs), dtype=int)
+    return arr[:, 0], arr[:, 1]
+
+
+def fuzzy_evidence(graph, bank, weights=None, balance=False, edges=None):
     """See the docstring below; `balance` rebalances b against a.
 
     MEASURED PROBLEM that `balance` addresses. The evidence lives on the NK
@@ -161,10 +227,10 @@ def fuzzy_evidence(graph, bank, weights=None, balance=False):
     calibrated probability, and it does not make the evidence more informative
     - it only stops the imbalance from dominating.
     """
-    return _fuzzy_evidence(graph, bank, weights=weights, balance=balance)
+    return _fuzzy_evidence(graph, bank, weights=weights, balance=balance, edges=edges)
 
 
-def _fuzzy_evidence(graph, bank, weights=None, balance=False):
+def _fuzzy_evidence(graph, bank, weights=None, balance=False, edges=None):
     """Per-edge same-cluster (a) and different-cluster (b) evidence.
 
     For reference model r: l_i = argmax membership, m_i = top1 - top2 margin,
@@ -182,7 +248,10 @@ def _fuzzy_evidence(graph, bank, weights=None, balance=False):
         raise ValueError("weights must be non-negative, one per model.")
     weights = weights/weights.sum()
 
-    ei, ej = graph.edge_i, graph.edge_j
+    ei, ej = (graph.edge_i, graph.edge_j) if edges is None else edges
+    ei, ej = np.asarray(ei, dtype=int), np.asarray(ej, dtype=int)
+    if len(ei) != len(ej):
+        raise ValueError("Evidence edge arrays must have equal length.")
     a = np.zeros(len(ei))
     b = np.zeros(len(ei))
     for pi, (U, T) in zip(weights, bank):
@@ -228,16 +297,72 @@ class Fitness:
     what makes delta evaluation and partition crossover exact.
     """
 
-    def __init__(self, graph, evidence=None, lam=0.0):
+    def __init__(self, graph, evidence=None, lam=0.0, evidence_edges=None):
+        """evidence_edges: the (ei, ej) the fuzzy term lives on.
+
+        None means the NK edges, which is what the first prototype did and what
+        made b empty. Passing a separate set is the fix. The two sets then
+        differ, so the DEPENDENCY graph of the fitness is their UNION, exposed
+        below as dep_i/dep_j/dep_touch. Partition crossover and canonical
+        relabelling must both use that union: PX decomposes the differing
+        vertices into components that it assumes are independent, and a
+        component boundary that ignores an evidence edge would make PX return
+        something other than the best of 2^q. Likewise canonical splits a label
+        into connected components, which would silently flip a pair from "same"
+        to "different" across an evidence edge the connectivity test never saw.
+        """
         if not 0.0 <= lam < 1.0:
             raise ValueError("lam must satisfy 0 <= lam < 1.")
         if lam > 0.0 and evidence is None:
             raise ValueError("lam > 0 needs fuzzy evidence.")
         self.g, self.lam = graph, float(lam)
         self.a, self.b = (None, None) if evidence is None else evidence
-        if self.a is not None and len(self.a) != graph.edge_count:
-            raise ValueError("Evidence length must match the edge count.")
+
+        if evidence_edges is None:
+            self.fz_i, self.fz_j = graph.edge_i, graph.edge_j
+        else:
+            self.fz_i = np.asarray(evidence_edges[0], dtype=int)
+            self.fz_j = np.asarray(evidence_edges[1], dtype=int)
+            if len(self.fz_i) != len(self.fz_j):
+                raise ValueError("Evidence edge arrays must have equal length.")
+        self.fz_count = len(self.fz_i)
+        if self.a is not None and len(self.a) != self.fz_count:
+            raise ValueError("Evidence length must match the evidence edge count.")
+        if self.lam > 0.0 and self.fz_count == 0:
+            raise ValueError("lam > 0 needs at least one evidence edge.")
+
+        # Union dependency graph.
+        if evidence_edges is None or self.lam == 0.0:
+            self.dep_i, self.dep_j = graph.edge_i, graph.edge_j
+        else:
+            stacked = np.concatenate([
+                np.stack([graph.edge_i, graph.edge_j], axis=1),
+                np.stack([self.fz_i, self.fz_j], axis=1)])
+            low = stacked.min(axis=1)
+            high = stacked.max(axis=1)
+            unique = np.unique(np.stack([low, high], axis=1), axis=0)
+            self.dep_i, self.dep_j = unique[:, 0], unique[:, 1]
+        self.dep_touch = [[] for _ in range(graph.n)]
+        for u, v in zip(self.dep_i, self.dep_j):
+            self.dep_touch[u].append(int(v))
+            self.dep_touch[v].append(int(u))
+        self.dep_touch = [np.asarray(t, dtype=int) for t in self.dep_touch]
+
+        # Which NK edges and which evidence edges each vertex appears in.
+        self._nk_touch = graph.touch
+        self._fz_touch = [[] for _ in range(graph.n)]
+        for e, (u, v) in enumerate(zip(self.fz_i, self.fz_j)):
+            self._fz_touch[u].append(e)
+            self._fz_touch[v].append(e)
+        self._fz_touch = [np.asarray(t, dtype=int) for t in self._fz_touch]
         self.evaluations = 0
+
+    def neighbour_labels(self, z, i):
+        """Positive labels on any dependency edge touching i."""
+        pool = {int(z[v]) for v in self.dep_touch[i] if z[v] > 0}
+        if z[i] > 0:
+            pool.add(int(z[i]))
+        return pool
 
     def _nk_edge(self, zi, zj, d, rho_j, rho_i):
         """comp_fi's per-edge contribution. fmax = rho_j, fmin = 0."""
@@ -276,8 +401,8 @@ class Fitness:
             nk[e] = self._nk_edge(z[i], z[j], g.edge_d[e], g.rho[j], g.rho[i])
         if self.lam == 0.0:
             return nk, None
-        fz = np.array([self._fuzzy_edge(z[g.edge_i[e]], z[g.edge_j[e]], e)
-                       for e in range(g.edge_count)])
+        fz = np.array([self._fuzzy_edge(z[self.fz_i[e]], z[self.fz_j[e]], e)
+                       for e in range(self.fz_count)])
         return nk, fz
 
     def __call__(self, z):
@@ -294,31 +419,51 @@ class Fitness:
         if old == new_label:
             return 0.0
         scale_nk = (1.0-self.lam)/g.edge_count
-        scale_fz = self.lam/g.edge_count if self.lam > 0.0 else 0.0
         before = after = 0.0
-        for e in g.touch[i]:
+        for e in self._nk_touch[i]:
             a_i, a_j, d = g.edge_i[e], g.edge_j[e], g.edge_d[e]
             zi, zj = int(z[a_i]), int(z[a_j])
             ni = new_label if a_i == i else zi
             nj = new_label if a_j == i else zj
             before += scale_nk*self._nk_edge(zi, zj, d, g.rho[a_j], g.rho[a_i])
             after += scale_nk*self._nk_edge(ni, nj, d, g.rho[a_j], g.rho[a_i])
-            if scale_fz:
+        if self.lam > 0.0:
+            scale_fz = self.lam/self.fz_count
+            for e in self._fz_touch[i]:
+                a_i, a_j = self.fz_i[e], self.fz_j[e]
+                zi, zj = int(z[a_i]), int(z[a_j])
+                ni = new_label if a_i == i else zi
+                nj = new_label if a_j == i else zj
                 before += scale_fz*self._fuzzy_edge(zi, zj, e)
                 after += scale_fz*self._fuzzy_edge(ni, nj, e)
         return after-before
 
 
-def canonical(z, graph):
+def dependency_edges(owner):
+    """The edge set a pairwise fitness depends on.
+
+    A Fitness exposes the UNION of its NK edges and its evidence edges; a bare
+    Graph only has the NK edges. Anything that must preserve the fitness, or
+    that decomposes it, has to use this and not the NK edges alone.
+    """
+    if hasattr(owner, "dep_i"):
+        return owner.dep_i, owner.dep_j
+    return owner.edge_i, owner.edge_j
+
+
+def canonical(z, owner):
     """Relabel so each positive label forms one connected component.
 
-    Preserves every same/different relation on graph edges, so the pairwise
-    fitness is unchanged; test_afnkga.py checks that invariance.
+    Connectivity is tested on the DEPENDENCY edges. Using only the NK edges
+    would split a label across an evidence edge, flipping that pair from "same"
+    to "different" and changing the fitness; test_afnkga.py checks the
+    invariance that this protects.
     """
     z = np.asarray(z, dtype=int).copy()
     n = len(z)
+    dep_i, dep_j = dependency_edges(owner)
     adjacency = [[] for _ in range(n)]
-    for i, j in zip(graph.edge_i, graph.edge_j):
+    for i, j in zip(dep_i, dep_j):
         if z[i] > 0 and z[i] == z[j]:
             adjacency[i].append(j)
             adjacency[j].append(i)

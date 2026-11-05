@@ -6,7 +6,7 @@ fitness in model.py. Nothing in this file was copied from that source.
 """
 import numpy as np
 
-from afnkga.model import canonical
+from afnkga.model import canonical, dependency_edges
 
 
 def local_search(fitness, z, rng, sweeps=1):
@@ -20,7 +20,7 @@ def local_search(fitness, z, rng, sweeps=1):
         improved = False
         for i in rng.permutation(n):
             i = int(i)
-            options = fitness.g.neighbour_labels(z, i) | {0}
+            options = fitness.neighbour_labels(z, i) | {0}
             options.discard(int(z[i]))
             best, gain = None, -1e-12
             for label in options:
@@ -45,7 +45,6 @@ def partition_crossover(fitness, blue, red):
     contribution is independent and can be optimised separately. The result is
     therefore the best of 2^q recombinations, computed in O(|E| + n).
     """
-    g = fitness.g
     blue = np.asarray(blue, dtype=int)
     red = np.asarray(red, dtype=int)
     differ = blue != red
@@ -53,8 +52,13 @@ def partition_crossover(fitness, blue, red):
         return blue.copy(), 0
 
     n = len(blue)
+    # Decompose on the DEPENDENCY edges (NK edges union evidence edges). With
+    # only the NK edges, two differing vertices joined by an evidence edge
+    # would land in separate components, the components would not be
+    # independent, and PX would no longer return the best of 2^q offspring.
+    dep_i, dep_j = dependency_edges(fitness)
     adjacency = [[] for _ in range(n)]
-    for i, j in zip(g.edge_i, g.edge_j):
+    for i, j in zip(dep_i, dep_j):
         if differ[i] and differ[j]:
             adjacency[i].append(j)
             adjacency[j].append(i)
@@ -87,7 +91,7 @@ def partition_crossover(fitness, blue, red):
 def mutate_reclassify(fitness, z, rng):
     z = z.copy()
     i = int(rng.integers(len(z)))
-    options = list((fitness.g.neighbour_labels(z, i) | {0}) - {int(z[i])})
+    options = list((fitness.neighbour_labels(z, i) | {0}) - {int(z[i])})
     if options:
         z[i] = int(rng.choice(options))
     return z
@@ -150,14 +154,14 @@ def run(fitness, rng, seeds=(), population=30, generations=40,
     polish = (lambda z: local_search(fitness, z, rng, ls_sweeps)) if init_local_search else (lambda z: z)
     pop = []
     for z in seeds:
-        pop.append(polish(canonical(z, g)))
+        pop.append(polish(canonical(z, fitness)))
         if len(pop) >= population:
             break
     while len(pop) < population:
         k = int(rng.integers(2, max(3, min(12, n//5))))
         z = rng.integers(1, k+1, size=n)
-        pop.append(polish(canonical(z, g)))
-    pop = [canonical(z, g) for z in pop]
+        pop.append(polish(canonical(z, fitness)))
+    pop = [canonical(z, fitness) for z in pop]
     values = np.array([fitness(z) for z in pop])
 
     order = int(values.argmin())
@@ -184,7 +188,7 @@ def run(fitness, rng, seeds=(), population=30, generations=40,
                 child = mutate_merge(child, rng)
             else:
                 child = mutate_split(fitness, child, rng)
-            children.append(canonical(local_search(fitness, child, rng, ls_sweeps), g))
+            children.append(canonical(local_search(fitness, child, rng, ls_sweeps), fitness))
 
         child_values = np.array([fitness(z) for z in children])
         if elite:

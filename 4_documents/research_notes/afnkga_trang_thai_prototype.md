@@ -166,6 +166,66 @@ vẫn kém xa: 0.3636 so với 0.8500.
    tập test. Nó là phép chẩn đoán địa hình hàm mục tiêu, **không** dùng để chọn tham số;
    mọi lựa chọn (balance, λ) đều quyết định trên pima và wifi thuộc tập dev.
 
+### 4.5. ĐÃ LÀM: tách miền tính bằng chứng khỏi E — sửa nguyên nhân
+
+Đây là lựa chọn (1) ở mục 5, tức sửa **nguyên nhân** thay vì hiệu chỉnh hậu quả như
+`balance`. Bằng chứng nay được tính trên một tập cạnh riêng `E_fuzzy`: với mỗi điểm i, quét
+`pool` điểm gần nhất và giữ `per_point` điểm gần nhất mà **ít nhất một** mô hình tham chiếu
+đặt vào cụm khác. Đó là các cặp ở biên — đủ gần để lựa chọn của phân hoạch có ý nghĩa, nhưng
+bị tham chiếu tách, tức đúng nơi `b` mang thông tin. Quy tắc chọn không dùng nhãn.
+
+**Tính đúng của PX được giữ như ghi chú cảnh báo.** Vì `E_fuzzy ≠ E`, tập cạnh **phụ thuộc**
+của fitness là **hợp** của hai tập. `Fitness` phơi ra `dep_i/dep_j/dep_touch`, và:
+
+- **partition crossover** tách component trên hợp đó. Nếu chỉ dùng E, hai đỉnh khác nhau mà
+  nối bởi một cạnh bằng chứng sẽ rơi vào hai component khác nhau, các component **không còn
+  độc lập**, và PX không còn trả về nghiệm tốt nhất trong 2^q.
+- **chuẩn hóa nhãn** cũng xét liên thông trên hợp đó. Nếu chỉ dùng E, nó sẽ tách một nhãn qua
+  một cạnh bằng chứng, lật cặp đó từ "cùng" sang "khác" và **làm đổi fitness**.
+
+Cả hai tính chất này được kiểm bằng property test: PX đối chiếu liệt kê vét cạn 2^q trên hợp,
+và `test_canonical_preserves_fitness` chạy với tập bằng chứng tách riêng. 8/8 đạt.
+
+**Kết quả — cặp có kiểm soát A1 (λ=0) → A3 (fuzzy bật), Pima và Wifi, 3 run:**
+
+| Cấu hình | Cạnh bằng chứng | A1 | A3 | Δ | Số cụm A3 |
+|---|---:|---:|---:|---:|---:|
+| Miền = E (như prototype đầu), λ=0.4 | 4152 | 0.0273 | 0.0217 | **−0.0056** | 11.5 |
+| **Miền tách**, λ=0.4 | 1046 | 0.0273 | 0.0824 | **+0.0550** | 14.0 |
+| Miền tách + `balance`, λ=0.4 | 1046 | 0.0273 | 0.0805 | +0.0532 | 13.0 |
+| Miền tách, λ=0.8 | 1046 | 0.0273 | 0.2318 | +0.2044 | 19.2 |
+
+**Hạn chế 2 và 3 ĐÃ XONG.** λ=0.4 nay có tác dụng rõ (+0.0550) trong khi miền cũ cho
+−0.0056. Không còn cần λ=0.8–0.95, nên cũng không còn nguy cơ suy biến thành consensus của
+ngân hàng. Và `balance` **trở nên không cần thiết** (+0.0550 so với +0.0532) — xác nhận nó
+chỉ chữa triệu chứng, còn đây là sửa nguyên nhân.
+
+### 4.6. Hạn chế 1 (phân mảnh): đã chuyển thành một đánh đổi đo được, CHƯA giải quyết
+
+`E_fuzzy` ở 4.5 chỉ chứa cặp **bất đồng**, nên nó chỉ phạt việc **gộp**. Để phạt việc
+**tách**, tôi thêm `agree_per_point`: giữ thêm các cặp **xa nhất** trong pool mà **mọi** mô
+hình đồng thuận là cùng cụm, và không nằm trong E (vì E đã tự ràng buộc láng giềng của nó).
+Những cặp đó mang `a_ij`, mà `V_ij` tính khi phân hoạch tách chúng.
+
+| Cấu hình | Cạnh BC | A3 | Δ | Số cụm A3 | pima / wifi |
+|---|---:|---:|---:|---:|---|
+| λ=0.4, agree=0 | 1046 | 0.0824 | +0.0550 | 14.0 | 0.034(12) / 0.131(16) |
+| λ=0.4, agree=2 | 3733 | 0.0188 | −0.0085 | **5.7** | 0.029(5) / 0.009(6) |
+| λ=0.4, agree=4 | 6316 | 0.0170 | −0.0103 | **4.8** | 0.027(5) / 0.007(5) |
+| λ=0.8, agree=0 | 1046 | 0.2318 | +0.2044 | 19.2 | 0.089(16) / 0.374(22) |
+| λ=0.8, agree=2 | 3733 | 0.0067 | −0.0206 | 7.2 | 0.006(6) / 0.008(8) |
+| λ=0.8, agree=4 | 6316 | 0.0125 | −0.0149 | **3.5** | 0.018(4) / 0.007(3) |
+
+Cơ chế **hoạt động đúng như thiết kế**: số cụm từ 19.2 xuống **3.5**, tức về đúng thang k
+(pima 2, wifi 4). Nhưng **ARI sụp** về ~0.01. Nghĩa là nó gộp về đúng *số* cụm mà **sai nội
+dung** cụm.
+
+Phát biểu trung thực: hạn chế 1 **chưa được giải quyết**. Nó đã được chuyển từ "không biết
+vì sao phân mảnh" thành một **đánh đổi định lượng được** giữa số cụm và chất lượng, nằm trong
+một cơ chế duy nhất là thành phần của `E_fuzzy`. Điều này nói rằng bằng chứng theo cặp lấy từ
+ngân hàng DP-PFCM **không chứa đủ thông tin** để đạt đồng thời đúng số cụm và đúng nội dung —
+và đó là một kết quả về **giới hạn của chính nguồn bằng chứng**, không phải về tham số.
+
 ## 5. Kết luận về thiết kế trong ghi chú
 
 Giả thuyết trung tâm của ghi chú là hướng dẫn fuzzy sẽ **giảm hiện tượng gộp cụm**. Số liệu

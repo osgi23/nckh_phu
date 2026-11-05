@@ -32,7 +32,7 @@ from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from afnkga.ga import run as ga_run
-from afnkga.model import Fitness, Graph, fuzzy_evidence
+from afnkga.model import Fitness, Graph, evidence_edges, fuzzy_evidence
 from common.data import load_dataset
 from common.metrics import quality
 from common.registry import fit_method
@@ -99,6 +99,16 @@ def main(argv=None):
     parser.add_argument("--neighbours", type=int, default=3, help="NK group size K")
     parser.add_argument("--ks", type=int, default=7, help="neighbour index for local scaling")
     parser.add_argument("--lam", type=float, default=None, help="override lambda")
+    parser.add_argument("--evidence-domain", choices=("separate","nk"), default="separate",
+                        help="where the fuzzy evidence is evaluated. 'separate' uses boundary "
+                             "pairs the references disagree about; 'nk' reuses the NK edges, "
+                             "which is what left b empty in the first prototype")
+    parser.add_argument("--evidence-per-point", type=int, default=3)
+    parser.add_argument("--evidence-pool", type=int, default=30)
+    parser.add_argument("--evidence-agree", type=int, default=0,
+                        help="also keep this many far pairs per point that every reference "
+                             "agrees belong together; these carry a_ij and are what penalises "
+                             "SPLITTING, which disagreement pairs alone cannot do")
     parser.add_argument("--balance", action="store_true",
                         help="rebalance b against a (see fuzzy_evidence); the NK edge set "
                              "makes b 100x scarcer than a, which otherwise lets the fuzzy "
@@ -126,8 +136,17 @@ def main(argv=None):
                 spec = VARIANTS[name]
                 lam = spec["lam"] if args.lam is None else (args.lam if spec["lam"] > 0 else 0.0)
                 graph = graphs[spec["adaptive"]]
-                evidence = fuzzy_evidence(graph, bank, balance=args.balance) if lam > 0 else None
-                fitness = Fitness(graph, evidence, lam=lam)
+                fz_edges = None
+                if lam > 0 and args.evidence_domain == "separate":
+                    fz_edges = evidence_edges(graph, bank,
+                                              per_point=args.evidence_per_point,
+                                              pool=args.evidence_pool,
+                                              agree_per_point=args.evidence_agree)
+                    if not len(fz_edges[0]):
+                        fz_edges = None     # references agree everywhere
+                evidence = (fuzzy_evidence(graph, bank, balance=args.balance, edges=fz_edges)
+                            if lam > 0 else None)
+                fitness = Fitness(graph, evidence, lam=lam, evidence_edges=fz_edges)
                 started = time.perf_counter()
                 best, best_f, trace = ga_run(
                     fitness, np.random.default_rng(seed),
@@ -138,7 +157,11 @@ def main(argv=None):
                 print(json.dumps({
                     "dataset": slug, "variant": name, "run": run+1, "seed": seed,
                     "k_true": k, "adaptive": spec["adaptive"], "lam": lam,
-                    "seeded": spec["seeded"], "balance": bool(args.balance), "fitness": best_f,
+                    "seeded": spec["seeded"], "balance": bool(args.balance),
+                    "evidence_domain": args.evidence_domain if lam > 0 else "n/a",
+                    "evidence_edges": int(fitness.fz_count) if lam > 0 else 0,
+                    "dependency_edges": int(len(fitness.dep_i)),
+                    "fitness": best_f,
                     "fitness_gen0": trace[0]["best_fitness"],
                     "evaluations": fitness.evaluations, "seconds": elapsed,
                     **score(y, best)}), flush=True)

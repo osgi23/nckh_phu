@@ -14,7 +14,8 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from afnkga.ga import local_search, partition_crossover
-from afnkga.model import Fitness, Graph, canonical, fuzzy_evidence
+from afnkga.model import (Fitness, Graph, canonical, dependency_edges,
+                          evidence_edges, fuzzy_evidence)
 
 
 def toy(n_per=8, seed=0):
@@ -40,8 +41,18 @@ class AfNkgaProperties(unittest.TestCase):
         self.X = toy()
         self.graph = Graph(self.X, neighbours=3, ks=5, adaptive=False)
         self.bank = toy_bank(self.X)
-        self.evidence = fuzzy_evidence(self.graph, self.bank)
+        # Evidence on a SEPARATE edge set, the configuration the prototype now
+        # uses. Falls back to the NK edges when the references agree about
+        # every near pair, which the toy data can produce.
+        self.fz_edges = evidence_edges(self.graph, self.bank, per_point=2, pool=10)
+        if not len(self.fz_edges[0]):
+            self.fz_edges = (self.graph.edge_i, self.graph.edge_j)
+        self.evidence = fuzzy_evidence(self.graph, self.bank, edges=self.fz_edges)
         self.rng = np.random.default_rng(7)
+
+    def fit(self, lam):
+        return Fitness(self.graph, self.evidence, lam=lam,
+                       evidence_edges=self.fz_edges)
 
     def random_z(self, labels=3, noise=0.15):
         z = self.rng.integers(1, labels+1, size=self.graph.n)
@@ -51,7 +62,7 @@ class AfNkgaProperties(unittest.TestCase):
     # 1. Permuting positive labels must not change the fitness; 0 is excluded.
     def test_label_permutation_invariance(self):
         for lam in (0.0, 0.5):
-            f = Fitness(self.graph, self.evidence, lam=lam)
+            f = self.fit(lam)
             z = self.random_z()
             labels = np.unique(z[z > 0])
             mapping = dict(zip(labels, self.rng.permutation(labels)))
@@ -62,7 +73,7 @@ class AfNkgaProperties(unittest.TestCase):
     # 3. delta() must equal the difference of two full evaluations.
     def test_delta_matches_full_evaluation(self):
         for lam in (0.0, 0.4):
-            f = Fitness(self.graph, self.evidence, lam=lam)
+            f = self.fit(lam)
             z = self.random_z()
             for _ in range(40):
                 i = int(self.rng.integers(self.graph.n))
@@ -76,7 +87,7 @@ class AfNkgaProperties(unittest.TestCase):
 
     # 4. PX must return the best of the 2^q component choices.
     def test_partition_crossover_is_optimal_over_components(self):
-        f = Fitness(self.graph, self.evidence, lam=0.3)
+        f = self.fit(0.3)
         # Two independent random parents differ almost everywhere, which gives
         # far too many components to enumerate. Perturb a handful of vertices
         # instead, so q stays small and 2^q can be checked exhaustively.
@@ -92,7 +103,8 @@ class AfNkgaProperties(unittest.TestCase):
         differ = blue != red
         n = len(blue)
         adjacency = [[] for _ in range(n)]
-        for i, j in zip(self.graph.edge_i, self.graph.edge_j):
+        dep_i, dep_j = dependency_edges(f)
+        for i, j in zip(dep_i, dep_j):
             if differ[i] and differ[j]:
                 adjacency[i].append(j)
                 adjacency[j].append(i)
@@ -121,7 +133,7 @@ class AfNkgaProperties(unittest.TestCase):
 
     # 5. Marking an endpoint as noise must not reduce the fuzzy cost of an edge.
     def test_noise_cannot_dodge_fuzzy_cost(self):
-        f = Fitness(self.graph, self.evidence, lam=0.5)
+        f = self.fit(0.5)
         a, b = self.evidence
         for e in range(len(a)):
             for zi, zj in ((1, 1), (1, 2)):
@@ -131,30 +143,34 @@ class AfNkgaProperties(unittest.TestCase):
 
     # 6. Canonical relabelling splits disconnected fragments but keeps fitness.
     def test_canonical_preserves_fitness(self):
-        f = Fitness(self.graph, self.evidence, lam=0.35)
+        f = self.fit(0.35)
         z = self.random_z()
-        self.assertAlmostEqual(f(z), f(canonical(z, self.graph)), places=12)
+        self.assertAlmostEqual(f(z), f(canonical(z, f)), places=12)
 
     def test_canonical_makes_labels_connected(self):
+        f = self.fit(0.3)
         z = np.ones(self.graph.n, dtype=int)   # one label over three blobs
-        out = canonical(z, self.graph)
+        out = canonical(z, f)
+        dep_i, dep_j = dependency_edges(f)
+        adjacency = [[] for _ in range(self.graph.n)]
+        for u, v in zip(dep_i, dep_j):
+            adjacency[u].append(int(v))
+            adjacency[v].append(int(u))
         for label in np.unique(out[out > 0]):
             members = set(np.flatnonzero(out == label).tolist())
             start = next(iter(members))
             seen, stack = {start}, [start]
             while stack:
                 u = stack.pop()
-                for e in self.graph.touch[u]:
-                    for v in (self.graph.edge_i[e], self.graph.edge_j[e]):
-                        v = int(v)
-                        if v in members and v not in seen:
-                            seen.add(v)
-                            stack.append(v)
+                for v in adjacency[u]:
+                    if v in members and v not in seen:
+                        seen.add(v)
+                        stack.append(v)
             self.assertEqual(seen, members, "a canonical label is disconnected")
 
     # Local search must never make the solution worse.
     def test_local_search_is_monotone(self):
-        f = Fitness(self.graph, self.evidence, lam=0.25)
+        f = self.fit(0.25)
         z = self.random_z()
         before = f(z)
         after = f(local_search(f, z, np.random.default_rng(3), sweeps=2))
@@ -163,9 +179,14 @@ class AfNkgaProperties(unittest.TestCase):
     # lam must stay inside [0, 1) and require evidence when positive.
     def test_configuration_guards(self):
         with self.assertRaises(ValueError):
-            Fitness(self.graph, self.evidence, lam=1.0)
+            self.fit(1.0)
         with self.assertRaises(ValueError):
             Fitness(self.graph, None, lam=0.5)
+        with self.assertRaises(ValueError):
+            # lam > 0 with an empty evidence edge set must be refused, not
+            # silently treated as lam = 0.
+            Fitness(self.graph, (np.empty(0), np.empty(0)), lam=0.5,
+                    evidence_edges=(np.empty(0, int), np.empty(0, int)))
         with self.assertRaises(ValueError):
             Graph(self.X, neighbours=0)
         with self.assertRaises(ValueError):
