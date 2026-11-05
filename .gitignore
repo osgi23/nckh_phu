@@ -45,3 +45,6 @@ desktop.ini
 .idea/
 *.swp
 *.swo
+
+# Patch files generated to move work out of an ephemeral session
+*.patch
