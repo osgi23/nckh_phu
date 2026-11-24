@@ -80,6 +80,28 @@ class PFCMSearch:
                 scores[i] = d2.min(axis=1).sum()
             else:
                 raise ValueError(f"Unknown fitness: {kind}")
+
+            # [CẢI TIẾN HƯỚNG 1 - SEPARATION-REGULARIZED FITNESS FUNCTION]:
+            # Bổ sung số hạng điều hòa phân tách Xie-Beni liên cụm:
+            # J_reg = J_PFCM + lambda_sep / (min_{j!=l} ||v_j - v_l||^2 + eps)
+            # Tạo lực đẩy thế năng liên cụm (repulsive potential) chống hiện tượng trùng tâm trong không gian nhiều chiều.
+            lambda_sep = self.cfg.get("separation_regularizer", 0.0)
+            if lambda_sep > 0 and self.k > 1:
+                c_diff = new[:, None, :] - new[None, :, :]
+                d_cents_sq = np.sum(c_diff**2, axis=-1)
+                np.fill_diagonal(d_cents_sq, np.inf)
+                min_sep_sq = d_cents_sq.min()
+                scores[i] += lambda_sep / (min_sep_sq + 1e-6)
+
+            # [CHÚ THÍCH BỔ SUNG - RÀNG BUỘC PHÂN TÁCH CỨNG]:
+            # Nếu 2 tâm bất kỳ quá gần nhau (< min_center_distance), cộng phạt lớn để loại bỏ nghiệm suy thoái.
+            if self.cfg.get("penalize_degenerate_centers", False) and self.k > 1:
+                c_diff = new[:, None, :] - new[None, :, :]
+                d_cents = np.sqrt(np.sum(c_diff**2, axis=-1))
+                np.fill_diagonal(d_cents, np.inf)
+                if d_cents.min() < self.cfg.get("min_center_distance", 0.02):
+                    scores[i] += 1e5
+
             if self.cfg["lamarckian"]:
                 updated[i, :self.k*self.d] = new.ravel()
         self.evaluations += len(genes)

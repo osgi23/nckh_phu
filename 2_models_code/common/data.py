@@ -31,7 +31,9 @@ def load_dataset(slug, root=None):
     folder = matches[0].parent
     meta = json.loads(matches[0].read_text(encoding="utf-8"))
     path = folder/"data.csv"
-    if hashlib.sha256(path.read_bytes()).hexdigest() != meta["data_sha256"]:
+    raw_bytes = path.read_bytes()
+    normalized_bytes = raw_bytes.replace(b"\r\n", b"\n")
+    if hashlib.sha256(normalized_bytes).hexdigest() != meta["data_sha256"] and hashlib.sha256(raw_bytes).hexdigest() != meta["data_sha256"]:
         raise ValueError(f"{slug}: data.csv checksum mismatch.")
     with path.open(encoding="utf-8", newline="") as stream:
         rows = list(csv.DictReader(stream))

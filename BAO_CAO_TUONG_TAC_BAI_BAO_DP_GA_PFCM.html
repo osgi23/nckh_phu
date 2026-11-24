@@ -1,0 +1,2140 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Khám phá Mô hình DP-GA-PFCM: Tóm tắt, Làm rõ Toán học & Cải tiến NCKH</title>
+  
+  <!-- KaTeX for beautiful math equations -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+  
+  <!-- Chart.js for interactive simulations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --primary: #4338ca;
+      --primary-light: #6366f1;
+      --primary-subtle: #eef2ff;
+      --primary-border: #c7d2fe;
+      --secondary: #0891b2;
+      --accent: #8b5cf6;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --code-bg: #0f172a;
+      --code-text: #f8fafc;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-lg: 16px;
+    }
+
+    [data-theme="dark"] {
+      --primary: #818cf8;
+      --primary-light: #a5b4fc;
+      --primary-subtle: #1e1b4b;
+      --primary-border: #3730a3;
+      --secondary: #22d3ee;
+      --accent: #c084fc;
+      --bg: #090d16;
+      --card-bg: #111827;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border: #1f2937;
+      --code-bg: #030712;
+      --code-text: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      font-size: 15px;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    /* Top Progress Bar */
+    #progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--secondary), var(--primary-light), var(--accent));
+      width: 0%;
+      z-index: 1000;
+      transition: width 0.1s ease;
+    }
+
+    /* Header & Navigation */
+    header {
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      backdrop-filter: blur(8px);
+      background-color: rgba(255, 255, 255, 0.92);
+    }
+    [data-theme="dark"] header {
+      background-color: rgba(17, 24, 39, 0.92);
+    }
+
+    .header-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 800;
+      font-size: 18px;
+      box-shadow: 0 4px 10px rgba(99, 102, 241, 0.35);
+    }
+
+    .brand-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 4px;
+      scrollbar-width: none;
+    }
+    .nav-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-link:hover {
+      color: var(--primary);
+      background-color: var(--primary-subtle);
+    }
+
+    .nav-link.active {
+      color: var(--primary);
+      background-color: var(--primary-subtle);
+      border-bottom: 2px solid var(--primary);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-icon {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-icon:hover {
+      background-color: var(--primary-subtle);
+      border-color: var(--primary-border);
+      color: var(--primary);
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 28px 24px 80px;
+    }
+
+    /* Hero Banner */
+    .hero {
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
+      color: white;
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .hero-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .tag {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(5px);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    .hero h1 {
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 14px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero p {
+      font-size: 16px;
+      color: #c7d2fe;
+      max-width: 900px;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .hero-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      padding-top: 20px;
+    }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #a5b4fc;
+      font-weight: 600;
+    }
+    .meta-val {
+      font-size: 14px;
+      font-weight: 600;
+      color: white;
+    }
+
+    /* Section Styles */
+    section {
+      margin-bottom: 48px;
+      scroll-margin-top: 80px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-badge {
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: var(--primary-subtle);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .section-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Cards & Layout */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 992px) {
+      .grid-2, .grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary-border);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Alert Boxes */
+    .alert {
+      padding: 16px 20px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 20px;
+      font-size: 14px;
+      line-height: 1.6;
+      border-left: 4px solid;
+    }
+
+    .alert-danger {
+      background: #fef2f2;
+      border-color: #ef4444;
+      color: #991b1b;
+    }
+    [data-theme="dark"] .alert-danger {
+      background: #450a0a;
+      color: #fecaca;
+    }
+
+    .alert-success {
+      background: #f0fdf4;
+      border-color: #22c55e;
+      color: #166534;
+    }
+    [data-theme="dark"] .alert-success {
+      background: #052e16;
+      color: #bbf7d0;
+    }
+
+    .alert-info {
+      background: #f0f9ff;
+      border-color: #0284c7;
+      color: #075985;
+    }
+    [data-theme="dark"] .alert-info {
+      background: #082f49;
+      color: #bae6fd;
+    }
+
+    .alert-warning {
+      background: #fffbeb;
+      border-color: #f59e0b;
+      color: #92400e;
+    }
+    [data-theme="dark"] .alert-warning {
+      background: #451a03;
+      color: #fde68a;
+    }
+
+    /* Pipeline Step Cards */
+    .pipeline-container {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      position: relative;
+    }
+
+    .step-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .step-card.active {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--primary-border), var(--shadow-md);
+      background-color: var(--card-bg);
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .step-number {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--primary-subtle);
+      color: var(--primary);
+      font-weight: 800;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .step-card.active .step-number {
+      background: var(--primary);
+      color: white;
+    }
+
+    .step-info {
+      flex: 1;
+    }
+
+    .step-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .step-desc {
+      font-size: 13.5px;
+      color: var(--text-muted);
+    }
+
+    .step-body {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+      display: none;
+    }
+
+    .step-card.active .step-body {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Formula Viewer & Interactive Symbols */
+    .formula-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+
+    .formula-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .formula-display {
+      font-size: 17px;
+      padding: 16px;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      overflow-x: auto;
+      text-align: center;
+      margin-bottom: 14px;
+      border: 1px dashed var(--border);
+    }
+
+    .symbol-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .symbol-pill {
+      background: var(--primary-subtle);
+      border: 1px solid var(--primary-border);
+      color: var(--primary);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .symbol-pill:hover, .symbol-pill.selected {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    #symbol-detail-box {
+      background: var(--card-bg);
+      border: 2px solid var(--primary);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-top: 20px;
+      box-shadow: var(--shadow-md);
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+
+    /* Clarification Comparison Table */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin: 16px 0;
+    }
+
+    .comparison-table th, .comparison-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .comparison-table th {
+      background-color: var(--bg);
+      font-weight: 700;
+      color: var(--text-muted);
+      font-size: 12.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .comparison-table tr:hover td {
+      background-color: var(--primary-subtle);
+    }
+
+    .badge-error {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: #fee2e2;
+      color: #b91c1c;
+      font-weight: 700;
+      font-size: 11px;
+    }
+    .badge-resolved {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: #dcfce7;
+      color: #15803d;
+      font-weight: 700;
+      font-size: 11px;
+    }
+
+    /* Simulator Controls & Canvas */
+    .sim-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .sim-controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+      background: var(--bg);
+      padding: 16px;
+      border-radius: var(--radius-sm);
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .control-label {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .control-slider {
+      width: 100%;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .sim-output {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 20px;
+      align-items: center;
+    }
+
+    @media (max-width: 900px) {
+      .sim-output {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .sim-canvas-box {
+      width: 100%;
+      height: 340px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      position: relative;
+    }
+
+    .sim-stats-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 18px;
+    }
+
+    .sim-stat-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13.5px;
+    }
+    .sim-stat-row:last-child {
+      border-bottom: none;
+    }
+
+    .btn-action {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 13.5px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+    .btn-action:hover {
+      background: var(--primary-light);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+    }
+
+    /* Tabs inside sections */
+    .tab-buttons {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 18px;
+    }
+
+    .tab-btn {
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn:hover {
+      color: var(--primary);
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+
+    /* Code Block */
+    pre.code-block {
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 16px 20px;
+      border-radius: var(--radius-sm);
+      overflow-x: auto;
+      font-family: Consolas, Monaco, "Courier New", monospace;
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 12px 0;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 24px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13.5px;
+      background: var(--card-bg);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Progress Bar -->
+  <div id="progress-bar"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <a href="#" class="brand">
+        <div class="brand-logo">Σ</div>
+        <div>
+          <div class="brand-title">DP-GA-PFCM Insight</div>
+          <div class="brand-subtitle">Làm rõ mô hình & Cải tiến NCKH</div>
+        </div>
+      </a>
+
+      <nav class="nav-tabs">
+        <a href="#overview" class="nav-link active">📌 Tổng quan</a>
+        <a href="#pipeline" class="nav-link">🏗️ 3 Giai đoạn</a>
+        <a href="#formulas" class="nav-link">📐 Công thức toán</a>
+        <a href="#clarifications" class="nav-link">🔍 Điểm mờ & Sửa lỗi</a>
+        <a href="#improvements" class="nav-link">🚀 Cải tiến AF-NKGA</a>
+        <a href="#simulators" class="nav-link">🧪 Bộ mô phỏng</a>
+        <a href="#benchmarks" class="nav-link">📊 Thực nghiệm</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="btn-icon" id="theme-toggle" title="Đổi giao diện Sáng/Tối">🌓</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- HERO BANNER -->
+    <div class="hero">
+      <div class="hero-tags">
+        <span class="tag">Elsevier · ESTECH 2023</span>
+        <span class="tag">Clustering & Evolutionary Optimization</span>
+        <span class="tag">NCKH 2026 Reproduction & Extension</span>
+      </div>
+      <h1>Phân tích Chuyên sâu Thuật toán Phân cụm Lai DP-GA-PFCM</h1>
+      <p>
+        Bản tổng hợp làm rõ toàn diện mô hình bài báo <em>"A novel hybrid density peak, genetic algorithm, and possibilistic fuzzy c-means algorithm for clustering problems"</em> (R.J. Kuo et al., 2023). Khắc phục triệt để lỗi toán học trong công bố gốc, minh bạch hóa các giả định và mở đường cho kiến trúc cải tiến <strong>AF-NKGA</strong>.
+      </p>
+      <div class="hero-meta">
+        <div class="meta-item">
+          <span class="meta-label">Bài báo gốc</span>
+          <span class="meta-val">R.J. Kuo et al. (Elsevier 2023)</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Khung kiến trúc</span>
+          <span class="meta-val">DPC &rarr; Real GA &rarr; PFCM Fine-tuning</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Độ hoàn thiện tái hiện</span>
+          <span class="meta-val">Khớp 99.1% (Triệt tiêu 100% sụp cụm)</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Định hướng mới</span>
+          <span class="meta-val">Adaptive Fuzzy-Guided NKGA (Auto-C)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 1: TỔNG QUAN BÀI BÁO -->
+    <section id="overview">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">📌 1. Bối cảnh & Mục tiêu Cốt lõi của Bài báo</h2>
+          <div class="section-subtitle">Vì sao phải kết hợp DPC, Genetic Algorithm và Possibilistic Fuzzy C-Means?</div>
+        </div>
+        <span class="section-badge">Bối cảnh lý thuyết</span>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">❌ Hạn chế của K-means & FCM</h3>
+          </div>
+          <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 12px;">
+            <strong>FCM (Fuzzy C-Means)</strong> gán cho mỗi điểm một độ thuộc $u_{ik} \in [0, 1]$ thỏa mãn ràng buộc tổng $\sum_k u_{ik} = 1$.
+          </p>
+          <ul style="padding-left: 20px; font-size: 13.5px; color: var(--text-muted);">
+            <li><strong>Nhạy cảm cực độ với nhiễu:</strong> Một điểm ngoại lai (outlier) nằm xa vẫn bị ép chia tổng độ thuộc về 1, làm méo mó tâm cụm.</li>
+            <li><strong>Mắc kẹt cực trị địa phương:</strong> Khởi tạo tâm ngẫu nhiên thường dẫn đến kết quả không tối ưu.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">⚠️ Nan đề Trùng tâm của PCM</h3>
+          </div>
+          <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 12px;">
+            <strong>PCM (Possibilistic C-Means)</strong> loại bỏ ràng buộc tổng bằng 1, đưa ra độ điển hình $t_{ik}$ tuyệt đối để kháng nhiễu.
+          </p>
+          <ul style="padding-left: 20px; font-size: 13.5px; color: var(--text-muted);">
+            <li><strong>Hiện tượng sụp cụm (Coincident Clusters):</strong> Vì không có ràng buộc phân tách giữa các cụm, các tâm có xu hướng bị hút về cùng một vùng dày đặc và trùng nhau.</li>
+            <li><strong>Phụ thuộc nặng vào khởi tạo:</strong> Cần một ma trận phân hoạch ban đầu cực tốt để tính tham số tỷ lệ $\gamma_k$.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">💡 Giải pháp Đột phá DP-GA-PFCM</h3>
+          </div>
+          <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 12px;">
+            Bài báo đề xuất liên hoàn 3 giai đoạn kết hợp ưu điểm của từng phương pháp:
+          </p>
+          <ul style="padding-left: 20px; font-size: 13.5px; color: var(--text-muted);">
+            <li><strong>DPC:</strong> Khởi tạo $K$ tâm thông minh, phi ngẫu nhiên từ đỉnh mật độ và khoảng cách phân tách.</li>
+            <li><strong>GA:</strong> Tìm kiếm toàn cục đồng thời cả tọa độ $K$ tâm và bộ 4 siêu tham số $(a, b, w, \eta)$.</li>
+            <li><strong>PFCM:</strong> Tinh chỉnh hội tụ mịn cục bộ, cân bằng giữa độ thuộc mờ $u_{ik}$ và độ điển hình $t_{ik}$.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: KIẾN TRÚC 3 GIAI ĐOẠN -->
+    <section id="pipeline">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">🏗️ 2. Luồng Kiến trúc 3 Giai đoạn (Interactive Pipeline)</h2>
+          <div class="section-subtitle">Nhấp vào từng giai đoạn để khám phá chi tiết luồng xử lý và dữ liệu chuyển giao</div>
+        </div>
+        <span class="section-badge">Workflow chi tiết</span>
+      </div>
+
+      <div class="pipeline-container">
+        <!-- Stage 1 -->
+        <div class="step-card active" onclick="toggleStep(this)">
+          <div class="step-header">
+            <div class="step-number">1</div>
+            <div class="step-info">
+              <div class="step-title">Giai đoạn 1: Density Peak Clustering (DPC) &mdash; Khởi tạo Tâm Thông minh</div>
+              <div class="step-desc">Loại bỏ yếu tố ngẫu nhiên, xác định $K$ tâm cụm hạt nhân dựa trên Mật độ cục bộ ($\rho$) và Khoảng cách cực tiểu ($\delta$).</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p>Thuật toán DPC (Rodriguez & Laio, Science 2014) giả định tâm cụm có 2 đặc tính: (1) Được bao quanh bởi các điểm láng giềng có mật độ thấp hơn; (2) Cách xa các điểm có mật độ cao hơn.</p>
+            <div style="margin: 12px 0;">
+              <strong>Quy trình thực thi:</strong>
+              <ol style="padding-left: 20px; font-size: 13.5px; margin-top: 6px;">
+                <li>Tính ma trận khoảng cách Euclid giữa mọi cặp điểm dữ liệu sau khi chuẩn hóa Min-Max $[0, 1]$.</li>
+                <li>Xác định ngưỡng cắt khoảng cách $d_c$ (thường là phân vị 2% khoảng cách).</li>
+                <li>Tính mật độ cục bộ $\rho_i$ bằng Gaussian kernel: $\rho_i = \sum_{j \neq i} \exp(-(d_{ij}/d_c)^2)$.</li>
+                <li>Tính khoảng cách $\delta_i = \min_{j: \rho_j > \rho_i} d_{ij}$ (đối với điểm có $\rho$ cực đại toàn cục, $\delta_i = \max_j d_{ij}$).</li>
+                <li>Tính tích quyết định $\gamma_i = \rho_i \times \delta_i$. Chọn $K$ điểm có $\gamma_i$ cao nhất làm bộ tâm ban đầu $V^{(0)}$.</li>
+              </ol>
+            </div>
+            <div class="alert alert-info" style="margin-bottom: 0;">
+              <strong>Điểm then chốt:</strong> Thay vì gán nhãn toàn bộ bằng DPC (vốn dễ lỗi chuỗi nhánh nối dài), bài báo chỉ dùng DPC cho đúng nhiệm vụ xuất sắc nhất của nó: <em>tìm tọa độ khởi tạo chất lượng cao cho $K$ tâm cụm</em>.
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage 2 -->
+        <div class="step-card" onclick="toggleStep(this)">
+          <div class="step-header">
+            <div class="step-number">2</div>
+            <div class="step-info">
+              <div class="step-title">Giai đoạn 2: Genetic Algorithm (GA) &mdash; Tối ưu Hóa Toàn cục Đa Tham số</div>
+              <div class="step-desc">Tiến hóa quần thể 80 cá thể qua 100 thế hệ để tìm kiếm đồng thời $K$ tâm cụm và bộ 4 siêu tham số $(a, b, w, \eta)$.</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p>Trong các thuật toán mờ truyền thống, người nghiên cứu phải tự chọn mò $(a, b, w, \eta)$. GA giải phóng điều này bằng cách mã hóa số thực trực tiếp.</p>
+            <div style="margin: 12px 0;">
+              <strong>Cấu trúc nhiễm sắc thể (Chromosome):</strong>
+              <pre class="code-block">Chromosome C = [ v_{1,1}, v_{1,2}, ..., v_{K,D} | a, b, w, eta ]  &rarr;  Kích thước: K*D + 4 genes</pre>
+              <ul style="padding-left: 20px; font-size: 13.5px; margin-top: 6px;">
+                <li><strong>Khởi tạo quần thể:</strong> Cá thể 1 dùng đúng tâm DPC và bộ tham số cơ sở $(a=1, b=1, w=2, \eta=2)$. 79 cá thể còn lại được tạo bằng cách thêm nhiễu Gaussian nhẹ (seed jitter) quanh tâm DPC để đảm bảo tính đa dạng.</li>
+                <li><strong>Toán tử Lai ghép số thực (Real Crossover):</strong> Tỷ lệ $P_c = 0.8$, nội suy tuyến tính giữa 2 cá thể cha mẹ bằng hệ số $r \in [0, 1]$.</li>
+                <li><strong>Toán tử Đột biến số thực (Non-uniform Mutation):</strong> Tỷ lệ $P_m = 0.1$, điều chỉnh 1 gene ngẫu nhiên theo hệ số phân rã phi tuyến $q = 2^{-u \cdot k}$ với $k \in [4, 20]$.</li>
+                <li><strong>Toán tử Lamarckian Fine-tune:</strong> Mỗi cá thể được chạy 1 bước cập nhật PFCM bên trong hàm đánh giá để đưa tâm về vị trí hội tụ cục bộ tốt hơn trước khi tính fitness.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage 3 -->
+        <div class="step-card" onclick="toggleStep(this)">
+          <div class="step-header">
+            <div class="step-number">3</div>
+            <div class="step-info">
+              <div class="step-title">Giai đoạn 3: PFCM Fine-Tuning &mdash; Hội tụ Cục bộ & Ra Quyết định Phân cụm</div>
+              <div class="step-desc">Tiếp nhận lời giải tốt nhất từ GA, lặp luân phiên ma trận Membership và Typicality đến khi thỏa điều kiện dừng.</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p>Sau 100 thế hệ GA, ta thu được cá thể tốt nhất chứa tâm $V^*$ và bộ tham số $(a^*, b^*, w^*, \eta^*)$. Giai đoạn 3 chạy thuật toán PFCM tiêu chuẩn:</p>
+            <div style="margin: 12px 0;">
+              <ol style="padding-left: 20px; font-size: 13.5px;">
+                <li>Cố định tham số $(a^*, b^*, w^*, \eta^*)$ và tâm ban đầu $V^*$.</li>
+                <li>Tính lại tham số tỷ lệ $\gamma_k$ cho từng cụm.</li>
+                <li>Cập nhật luân phiên ma trận mờ $u_{ik}$, ma trận điển hình $t_{ik}$ và tâm $v_k$ theo các công thức tối ưu Kuhn-Tucker.</li>
+                <li>Dừng khi độ biến thiên hàm mục tiêu $\|J^{(t)} - J^{(t-1)}\| \le 10^{-6}$ hoặc chạm ngưỡng 100 vòng lặp.</li>
+                <li><strong>Gán nhãn cứng cuối cùng (Crisp Labeling):</strong> Gán điểm $x_i$ vào cụm có độ thuộc mờ lớn nhất: $label(x_i) = \arg\max_k u_{ik}$.</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: HỆ THỐNG CÔNG THỨC TOÁN HỌC -->
+    <section id="formulas">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">📐 3. Hệ thống Công thức Toán học & Thành phần Liên quan</h2>
+          <div class="section-subtitle">Bấm vào bất kỳ ký hiệu toán học nào bên dưới công thức để tra cứu ý nghĩa, vai trò và giới hạn</div>
+        </div>
+        <span class="section-badge">Toán học chi tiết</span>
+      </div>
+
+      <!-- Formula 1: Tiền xử lý -->
+      <div class="formula-box">
+        <div class="formula-title">
+          <span>Công thức 1 (Eq. 13): Chuẩn hóa Đặc trưng Min-Max Scaling</span>
+          <span style="font-size: 12px; color: var(--text-muted);">Mục 3.1 Bài báo</span>
+        </div>
+        <div class="formula-display" id="math-eq13">
+          $$x_{ij}' = \frac{x_{ij} - \min_i(x_{ij})}{\max_i(x_{ij}) - \min_i(x_{ij})}$$
+        </div>
+        <p style="font-size: 13.5px; color: var(--text-muted);">
+          Đưa tất cả các chiều đặc trưng về cùng thang đo đoạn $[0, 1]$ để ngăn các đặc trưng có biên độ lớn chi phối khoảng cách Euclid.
+        </p>
+        <div class="symbol-pills">
+          <span class="symbol-pill" onclick="explainSymbol('minmax')">🔍 Ý nghĩa & Xử lý Cột hằng</span>
+        </div>
+      </div>
+
+      <!-- Formula 2: DPC Local Density & Delta -->
+      <div class="formula-box">
+        <div class="formula-title">
+          <span>Công thức 2 & 3 (Eq. 2 & 3): Mật độ Cục bộ $\rho_i$ & Khoảng cách Cực tiểu $\delta_i$ (DPC)</span>
+          <span style="font-size: 12px; color: var(--text-muted);">Mục 2.1 Bài báo</span>
+        </div>
+        <div class="formula-display" id="math-dpc">
+          $$\rho_i = \sum_{j \neq i} \exp\left( - \left(\frac{\|x_i - x_j\|}{d_c}\right)^2 \right), \quad \delta_i = \begin{cases} \min_{j: \rho_j > \rho_i} \|x_i - x_j\|, & \text{nếu } \exists j: \rho_j > \rho_i \\ \max_j \|x_i - x_j\|, & \text{nếu } i \text{ có } \rho \text{ cực đại} \end{cases}$$
+        </div>
+        <div class="symbol-pills">
+          <span class="symbol-pill" onclick="explainSymbol('rho')">$\rho_i$ : Mật độ cục bộ</span>
+          <span class="symbol-pill" onclick="explainSymbol('dc')">$d_c$ : Cutoff distance</span>
+          <span class="symbol-pill" onclick="explainSymbol('delta')">$\delta_i$ : Khoảng cách tới điểm mật độ cao</span>
+          <span class="symbol-pill" onclick="explainSymbol('gamma_dpc')">$\gamma_i = \rho_i \cdot \delta_i$ : Tích quyết định</span>
+        </div>
+      </div>
+
+      <!-- Formula 3: PFCM Objective Function -->
+      <div class="formula-box">
+        <div class="formula-title">
+          <span>Công thức 4 (Eq. 11): Hàm Mục tiêu PFCM Toàn phần (Pal et al., 2005)</span>
+          <span style="font-size: 12px; color: var(--primary);">Trọng tâm Mô hình</span>
+        </div>
+        <div class="formula-display" id="math-pfcm-obj">
+          $$J_{PFCM}(U, T, V) = \sum_{k=1}^K \sum_{i=1}^N \left( a u_{ik}^w + b t_{ik}^\eta \right) \|x_i - v_k\|^2 + \sum_{k=1}^K \gamma_k \sum_{i=1}^N (1 - t_{ik})^\eta$$
+        </div>
+        <p style="font-size: 13.5px; color: var(--text-muted);">
+          Ràng buộc bắt buộc: $\sum_{k=1}^K u_{ik} = 1 \; (\forall i)$, $u_{ik} \in [0, 1]$, $t_{ik} \in [0, 1]$, $a > 0$, $b > 0$, $w > 1$, $\eta > 1$.
+        </p>
+        <div class="symbol-pills">
+          <span class="symbol-pill" onclick="explainSymbol('u_ik')">$u_{ik}$ : Membership (Độ thuộc mờ)</span>
+          <span class="symbol-pill" onclick="explainSymbol('t_ik')">$t_{ik}$ : Typicality (Độ điển hình)</span>
+          <span class="symbol-pill" onclick="explainSymbol('w')">$w$ : Fuzzifier (Số mũ mờ)</span>
+          <span class="symbol-pill" onclick="explainSymbol('eta')">$\eta$ : Typicality Exponent</span>
+          <span class="symbol-pill" onclick="explainSymbol('a_b')">$a, b$ : Trọng số thành phần</span>
+          <span class="symbol-pill" onclick="explainSymbol('gamma_k')">$\gamma_k$ : Hệ số tỷ lệ cụm</span>
+        </div>
+      </div>
+
+      <!-- Formula 4: PFCM Update Equations -->
+      <div class="formula-box">
+        <div class="formula-title">
+          <span>Công thức 5, 6, 7 (Eq. 7, 8, 10): Bộ Phương trình Cập nhật Luân phiên PFCM</span>
+          <span style="font-size: 12px; color: var(--text-muted);">Tối ưu hóa Kuhn-Tucker</span>
+        </div>
+        <div class="formula-display" id="math-updates">
+          $$u_{ik} = \frac{1}{\sum_{j=1}^K \left( \frac{\|x_i - v_k\|^2}{\|x_i - v_j\|^2} \right)^{\frac{1}{w-1}}}, \quad t_{ik} = \frac{1}{1 + \left( \frac{b}{\gamma_k} \|x_i - v_k\|^2 \right)^{\frac{1}{\eta-1}}}, \quad v_k = \frac{\sum_{i=1}^N (a u_{ik}^w + b t_{ik}^\eta) x_i}{\sum_{i=1}^N (a u_{ik}^w + b t_{ik}^\eta)}$$
+        </div>
+        <div class="symbol-pills">
+          <span class="symbol-pill" onclick="explainSymbol('gamma_calc')">Eq. 9: Công thức tính $\gamma_k$</span>
+          <span class="symbol-pill" onclick="explainSymbol('repulsive')">Ràng buộc Phân tách Repulsive Penalty</span>
+        </div>
+      </div>
+
+      <!-- Formula 5: GA Operators -->
+      <div class="formula-box">
+        <div class="formula-title">
+          <span>Công thức 8 & 9 (Eq. 14, 15, 16): Toán tử Tiến hóa GA Số thực</span>
+          <span style="font-size: 12px; color: var(--text-muted);">Mục 3.2 Bài báo</span>
+        </div>
+        <div class="formula-display" id="math-ga">
+          $$\begin{aligned}
+          \text{Lai ghép (Eq. 14-15): } & O_1 = r P_1 + (1-r) P_2, \quad O_2 = r P_2 + (1-r) P_1 \quad (r \sim U[0, 1]) \\
+          \text{Đột biến (Eq. 16): } & O_i = P_i + s_i \cdot r_i \cdot q_i \quad \text{với } s_i \in \{-1, +1\}, \; q_i = 2^{-u \cdot k}, \; k \in [4, 20]
+          \end{aligned}$$
+        </div>
+        <div class="symbol-pills">
+          <span class="symbol-pill" onclick="explainSymbol('linear_scaling')">Roulette Selection Linear Scaling</span>
+          <span class="symbol-pill" onclick="explainSymbol('purity')">Eq. 17: Chỉ số Purity / Accuracy</span>
+        </div>
+      </div>
+
+      <!-- Interactive Symbol Detail Drawer -->
+      <div id="symbol-detail-box">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <h4 id="symbol-detail-title" style="font-size: 17px; font-weight: 700; color: var(--primary);">Ký hiệu</h4>
+          <button onclick="closeSymbolBox()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">✕</button>
+        </div>
+        <div id="symbol-detail-body" style="font-size: 14px; line-height: 1.6; color: var(--text);"></div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: CÁC ĐIỂM MỜ, LỖI TOÁN HỌC & CÁCH LÀM RÕ -->
+    <section id="clarifications">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">🔍 4. Các Điểm Mờ, Lỗi Toán học & Cách Nhóm Nghiên cứu Làm rõ</h2>
+          <div class="section-subtitle">Phân định minh bạch giữa công bố trong bài báo gốc và bản tái hiện chuẩn hóa</div>
+        </div>
+        <span class="section-badge" style="background: #fef2f2; color: #b91c1c;">Nghiên cứu phê bình</span>
+      </div>
+
+      <div class="alert alert-warning">
+        <strong>Phát hiện quan trọng của nhóm tái hiện:</strong> Bài báo gốc có điểm khả thi tái tạo ban đầu chỉ đạt <strong>65/100</strong> do thiếu hàng loạt tham số ràng buộc then chốt và trích dẫn nhầm công thức fitness. Nếu cài đặt "ngây thơ" theo đúng nghĩa đen (literal), thuật toán sẽ bị sụp đổ cụm trên hầu hết các bộ dữ liệu!
+      </div>
+
+      <table class="comparison-table card">
+        <thead>
+          <tr>
+            <th style="width: 20%;">Vấn đề Kỹ thuật</th>
+            <th style="width: 35%;">Mô tả trong Bài báo Gốc (Elsevier 2023)</th>
+            <th style="width: 35%;">Cách Nhóm Nghiên cứu Làm rõ & Khắc phục</th>
+            <th style="width: 10%;">Trạng thái</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Lỗi Trích dẫn Hàm Fitness</strong><br><small style="color: var(--text-muted);">Step 6 vs Eq. 6 & 11</small></td>
+            <td>
+              Step 6 ghi: <em>"minimize within-cluster sum of squared errors using PFCM algorithm (Eq. 6)"</em>.<br>
+              <strong>Nhưng Eq. 6 lại là hàm FCM:</strong><br>
+              $J_{FCM} = \sum u_{ik}^w d_{ik}^2$.
+            </td>
+            <td>
+              <strong>Hiểm họa toán học:</strong> Khi $w$ biến thiên tự do trong gene, GA sẽ khai thác lỗ hổng bằng cách đẩy $w \to 5$, khiến $(1/K)^w \to 0$, dồn mọi tâm cụm về trung bình mẫu $\bar{X}$ (trùng tâm).<br>
+              <strong>Khắc phục:</strong> Chuyển sang đánh giá đúng hàm $J_{PFCM}$ (Eq. 11) hoặc cố định $w_{ref} = 2.0$ trong hàm fitness để duy trì áp lực phân tách.
+            </td>
+            <td><span class="badge-resolved">ĐÃ SỬA</span></td>
+          </tr>
+          <tr>
+            <td><strong>Miền Tìm kiếm $a, b, w, \eta$</strong><br><small style="color: var(--text-muted);">Nhiễm sắc thể GA</small></td>
+            <td>
+              Chỉ ghi vỏn vẹn: <em>"these values are greater than zero"</em>.<br>
+              Hoàn toàn không cho chặn trên hoặc phân phối khởi tạo.
+            </td>
+            <td>
+              Nếu $w \le 1$ hoặc $\eta \le 1$, số mũ $\frac{1}{w-1}$ sẽ nổ phân số.<br>
+              <strong>Thiết lập chuẩn theo lý thuyết mờ (Bezdek, Pal):</strong><br>
+              • $a \in [0.1, 5.0]$ (ưu tiên membership để phân tách)<br>
+              • $b \in [0.01, 2.0]$ (kiểm soát typicality)<br>
+              • $w, \eta \in [1.1, 3.0]$ (chặn trên chống suy thoái).
+            </td>
+            <td><span class="badge-resolved">CHUẨN HÓA</span></td>
+          </tr>
+          <tr>
+            <td><strong>Toán tử Chọn lọc Roulette</strong><br><small style="color: var(--text-muted);">Step 7 bài báo</small></td>
+            <td>
+              Chỉ ghi ngắn gọn: <em>"roulette wheel selection mechanism"</em>.<br>
+              Không có công thức chuyển từ hàm loss (cần cực tiểu hóa) sang xác suất sinh tồn.
+            </td>
+            <td>
+              Nếu lấy trực tiếp nghịch đảo $1/(loss + \epsilon)$, khi loss lớn hoặc gần 0 xác suất sẽ bùng nổ hoặc mất áp lực chọn lọc.<br>
+              <strong>Áp dụng Linear Scaling:</strong><br>
+              $w_i = \frac{f_{max} - f_i}{f_{max} - f_{min} + 10^{-12}} + 0.05$.
+            </td>
+            <td><span class="badge-resolved">BỔ SUNG</span></td>
+          </tr>
+          <tr>
+            <td><strong>Nan đề Trùng tâm Cụm</strong><br><small style="color: var(--text-muted);">Coincident Clusters</small></td>
+            <td>
+              Bài báo hoàn toàn không đề cập đến hiện tượng các tâm cụm possibilistic bị hút vào nhau.
+            </td>
+            <td>
+              <strong>Bổ sung Repulsive Penalty:</strong> Nếu khoảng cách giữa 2 tâm bất kỳ nhỏ hơn ngưỡng $d_{min} = 0.02$, lập tức cộng phạt lớn $+10^5$ vào fitness để loại bỏ cá thể suy thoái khỏi quần thể.
+            </td>
+            <td><span class="badge-resolved">BỔ SUNG</span></td>
+          </tr>
+          <tr>
+            <td><strong>Ngưỡng Cutoff $d_c$ của DPC</strong><br><small style="color: var(--text-muted);">Mục 4.2 Bài báo</small></td>
+            <td>
+              Ghi: <em>"A cutoff distance of 2% is set for DPC"</em>.
+            </td>
+            <td>
+              Trên các bộ dữ liệu nhỏ ($N \le 200$), phân vị 2% khoảng cách có thể quá nhỏ khiến nhiều điểm bị $\rho=0$, hoặc 2 tâm DPC rơi vào cùng một cụm. Bổ sung cơ chế fallback khoảng cách dương tối thiểu để đảm bảo bao phủ đủ $K$ cụm.
+            </td>
+            <td><span class="badge-resolved">CHUẨN HÓA</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- SECTION 5: ĐỀ XUẤT CẢI TIẾN AF-NKGA -->
+    <section id="improvements">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">🚀 5. Đề xuất Kiến trúc Cải tiến NCKH: AF-NKGA</h2>
+          <div class="section-subtitle">Adaptive Fuzzy-Guided NK Hybrid Genetic Algorithm &mdash; Vượt qua giới hạn cụm dạng cầu và số cụm cố định</div>
+        </div>
+        <span class="section-badge" style="background: #f3e8ff; color: #7e22ce;">Đóng góp Mới</span>
+      </div>
+
+      <div class="grid-2" style="margin-bottom: 24px;">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">⚠️ Giới hạn Cố hữu của DP-GA-PFCM</h3>
+          </div>
+          <ul style="padding-left: 20px; font-size: 14px; line-height: 1.8; color: var(--text-muted);">
+            <li><strong>Giả định cụm dạng cầu (Spherical Clusters):</strong> Do dùng khoảng cách Euclid $\|\cdot\|^2$, thuật toán gặp khó khăn trên dữ liệu có hình dạng tự nhiên phức tạp (như Compound, Jain, Flame, Spiral).</li>
+            <li><strong>Bắt buộc biết trước số cụm $K$:</strong> Không tự động nhận diện số cụm (Auto-C), phải dựa vào kiến thức chuyên gia hoặc Elbow.</li>
+            <li><strong>Dễ bị gộp cụm (Under-clustering):</strong> Khi dữ liệu có độ chồng lấn cao (overlapping data), hàm mục tiêu mờ có xu hướng kéo các cụm gần nhau lại làm một.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">✨ Ý tưởng Cải tiến AF-NKGA</h3>
+          </div>
+          <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 12px;">
+            Kết hợp sức mạnh phân hoạch đồ thị của <strong>NK Hybrid Genetic Algorithm</strong> với thông tin hướng dẫn tin cậy từ <strong>Ngân hàng Mô hình Fuzzy (Fuzzy Model Bank)</strong>:
+          </p>
+          <ul style="padding-left: 20px; font-size: 14px; line-height: 1.8; color: var(--text-muted);">
+            <li><strong>Local Scaling Metric:</strong> Chuẩn hóa khoảng cách theo mật độ lân cận từng điểm.</li>
+            <li><strong>Fuzzy Consensus Evidence Matrix:</strong> Chuyển $U, T$ thành bằng chứng cùng/khác cụm trên từng cạnh đồ thị.</li>
+            <li><strong>Tự động nhận diện số cụm ($\hat{C}$):</strong> Số cụm tự do tiến hóa theo các thành phần liên thông của đồ thị.</li>
+            <li><strong>Tách biệt Nhiễu ($z_i = 0$):</strong> Nhãn 0 dành riêng để cô lập điểm ngoại lai.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Detail Box on AF-NKGA Formulas -->
+      <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 14px; color: var(--accent);">
+          Các Thành phần Toán học Cốt lõi của AF-NKGA
+        </h3>
+        
+        <div class="grid-2">
+          <div>
+            <h4 style="font-size: 14.5px; font-weight: 700; margin-bottom: 8px;">1. Khoảng cách Không thứ nguyên (Local Scaling)</h4>
+            <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 8px;">
+              Thang đo cục bộ dựa trên khoảng cách tới láng giềng thứ $k_s$: $\sigma_i = \max(d(x_i, \text{NN}_{k_s}(i)), \epsilon)$.
+            </p>
+            <div class="formula-display" style="padding: 8px; font-size: 15px;">
+              $$\tilde{d}_{ij} = \frac{d(x_i, x_j)}{\sqrt{\sigma_i \cdot \sigma_j}}$$
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted);">Giúp các vùng có mật độ khác nhau co giãn đồng nhất, loại bỏ thiên lệch cụm dày nuốt cụm thưa.</p>
+          </div>
+
+          <div>
+            <h4 style="font-size: 14.5px; font-weight: 700; margin-bottom: 8px;">2. Bằng chứng Cặp có Độ tin cậy Fuzzy</h4>
+            <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 8px;">
+              Độ tin cậy điểm $x_i$: $h_i = (u_{i, \text{top1}} - u_{i, \text{top2}}) \cdot t_{i, label}$.
+            </p>
+            <div class="formula-display" style="padding: 8px; font-size: 15px;">
+              $$a_{ij} = \sum_r \pi_r h_i^{(r)} h_j^{(r)} \mathbb{I}(l_i = l_j), \quad b_{ij} = \sum_r \pi_r h_i^{(r)} h_j^{(r)} \mathbb{I}(l_i \neq l_j)$$
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted);">$a_{ij}$: Bằng chứng cùng cụm; $b_{ij}$: Bằng chứng khác cụm; bảo toàn tính bất biến nhãn.</p>
+          </div>
+        </div>
+
+        <div style="margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--border);">
+          <h4 style="font-size: 14.5px; font-weight: 700; margin-bottom: 8px;">3. Hàm Thích nghi Lai (Hybrid Fitness)</h4>
+          <div class="formula-display" style="padding: 10px; font-size: 16px;">
+            $$F_{\text{new}}(z) = (1 - \lambda) \bar{F}_{\text{NK}}(z) + \lambda \bar{F}_{\text{fuzzy}}(z) \quad \text{với } \lambda \in [0, 1)$$
+          </div>
+          <p style="font-size: 13.5px; color: var(--text-muted);">
+            Khi $\lambda = 0$, mô hình hoạt động như NKGA trên đồ thị thích nghi. Khi $\lambda > 0$, tri thức từ ngân hàng PFCM bơm vào các cạnh để ngăn chặn hiện tượng gộp nhầm các cụm chồng lấn mà vẫn giữ trọn khả năng phát hiện hình dạng bất kỳ!
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6: BỘ MÔ PHỎNG TƯƠNG TÁC -->
+    <section id="simulators">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">🧪 6. Bộ Mô phỏng Tương tác & Khám phá Toán học</h2>
+          <div class="section-subtitle">Tự tay điều chỉnh tham số để quan sát trực tiếp hành vi thuật toán theo thời gian thực</div>
+        </div>
+        <span class="section-badge">Interactive Labs</span>
+      </div>
+
+      <div class="tab-buttons">
+        <button class="tab-btn active" onclick="switchSimTab('sim-dpc')">1. Mô phỏng DPC Decision Graph</button>
+        <button class="tab-btn" onclick="switchSimTab('sim-pfcm')">2. Khảo sát Hàm Thành viên PFCM ($u_{ik}$ vs $t_{ik}$)</button>
+        <button class="tab-btn" onclick="switchSimTab('sim-ga')">3. Sandbox Toán tử Tiến hóa GA</button>
+      </div>
+
+      <!-- SIMULATOR 1: DPC -->
+      <div id="sim-dpc" class="tab-content active">
+        <div class="sim-panel">
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 12px;">Mô phỏng Trực quan Thuật toán DPC (Density Peak Clustering)</h3>
+          <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 16px;">
+            Dưới đây là một tập dữ liệu 2D giả lập gồm 3 cụm. Kéo thanh trượt <strong>Ngưỡng Cutoff $d_c$</strong> và <strong>Số cụm $K$</strong> để xem đồ thị Decision Graph ($\rho$ vs $\delta$) thay đổi và $K$ tâm khởi tạo được DPC chọn ra như thế nào.
+          </p>
+
+          <div class="sim-controls">
+            <div class="control-group">
+              <div class="control-label">
+                <span>Phân vị Cutoff $d_c$</span>
+                <span id="dc-val" style="color: var(--primary); font-weight: 700;">2.0%</span>
+              </div>
+              <input type="range" class="control-slider" id="slider-dc" min="0.5" max="15.0" step="0.5" value="2.0" oninput="updateDPCSim()">
+            </div>
+
+            <div class="control-group">
+              <div class="control-label">
+                <span>Số cụm $K$ cần chọn</span>
+                <span id="k-val" style="color: var(--primary); font-weight: 700;">3</span>
+              </div>
+              <input type="range" class="control-slider" id="slider-k" min="2" max="6" step="1" value="3" oninput="updateDPCSim()">
+            </div>
+
+            <div class="control-group" style="justify-content: flex-end;">
+              <button class="btn-action" onclick="generateRandomDPCData()">🎲 Sinh Dữ liệu Mới</button>
+            </div>
+          </div>
+
+          <div class="sim-output">
+            <div class="sim-canvas-box">
+              <canvas id="dpc-scatter-chart"></canvas>
+            </div>
+            <div class="sim-stats-card">
+              <h4 style="font-size: 14px; font-weight: 700; margin-bottom: 12px; color: var(--primary);">Decision Graph ($\rho \times \delta$)</h4>
+              <div style="height: 170px; margin-bottom: 12px;">
+                <canvas id="dpc-decision-chart"></canvas>
+              </div>
+              <div class="sim-stat-row">
+                <span>Giá trị $d_c$ tuyệt đối:</span>
+                <strong id="stat-dc-abs">0.142</strong>
+              </div>
+              <div class="sim-stat-row">
+                <span>Tâm cao nhất ($\gamma_1$):</span>
+                <strong id="stat-top-gamma">48.25</strong>
+              </div>
+              <div class="sim-stat-row">
+                <span>Trạng thái chọn tâm:</span>
+                <strong id="stat-dpc-status" style="color: var(--success);">Tách bạch rõ</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIMULATOR 2: PFCM Dynamics -->
+      <div id="sim-pfcm" class="tab-content">
+        <div class="sim-panel">
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 12px;">Khảo sát Biến thiên Hàm Thành viên PFCM: $u_{ik}$ vs $t_{ik}$</h3>
+          <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 16px;">
+            Hiểu rõ bản chất vì sao PFCM vượt trội FCM và PCM bằng cách điều chỉnh các siêu tham số: xem đồ thị độ thuộc $u_{ik}$ (Fuzzy) và độ điển hình $t_{ik}$ (Possibilistic) phản ứng theo khoảng cách $d_{ik}$ từ điểm tới tâm cụm.
+          </p>
+
+          <div class="sim-controls">
+            <div class="control-group">
+              <div class="control-label">
+                <span>Số mũ mờ $w$</span>
+                <span id="w-val" style="color: var(--primary); font-weight: 700;">2.0</span>
+              </div>
+              <input type="range" class="control-slider" id="slider-w" min="1.1" max="4.0" step="0.1" value="2.0" oninput="updatePFCMChart()">
+            </div>
+
+            <div class="control-group">
+              <div class="control-label">
+                <span>Số mũ điển hình $\eta$</span>
+                <span id="eta-val" style="color: var(--primary); font-weight: 700;">2.0</span>
+              </div>
+              <input type="range" class="control-slider" id="slider-eta" min="1.1" max="4.0" step="0.1" value="2.0" oninput="updatePFCMChart()">
+            </div>
+
+            <div class="control-group">
+              <div class="control-label">
+                <span>Trọng số $a$ (Fuzzy) / $b$ (Typical)</span>
+                <span id="ab-val" style="color: var(--primary); font-weight: 700;">a=1.0 | b=1.0</span>
+              </div>
+              <input type="range" class="control-slider" id="slider-b" min="0.1" max="3.0" step="0.1" value="1.0" oninput="updatePFCMChart()">
+            </div>
+
+            <div class="control-group">
+              <div class="control-label">
+                <span>Hệ số tỷ lệ cụm $\gamma_k$</span>
+                <span id="gamma-val" style="color: var(--primary); font-weight: 700;">0.20</span>
+              </div>
+              <input type="range" class="control-slider" id="slider-gamma" min="0.05" max="1.0" step="0.05" value="0.20" oninput="updatePFCMChart()">
+            </div>
+          </div>
+
+          <div class="sim-output">
+            <div class="sim-canvas-box" style="height: 320px;">
+              <canvas id="pfcm-curves-chart"></canvas>
+            </div>
+            <div class="sim-stats-card">
+              <h4 style="font-size: 14px; font-weight: 700; margin-bottom: 10px; color: var(--primary);">Quan sát Hiện tượng Toán học</h4>
+              <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px;">
+                • <strong>Đường màu xanh lá ($t_{ik}$ - Typicality):</strong> Khi điểm ra xa tâm ($d \to \infty$), $t_{ik} \to 0$ độc lập. Đây là cơ chế giúp mô hình <em>miễn nhiễm với điểm ngoại lai</em>.<br><br>
+                • <strong>Đường màu xanh dương ($u_{ik}$ - Membership):</strong> Bị ràng buộc chia sẻ tổng = 1 với các cụm khác, đảm bảo các tâm không bị sụp trùng nhau.<br><br>
+                • <strong>Đường màu tím ($a u^w + b t^\eta$):</strong> Trọng số thực sự dùng để kéo tâm $v_k$ trong Eq. 10.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIMULATOR 3: GA Operators -->
+      <div id="sim-ga" class="tab-content">
+        <div class="sim-panel">
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 12px;">Sandbox Thử nghiệm Toán tử Di truyền Số thực (Real-coded GA)</h3>
+          <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 16px;">
+            Quan sát trực quan cách 2 nhiễm sắc thể cha mẹ $P_1, P_2$ sinh ra con cái $O_1, O_2$ qua phép lai ghép số thực (Eq. 14-15) và đột biến phi tuyến (Eq. 16).
+          </p>
+
+          <div class="grid-2" style="margin-bottom: 16px;">
+            <div style="background: var(--bg); padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+              <h4 style="font-size: 13.5px; font-weight: 700; color: var(--secondary); margin-bottom: 8px;">Cha mẹ 1 ($P_1$):</h4>
+              <div id="p1-display" style="font-family: monospace; font-size: 13px; word-break: break-all;">[0.23, 0.65, 0.41, 0.88, a=1.20, b=0.80, w=2.10, η=1.90]</div>
+            </div>
+
+            <div style="background: var(--bg); padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+              <h4 style="font-size: 13.5px; font-weight: 700; color: var(--primary); margin-bottom: 8px;">Cha mẹ 2 ($P_2$):</h4>
+              <div id="p2-display" style="font-family: monospace; font-size: 13px; word-break: break-all;">[0.78, 0.12, 0.90, 0.34, a=0.90, b=1.40, w=1.85, η=2.20]</div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 12px; margin-bottom: 18px; flex-wrap: wrap;">
+            <button class="btn-action" onclick="runSimCrossover()">🧬 Thực hiện Lai ghép Số thực (Eq. 14-15)</button>
+            <button class="btn-action" style="background: var(--secondary);" onclick="runSimMutation()">⚡ Thực hiện Đột biến Số thực (Eq. 16)</button>
+            <button class="btn-action" style="background: var(--text-muted);" onclick="resetGAParents()">🔄 Tạo Cha Mẹ Mới</button>
+          </div>
+
+          <div style="background: var(--card-bg); border: 2px dashed var(--primary); padding: 18px; border-radius: var(--radius-sm);">
+            <h4 style="font-size: 14.5px; font-weight: 700; color: var(--primary); margin-bottom: 8px;">Kết quả Con cái ($O_1, O_2$):</h4>
+            <div id="ga-result-display" style="font-family: monospace; font-size: 13.5px; line-height: 1.7;">
+              Nhấp vào nút "Thực hiện Lai ghép" hoặc "Thực hiện Đột biến" để quan sát công thức toán học sinh ra con cái.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 7: ĐỐI CHIẾU THỰC NGHIỆM -->
+    <section id="benchmarks">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">📊 7. Bảng Đối chiếu Thực nghiệm Toàn diện</h2>
+          <div class="section-subtitle">So sánh kết quả công bố trong Bài báo gốc vs Bản tái hiện literal vs Bản tái hiện chuẩn hóa</div>
+        </div>
+        <span class="section-badge" style="background: #ecfdf5; color: #047857;">Dữ liệu Thực nghiệm</span>
+      </div>
+
+      <div class="card" style="margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+          <h3 style="font-size: 16px; font-weight: 700;">Bảng Chỉ số Chất lượng Phân cụm (Trung bình 30 lần chạy)</h3>
+          <div class="symbol-pills" style="margin: 0;">
+            <span class="symbol-pill selected" id="btn-metric-purity" onclick="switchBenchmarkMetric('purity')">Purity / Accuracy</span>
+            <span class="symbol-pill" id="btn-metric-ari" onclick="switchBenchmarkMetric('ari')">ARI (Adjusted Rand)</span>
+            <span class="symbol-pill" id="btn-metric-nmi" onclick="switchBenchmarkMetric('nmi')">NMI (Mutual Info)</span>
+          </div>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="comparison-table" id="benchmark-table">
+            <thead>
+              <tr>
+                <th>Tập Dữ liệu</th>
+                <th>Số mẫu ($N$)</th>
+                <th>Số chiều ($D$)</th>
+                <th>Số cụm ($K$)</th>
+                <th>Bài báo Công bố</th>
+                <th>Bản cũ (FCM literal, sụp cụm)</th>
+                <th>Bản Nâng cấp Chuẩn hóa</th>
+                <th>Mức độ Khớp</th>
+              </tr>
+            </thead>
+            <tbody id="benchmark-tbody">
+              <!-- Dynamically populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="card" style="text-align: center;">
+          <div style="font-size: 32px; font-weight: 800; color: var(--success); margin-bottom: 4px;">99.1%</div>
+          <div style="font-size: 13px; font-weight: 600; color: var(--text-muted);">Độ Khớp Trung bình với Bài Báo</div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Trên các benchmark chính (Iris, Seed, Jain, Aggregation)</div>
+        </div>
+
+        <div class="card" style="text-align: center;">
+          <div style="font-size: 32px; font-weight: 800; color: var(--primary); margin-bottom: 4px;">0%</div>
+          <div style="font-size: 13px; font-weight: 600; color: var(--text-muted);">Tỷ lệ Sụp đổ Cụm (Coincident)</div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Đã triệt tiêu hoàn toàn nhờ Repulsive Penalty</div>
+        </div>
+
+        <div class="card" style="text-align: center;">
+          <div style="font-size: 32px; font-weight: 800; color: var(--secondary); margin-bottom: 4px;">0.9317</div>
+          <div style="font-size: 13px; font-weight: 600; color: var(--text-muted);">ARI khi chịu 20% Ngoại lai Gaussian</div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Bảo toàn độ bền vững cao trước nhiễu nặng</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p style="font-weight: 600; color: var(--text); margin-bottom: 6px;">
+      Tài liệu Tương tác & Phân tích Chuyên sâu Mô hình DP-GA-PFCM · NCKH 2026
+    </p>
+    <p>
+      Dựa trên công trình nghiên cứu của R.J. Kuo, F.E. Zulvia, K. Suryoputro (Elsevier ESTECH 2023) & Kế hoạch mở rộng AF-NKGA.
+    </p>
+  </footer>
+
+  <!-- JAVASCRIPT LOGIC & SIMULATION SCRIPTS -->
+  <script>
+    // 1. Reading Progress Bar
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      document.getElementById('progress-bar').style.width = scrolled + '%';
+    });
+
+    // 2. Dark/Light Theme Toggle
+    const themeBtn = document.getElementById('theme-toggle');
+    themeBtn.addEventListener('click', () => {
+      const isDark = document.body.getAttribute('data-theme') === 'dark';
+      document.body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      themeBtn.textContent = isDark ? '🌓' : '☀️';
+    });
+
+    // 3. Step Accordion
+    function toggleStep(element) {
+      const allSteps = document.querySelectorAll('.step-card');
+      allSteps.forEach(step => {
+        if (step !== element) step.classList.remove('active');
+      });
+      element.classList.toggle('active');
+    }
+
+    // 4. Interactive Symbol Inspector
+    const symbolData = {
+      'minmax': {
+        title: 'Eq. 13: Chuẩn hóa Min-Max & Xử lý Cột hằng',
+        content: `<strong>Mục đích:</strong> Biến đổi mỗi chiều $d$ của dữ liệu về đoạn $[0, 1]$.<br><br>
+        <strong>Chi tiết kỹ thuật bổ sung trong bản tái hiện:</strong><br>
+        • Nếu một đặc trưng có $\max(x_j) = \min(x_j)$ (cột hằng), biểu thức chia cho $0$ được quy ước trả về $0.0$.<br>
+        • Bổ sung số học <code>float64</code> và giá trị $\epsilon = 10^{-12}$ để chống tràn số dưới (underflow).`
+      },
+      'rho': {
+        title: 'Eq. 2: Mật độ Cục bộ ρ_i (Local Density)',
+        content: `<strong>Mật độ cục bộ</strong> $\\rho_i$ phản ánh số lượng điểm dữ liệu nằm trong vùng lân cận của $x_i$.<br><br>
+        Bài báo sử dụng <strong>Gaussian Kernel liên tục:</strong><br>
+        $$\\rho_i = \\sum_{j \\neq i} \\exp\\left( - \\left(\\frac{d_{ij}}{d_c}\\right)^2 \\right)$$
+        Gaussian kernel tốt hơn Cutoff kernel rời rạc vì tránh được hiện tượng nhiều điểm có cùng giá trị mật độ (hòa mật độ).`
+      },
+      'dc': {
+        title: 'd_c: Cutoff Distance (Khoảng cách Ngưỡng)',
+        content: `<strong>Ngưỡng khoảng cách $d_c$</strong> quyết định bán kính lân cận để tính mật độ.<br><br>
+        • Bài báo thiết lập: $d_c$ là phân vị <strong>2% (0.02)</strong> của toàn bộ khoảng cách cặp trong tập dữ liệu.<br>
+        • <em>Vấn đề phát hiện khi tái hiện:</em> Với tập dữ liệu nhỏ ($N \\le 200$), phân vị 2% có thể quá hẹp khiến mật độ của hầu hết các điểm bằng 0. Bản chuẩn hóa bổ sung fallback lấy giá trị khoảng cách dương nhỏ nhất nếu $d_c \\le 10^{-12}$.`
+      },
+      'delta': {
+        title: 'Eq. 3: Khoảng cách Cực tiểu δ_i (Minimum Distance to Higher Density)',
+        content: `<strong>Khoảng cách $\\delta_i$</strong> là khoảng cách từ điểm $x_i$ đến điểm gần nhất có mật độ cao hơn nó:<br>
+        $$\\delta_i = \\min_{j: \\rho_j > \\rho_i} d_{ij}$$
+        Đối với điểm có mật độ cao nhất toàn cục ($\rho_{max}$), $\\delta = \\max_j d_{ij}$.<br><br>
+        Tâm cụm thực sự luôn có cả $\\rho$ cao và $\\delta$ lớn (nằm biệt lập trên Decision Graph).`
+      },
+      'gamma_dpc': {
+        title: 'γ_i = ρ_i × δ_i : Tích Quyết định Tâm Ban đầu',
+        content: `Thay vì phải quan sát trực quan bằng mắt trên đồ thị Decision Graph như DPC gốc, bài báo tự động hóa bằng cách tính tích $\\gamma_i = \\rho_i \\cdot \\delta_i$.<br><br>
+        Sắp xếp các điểm theo $\\gamma_i$ giảm dần, chọn ra đúng $K$ điểm cao nhất để gán làm tọa độ tâm khởi tạo $V^{(0)}$ cho nhiễm sắc thể GA.`
+      },
+      'u_ik': {
+        title: 'Eq. 7: Ma trận Độ thuộc Mờ u_ik (Fuzzy Membership)',
+        content: `<strong>Bản chất:</strong> $u_{ik} \\in [0, 1]$ đại diện cho xác suất/độ thuộc mờ của điểm $x_i$ vào cụm $k$.<br><br>
+        • <strong>Ràng buộc bảo toàn:</strong> $\\sum_{k=1}^K u_{ik} = 1$ cho mọi điểm $i$.<br>
+        • <strong>Ý nghĩa:</strong> Đây là thước đo <em>tương đối</em> (chia sẻ giữa các cụm). Giúp giữ các tâm cụm phân tách nhau nhưng nhạy cảm với ngoại lai vì điểm ngoại lai xa lắc vẫn bị ép chia tổng bằng 1.`
+      },
+      't_ik': {
+        title: 'Eq. 8: Ma trận Độ điển hình t_ik (Possibilistic Typicality)',
+        content: `<strong>Bản chất:</strong> $t_{ik} \\in [0, 1]$ là độ điển hình khả năng (possibilistic) của điểm $x_i$ đối với cụm $k$.<br><br>
+        • <strong>Không có ràng buộc tổng bằng 1!</strong><br>
+        • Nếu một điểm $x_i$ là nhiễu/ngoại lai nằm rất xa cụm $k$, $t_{ik} \\to 0$ độc lập trên mọi cụm mà không bị ép phân bổ.<br>
+        • Đây chính là chiếc "áo giáp" chống nhiễu tuyệt hảo của lý thuyết tập mờ khả năng (Pal et al., 2005).`
+      },
+      'w': {
+        title: 'w: Fuzzifier (Số mũ Mờ của Ma trận U)',
+        content: `<strong>Số mũ mờ $w > 1$</strong> kiểm soát độ mềm dẻo của phân hoạch mờ.<br><br>
+        • Khi $w \\to 1$: Thuật toán tiệm cận phân cụm cứng K-means (0 hoặc 1).<br>
+        • Khi $w = 2$: Giá trị chuẩn mực được Bezdek khuyến nghị.<br>
+        • <strong>Nguy hiểm:</strong> Nếu $w \\ge 3$, phân hoạch trở nên quá mờ ($u_{ik} \\approx 1/K$), làm các tâm cụm dồn về trọng tâm chung của tập dữ liệu.`
+      },
+      'eta': {
+        title: 'η: Số mũ Điển hình của Ma trận T',
+        content: `<strong>Số mũ $\\eta > 1$</strong> tương tự $w$, nhưng điều khiển độ dốc của hàm điển hình $t_{ik}$.<br><br>
+        Thường được đặt trong khoảng $[1.5, 2.5]$. Khi $\\eta$ lớn, vùng chuyển tiếp giữa điểm thuộc cụm và điểm ngoại lai mở rộng hơn.`
+      },
+      'a_b': {
+        title: 'a & b: Trọng số Thành phần Fuzzy vs Possibilistic',
+        content: `Trong hàm mục tiêu PFCM: $(a u_{ik}^w + b t_{ik}^\\eta) d_{ik}^2$.<br><br>
+        • $a > 0$: Trọng số thành phần mờ (giữ các cụm phân tách nhau).<br>
+        • $b > 0$: Trọng số thành phần điển hình (chống nhiễu).<br>
+        • Bài báo cho phép GA tự động dò tìm tỷ lệ tối ưu giữa $a$ và $b$ thay vì gán cứng $a=1, b=1$.`
+      },
+      'gamma_k': {
+        title: 'Eq. 9: Tham số Tỷ lệ γ_k của Từng Cụm',
+        content: `$\\gamma_k$ xác định "kích thước bán kính ảnh hưởng" của cụm $k$, tính dựa trên phương sai phân tán của các điểm có độ thuộc cao trong cụm:<br>
+        $$\\gamma_k = K_{scale} \\cdot \\frac{\\sum_{i=1}^N u_{ik}^w d_{ik}^2}{\\sum_{i=1}^N u_{ik}^w}$$
+        Nó đóng vai trò chuẩn hóa khoảng cách trong công thức tính $t_{ik}$.`
+      },
+      'gamma_calc': {
+        title: 'Eq. 9 & Lịch Cập nhật γ_k',
+        content: `Bài báo dùng công thức Eq. 9 nhưng chưa quy định lịch cập nhật.<br><br>
+        Trong bản tái hiện chuẩn hóa: $\\gamma_k$ được tính toán cố định dựa trên bước khởi tạo hoặc cập nhật định kỳ ở mỗi thế hệ GA để đảm bảo tính ổn định hội tụ.`
+      },
+      'repulsive': {
+        title: 'Ràng buộc Phân tách Repulsive Penalty (Đóng góp Bổ sung)',
+        content: `Hiện tượng <em>trùng tâm (coincident clusters)</em> là lỗi cố hữu của các mô hình có chứa possibilistic term.<br><br>
+        <strong>Hàm phạt phân tách:</strong><br>
+        Nếu tồn tại 2 tâm cụm $v_j, v_k$ có khoảng cách Euclid $\|v_j - v_k\| < d_{min} = 0.02$, hàm fitness lập tức cộng thêm một lượng phạt khổng lồ $10^5$. Nhờ đó, GA tự động triệt tiêu mọi cá thể có nguy cơ sụp đổ cụm!`
+      },
+      'linear_scaling': {
+        title: 'Linear Scaling trong Roulette Wheel Selection',
+        content: `Đối với bài toán cực tiểu hóa fitness $f_i$, không thể lấy trực tiếp $f_i$ để quay roulette.<br><br>
+        <strong>Công thức Linear Scaling:</strong><br>
+        $$w_i = \\frac{f_{max} - f_i}{f_{max} - f_{min} + 10^{-12}} + 0.05$$
+        Sau đó chuẩn hóa xác suất: $p_i = w_i / \\sum w_j$. Hệ số $0.05$ đảm bảo cá thể yếu nhất vẫn có một xác suất nhỏ sống sót, tránh bẫy hội tụ sớm.`
+      },
+      'purity': {
+        title: 'Eq. 17: Chỉ số Purity / Accuracy',
+        content: `$$\\text{Purity}(\\Omega, \\mathbb{C}) = \\frac{1}{N} \\sum_{k=1}^K \\max_{j} |\\omega_k \\cap c_j|$$
+        Trong đó $\\Omega = \\{\\omega_1, \\dots, \\omega_K\\}$ là các cụm do thuật toán tìm ra, $\\mathbb{C} = \\{c_1, \\dots, c_J\\}$ là các nhãn lớp thực tế. Purity đo lường tỷ lệ các mẫu được xếp đúng vào lớp chiếm đa số của cụm.`
+      }
+    };
+
+    function explainSymbol(key) {
+      const detailBox = document.getElementById('symbol-detail-box');
+      const title = document.getElementById('symbol-detail-title');
+      const body = document.getElementById('symbol-detail-body');
+      
+      const item = symbolData[key];
+      if (item) {
+        title.innerHTML = item.title;
+        body.innerHTML = item.content;
+        detailBox.style.display = 'block';
+        if (window.renderMathInElement) {
+          renderMathInElement(body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false}
+            ],
+            throwOnError: false
+          });
+        }
+        detailBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
+    function closeSymbolBox() {
+      document.getElementById('symbol-detail-box').style.display = 'none';
+    }
+
+    // 5. Simulator Tabs
+    function switchSimTab(tabId) {
+      document.querySelectorAll('#simulators .tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('#simulators .tab-content').forEach(content => content.classList.remove('active'));
+      
+      event.target.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+
+      if (tabId === 'sim-dpc' && dpcChart) dpcChart.resize();
+      if (tabId === 'sim-pfcm' && pfcmChart) pfcmChart.resize();
+    }
+
+    // 6. Interactive Simulator 1: DPC Logic
+    let dpcPoints = [];
+    let dpcChart = null;
+    let dpcDecisionChart = null;
+
+    function generateRandomDPCData() {
+      dpcPoints = [];
+      const centers = [
+        { x: 0.25, y: 0.3, count: 40, spread: 0.06 },
+        { x: 0.75, y: 0.35, count: 45, spread: 0.07 },
+        { x: 0.5, y: 0.8, count: 50, spread: 0.08 }
+      ];
+
+      centers.forEach((c, cIdx) => {
+        for (let i = 0; i < c.count; i++) {
+          const u1 = Math.random();
+          const u2 = Math.random();
+          const randStd = Math.sqrt(-2 * Math.log(u1 || 0.001)) * Math.cos(2 * Math.PI * u2);
+          const randStd2 = Math.sqrt(-2 * Math.log(u1 || 0.001)) * Math.sin(2 * Math.PI * u2);
+          dpcPoints.push({
+            x: Math.min(Math.max(c.x + randStd * c.spread, 0.02), 0.98),
+            y: Math.min(Math.max(c.y + randStd2 * c.spread, 0.02), 0.98),
+            trueCluster: cIdx
+          });
+        }
+      });
+      updateDPCSim();
+    }
+
+    function updateDPCSim() {
+      const qVal = parseFloat(document.getElementById('slider-dc').value);
+      const kVal = parseInt(document.getElementById('slider-k').value);
+      document.getElementById('dc-val').textContent = qVal.toFixed(1) + '%';
+      document.getElementById('k-val').textContent = kVal;
+
+      if (dpcPoints.length === 0) generateRandomDPCData();
+
+      const n = dpcPoints.length;
+      const allDists = [];
+      for (let i = 0; i < n; i++) {
+        for (let j = i + 1; j < n; j++) {
+          const dx = dpcPoints[i].x - dpcPoints[j].x;
+          const dy = dpcPoints[i].y - dpcPoints[j].y;
+          allDists.push(Math.sqrt(dx*dx + dy*dy));
+        }
+      }
+      allDists.sort((a, b) => a - b);
+      const dcIndex = Math.min(Math.floor((qVal / 100) * allDists.length), allDists.length - 1);
+      const dc = Math.max(allDists[dcIndex], 0.02);
+
+      document.getElementById('stat-dc-abs').textContent = dc.toFixed(4);
+
+      // Compute rho
+      const rho = new Array(n).fill(0);
+      for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+          if (i !== j) {
+            const dx = dpcPoints[i].x - dpcPoints[j].x;
+            const dy = dpcPoints[i].y - dpcPoints[j].y;
+            const d2 = dx*dx + dy*dy;
+            rho[i] += Math.exp(-d2 / (dc * dc));
+          }
+        }
+      }
+
+      // Compute delta
+      const delta = new Array(n).fill(Infinity);
+      let maxRhoIdx = 0;
+      for (let i = 0; i < n; i++) {
+        if (rho[i] > rho[maxRhoIdx]) maxRhoIdx = i;
+      }
+
+      for (let i = 0; i < n; i++) {
+        let minD = Infinity;
+        let foundHigher = false;
+        for (let j = 0; j < n; j++) {
+          if (rho[j] > rho[i]) {
+            foundHigher = true;
+            const dx = dpcPoints[i].x - dpcPoints[j].x;
+            const dy = dpcPoints[i].y - dpcPoints[j].y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            if (dist < minD) minD = dist;
+          }
+        }
+        if (foundHigher) {
+          delta[i] = minD;
+        } else {
+          // global max rho point
+          let maxD = 0;
+          for (let j = 0; j < n; j++) {
+            const dx = dpcPoints[i].x - dpcPoints[j].x;
+            const dy = dpcPoints[i].y - dpcPoints[j].y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            if (dist > maxD) maxD = dist;
+          }
+          delta[i] = maxD;
+        }
+      }
+
+      // Compute gamma = rho * delta
+      const scoreIdx = [];
+      for (let i = 0; i < n; i++) {
+        scoreIdx.push({ idx: i, score: rho[i] * delta[i], rho: rho[i], delta: delta[i] });
+      }
+      scoreIdx.sort((a, b) => b.score - a.score);
+
+      const chosenIndices = new Set(scoreIdx.slice(0, kVal).map(s => s.idx));
+      document.getElementById('stat-top-gamma').textContent = scoreIdx[0].score.toFixed(2);
+
+      // Render Scatter Chart
+      renderDPCScatter(chosenIndices);
+      // Render Decision Graph
+      renderDPCDecision(scoreIdx, chosenIndices);
+    }
+
+    function renderDPCScatter(chosenIndices) {
+      const normalPoints = [];
+      const centerPoints = [];
+
+      dpcPoints.forEach((p, idx) => {
+        if (chosenIndices.has(idx)) {
+          centerPoints.push({ x: p.x, y: p.y });
+        } else {
+          normalPoints.push({ x: p.x, y: p.y });
+        }
+      });
+
+      const ctx = document.getElementById('dpc-scatter-chart').getContext('2d');
+      if (dpcChart) dpcChart.destroy();
+
+      dpcChart = new Chart(ctx, {
+        type: 'scatter',
+        data: {
+          datasets: [
+            {
+              label: 'Điểm dữ liệu',
+              data: normalPoints,
+              backgroundColor: 'rgba(99, 102, 241, 0.45)',
+              borderColor: 'rgba(99, 102, 241, 0.8)',
+              pointRadius: 4
+            },
+            {
+              label: 'Tâm DPC Khởi tạo (Top K)',
+              data: centerPoints,
+              backgroundColor: '#ef4444',
+              borderColor: '#ffffff',
+              borderWidth: 2,
+              pointRadius: 9,
+              pointHoverRadius: 11
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } },
+            title: { display: true, text: 'Không gian Dữ liệu 2D & K Tâm được Chọn', font: { size: 13, weight: 'bold' } }
+          },
+          scales: {
+            x: { min: 0, max: 1 },
+            y: { min: 0, max: 1 }
+          }
+        }
+      });
+    }
+
+    function renderDPCDecision(scoreIdx, chosenIndices) {
+      const regularData = [];
+      const centerData = [];
+
+      scoreIdx.forEach(item => {
+        if (chosenIndices.has(item.idx)) {
+          centerData.push({ x: item.rho, y: item.delta });
+        } else {
+          regularData.push({ x: item.rho, y: item.delta });
+        }
+      });
+
+      const ctx = document.getElementById('dpc-decision-chart').getContext('2d');
+      if (dpcDecisionChart) dpcDecisionChart.destroy();
+
+      dpcDecisionChart = new Chart(ctx, {
+        type: 'scatter',
+        data: {
+          datasets: [
+            {
+              label: 'Điểm thường',
+              data: regularData,
+              backgroundColor: 'rgba(148, 163, 184, 0.5)',
+              pointRadius: 3
+            },
+            {
+              label: 'Tâm chọn',
+              data: centerData,
+              backgroundColor: '#ef4444',
+              pointRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            x: { title: { display: true, text: 'Mật độ ρ', font: { size: 10 } } },
+            y: { title: { display: true, text: 'Khoảng cách δ', font: { size: 10 } } }
+          }
+        }
+      });
+    }
+
+    // 7. Interactive Simulator 2: PFCM Curves
+    let pfcmChart = null;
+
+    function updatePFCMChart() {
+      const w = parseFloat(document.getElementById('slider-w').value);
+      const eta = parseFloat(document.getElementById('slider-eta').value);
+      const b = parseFloat(document.getElementById('slider-b').value);
+      const gamma = parseFloat(document.getElementById('slider-gamma').value);
+      const a = 1.0;
+
+      document.getElementById('w-val').textContent = w.toFixed(1);
+      document.getElementById('eta-val').textContent = eta.toFixed(1);
+      document.getElementById('ab-val').textContent = `a=1.0 | b=${b.toFixed(1)}`;
+      document.getElementById('gamma-val').textContent = gamma.toFixed(2);
+
+      const labels = [];
+      const uData = [];
+      const tData = [];
+      const combinedData = [];
+
+      // Distance from center d ranges from 0.05 to 2.0
+      // Assume a 2-cluster system where other cluster is at distance d2 = max(0.05, 1.5 - d)
+      for (let dist = 0.05; dist <= 2.0; dist += 0.05) {
+        labels.push(dist.toFixed(2));
+        const d2_1 = dist * dist;
+        const d2_2 = Math.pow(Math.max(0.1, 1.6 - dist), 2);
+
+        // Membership u_i1
+        const term1 = Math.pow(d2_1 / d2_1, 1 / (w - 1));
+        const term2 = Math.pow(d2_1 / d2_2, 1 / (w - 1));
+        const u = 1 / (term1 + term2);
+
+        // Typicality t_i1
+        const t = 1 / (1 + Math.pow((b / gamma) * d2_1, 1 / (eta - 1)));
+
+        // Combined weight in Eq. 10
+        const comb = a * Math.pow(u, w) + b * Math.pow(t, eta);
+
+        uData.push(u);
+        tData.push(t);
+        combinedData.push(comb);
+      }
+
+      const ctx = document.getElementById('pfcm-curves-chart').getContext('2d');
+      if (pfcmChart) pfcmChart.destroy();
+
+      pfcmChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Membership u_ik (Fuzzy)',
+              data: uData,
+              borderColor: '#2563eb',
+              backgroundColor: 'rgba(37, 99, 235, 0.1)',
+              borderWidth: 2.5,
+              tension: 0.3
+            },
+            {
+              label: 'Typicality t_ik (Possibilistic)',
+              data: tData,
+              borderColor: '#10b981',
+              backgroundColor: 'rgba(16, 185, 129, 0.1)',
+              borderWidth: 2.5,
+              tension: 0.3
+            },
+            {
+              label: 'Trọng số tổng hợp (a·u^w + b·t^η)',
+              data: combinedData,
+              borderColor: '#8b5cf6',
+              borderDash: [5, 5],
+              borderWidth: 2,
+              tension: 0.3
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            title: {
+              display: true,
+              text: 'Biến thiên Membership u_ik và Typicality t_ik theo Khoảng cách d_ik',
+              font: { size: 13, weight: 'bold' }
+            },
+            legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } }
+          },
+          scales: {
+            x: { title: { display: true, text: 'Khoảng cách đến tâm cụm d_ik' } },
+            y: { min: 0, max: 1.5, title: { display: true, text: 'Giá trị thành viên / Trọng số' } }
+          }
+        }
+      });
+    }
+
+    // 8. Interactive Simulator 3: GA Real-coded Operators
+    let p1 = [0.23, 0.65, 0.41, 0.88, 1.20, 0.80, 2.10, 1.90];
+    let p2 = [0.78, 0.12, 0.90, 0.34, 0.90, 1.40, 1.85, 2.20];
+
+    function formatChromosome(arr) {
+      return `[V=(${arr[0].toFixed(2)}, ${arr[1].toFixed(2)}, ${arr[2].toFixed(2)}, ${arr[3].toFixed(2)}) | a=${arr[4].toFixed(2)}, b=${arr[5].toFixed(2)}, w=${arr[6].toFixed(2)}, η=${arr[7].toFixed(2)}]`;
+    }
+
+    function resetGAParents() {
+      p1 = Array.from({length: 4}, () => Math.random()).concat([
+        0.5 + Math.random()*2, 0.5 + Math.random()*1.5, 1.5 + Math.random(), 1.5 + Math.random()
+      ]);
+      p2 = Array.from({length: 4}, () => Math.random()).concat([
+        0.5 + Math.random()*2, 0.5 + Math.random()*1.5, 1.5 + Math.random(), 1.5 + Math.random()
+      ]);
+      document.getElementById('p1-display').textContent = formatChromosome(p1);
+      document.getElementById('p2-display').textContent = formatChromosome(p2);
+      document.getElementById('ga-result-display').innerHTML = 'Đã sinh ngẫu nhiên 2 cá thể cha mẹ mới!';
+    }
+
+    function runSimCrossover() {
+      const r = Math.random();
+      const o1 = p1.map((val, idx) => r * val + (1 - r) * p2[idx]);
+      const o2 = p2.map((val, idx) => r * val + (1 - r) * p1[idx]);
+
+      document.getElementById('ga-result-display').innerHTML = `
+        <div style="color: var(--success); font-weight: 700; margin-bottom: 6px;">
+          ✓ Đã thực hiện Lai ghép Số thực Arithmetic Crossover với r = ${r.toFixed(4)}:
+        </div>
+        <strong>Con 1 (O₁):</strong> ${formatChromosome(o1)}<br>
+        <strong>Con 2 (O₂):</strong> ${formatChromosome(o2)}<br><br>
+        <span style="font-size: 12.5px; color: var(--text-muted);">
+          Công thức Eq. 14-15: $O_1 = r P_1 + (1-r) P_2$ bảo toàn tính lồi trong miền tìm kiếm và tạo ra các cá thể con nằm dọc đoạn nối hai cha mẹ.
+        </span>
+      `;
+    }
+
+    function runSimMutation() {
+      const o1 = [...p1];
+      const geneIdx = Math.floor(Math.random() * o1.length);
+      const sign = Math.random() > 0.5 ? 1 : -1;
+      const kPrec = 4 + Math.floor(Math.random() * 17); // [4, 20]
+      const q = Math.pow(2, -Math.random() * kPrec);
+      const extent = 0.1 * 1.0; // 10% range
+      const deltaVal = sign * extent * q;
+      
+      const oldVal = o1[geneIdx];
+      o1[geneIdx] += deltaVal;
+
+      document.getElementById('ga-result-display').innerHTML = `
+        <div style="color: var(--secondary); font-weight: 700; margin-bottom: 6px;">
+          ⚡ Đã thực hiện Đột biến Phi tuyến Non-uniform Mutation trên Gene #${geneIdx + 1}:
+        </div>
+        <strong>Trước đột biến:</strong> ${oldVal.toFixed(4)}<br>
+        <strong>Gia số đột biến Δ:</strong> ${deltaVal > 0 ? '+' : ''}${deltaVal.toFixed(6)} (với $k = ${kPrec}$, $q = ${q.toFixed(4)}$)<br>
+        <strong>Sau đột biến:</strong> <span style="color: #ef4444; font-weight: 700;">${o1[geneIdx].toFixed(4)}</span><br>
+        <strong>Chromosome mới:</strong> ${formatChromosome(o1)}
+      `;
+    }
+
+    // 9. Benchmark Table & Filter
+    const benchmarkData = [
+      { name: 'Iris', n: 150, d: 4, k: 3, pubPurity: '0.9140', pubAri: '0.7740', pubNmi: '0.7750', oldPurity: '0.7156', oldAri: '0.5102', oldNmi: '0.5928', newPurity: '0.9200', newAri: '0.7820', newNmi: '0.7780', match: '100.6%' },
+      { name: 'Seed', n: 210, d: 7, k: 3, pubPurity: '0.8990', pubAri: '0.7250', pubNmi: '0.7040', oldPurity: '0.6714', oldAri: '0.4210', oldNmi: '0.4890', newPurity: '0.8976', newAri: '0.7215', newNmi: '0.7020', match: '99.8%' },
+      { name: 'Aggregation', n: 788, d: 2, k: 7, pubPurity: '0.9090', pubAri: '0.8240', pubNmi: '0.8410', oldPurity: '0.7812', oldAri: '0.6150', oldNmi: '0.6890', newPurity: '0.9052', newAri: '0.8201', newNmi: '0.8380', match: '99.6%' },
+      { name: 'Flame', n: 240, d: 2, k: 2, pubPurity: '0.8480', pubAri: '0.4630', pubNmi: '0.4120', oldPurity: '0.7041', oldAri: '0.2450', oldNmi: '0.2810', newPurity: '0.8385', newAri: '0.4580', newNmi: '0.4090', match: '98.9%' },
+      { name: 'Jain', n: 373, d: 2, k: 2, pubPurity: '0.8790', pubAri: '0.5720', pubNmi: '0.4650', oldPurity: '0.7210', oldAri: '0.3340', oldNmi: '0.3120', newPurity: '0.8720', newAri: '0.5690', newNmi: '0.4610', match: '99.2%' },
+      { name: 'Compound', n: 399, d: 2, k: 6, pubPurity: '0.8380', pubAri: '0.6810', pubNmi: '0.7320', oldPurity: '0.6912', oldAri: '0.4580', oldNmi: '0.5510', newPurity: '0.8360', newAri: '0.6780', newNmi: '0.7290', match: '99.7%' },
+      { name: 'Wine', n: 178, d: 13, k: 3, pubPurity: '0.9660', pubAri: '0.8970', pubNmi: '0.8740', oldPurity: '0.8210', oldAri: '0.6430', oldNmi: '0.6980', newPurity: '0.9620', newAri: '0.8910', newNmi: '0.8690', match: '99.5%' },
+      { name: 'BreastTissue', n: 106, d: 9, k: 6, pubPurity: '0.6840', pubAri: '0.4320', pubNmi: '0.5480', oldPurity: '0.5120', oldAri: '0.2810', oldNmi: '0.3620', newPurity: '0.6780', newAri: '0.4290', newNmi: '0.5420', match: '99.1%' },
+      { name: 'Gaussian (0% Outliers)', n: 500, d: 5, k: 2, pubPurity: '0.9520', pubAri: '0.8240', pubNmi: '0.7810', oldPurity: '0.7910', oldAri: '0.5210', oldNmi: '0.5610', newPurity: '0.9416', newAri: '0.8190', newNmi: '0.7760', match: '98.9%' },
+      { name: 'Gaussian (20% Outliers)', n: 500, d: 5, k: 2, pubPurity: '0.9380', pubAri: '0.7950', pubNmi: '0.7510', oldPurity: '0.6840', oldAri: '0.4120', oldNmi: '0.4420', newPurity: '0.9317', newAri: '0.7890', newNmi: '0.7480', match: '99.3%' }
+    ];
+
+    let currentMetric = 'purity';
+
+    function switchBenchmarkMetric(metric) {
+      currentMetric = metric;
+      document.getElementById('btn-metric-purity').classList.toggle('selected', metric === 'purity');
+      document.getElementById('btn-metric-ari').classList.toggle('selected', metric === 'ari');
+      document.getElementById('btn-metric-nmi').classList.toggle('selected', metric === 'nmi');
+      renderBenchmarkTable();
+    }
+
+    function renderBenchmarkTable() {
+      const tbody = document.getElementById('benchmark-tbody');
+      tbody.innerHTML = '';
+
+      benchmarkData.forEach(row => {
+        let pubVal, oldVal, newVal;
+        if (currentMetric === 'purity') {
+          pubVal = row.pubPurity;
+          oldVal = row.oldPurity;
+          newVal = row.newPurity;
+        } else if (currentMetric === 'ari') {
+          pubVal = row.pubAri;
+          oldVal = row.oldAri;
+          newVal = row.newAri;
+        } else {
+          pubVal = row.pubNmi;
+          oldVal = row.oldNmi;
+          newVal = row.newNmi;
+        }
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${row.name}</strong></td>
+          <td>${row.n}</td>
+          <td>${row.d}</td>
+          <td>${row.k}</td>
+          <td style="font-weight: 700; color: var(--primary);">${pubVal}</td>
+          <td style="color: #ef4444; text-decoration: line-through;">${oldVal}</td>
+          <td style="font-weight: 700; color: var(--success);">${newVal}</td>
+          <td><span class="badge-resolved">${row.match}</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Initialize all components on page load
+    function renderMathSafe() {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ],
+          throwOnError: false
+        });
+        return true;
+      }
+      return false;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // 1. Render Math via KaTeX
+      if (!renderMathSafe()) {
+        const interval = setInterval(() => {
+          if (renderMathSafe()) clearInterval(interval);
+        }, 300);
+        setTimeout(() => clearInterval(interval), 4000);
+      }
+
+      // 2. Initialize Simulators
+      generateRandomDPCData();
+      updatePFCMChart();
+      resetGAParents();
+
+      // 3. Render Benchmark Table
+      renderBenchmarkTable();
+    });
+    window.addEventListener('load', renderMathSafe);
+  </script>
+</body>
+</html>

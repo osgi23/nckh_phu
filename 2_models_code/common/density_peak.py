@@ -41,15 +41,28 @@ def density_peak_centers(X, k, cfg):
         nearest[top] = d2[top].max(axis=1)
         delta[start:end] = np.sqrt(nearest)
     score = rho*delta
-    order = np.argsort(-score, kind="stable")
-    chosen, seen = [], set()
-    for index in order:
-        point = tuple(X[index])
-        if point not in seen:
-            chosen.append(int(index))
-            seen.add(point)
-        if len(chosen) == k:
-            break
+    if cfg.get("diversity_dpc", False) and k > 1:
+        # [CẢI TIẾN HƯỚNG 2 - DIVERSITY-PRESERVING DPC (D-DPC)]:
+        # Chọn tâm đầu tiên là điểm có rho * delta cao nhất.
+        # Các tâm tiếp theo được chọn kết hợp giữa rho * delta và khoảng cách cực tiểu tới các tâm đã chọn
+        # nhằm tránh dồn nhiều tâm vào cùng một cụm lớn có mật độ áp đảo (tương tự K-means++ spatial dispersion).
+        chosen = [int(np.argmax(score))]
+        for _ in range(1, k):
+            chosen_pts = X[chosen]
+            d_to_chosen = cdist(X, chosen_pts).min(axis=1)
+            adj_score = score * (d_to_chosen / (dc + 1e-12))
+            adj_score[chosen] = -np.inf
+            chosen.append(int(np.argmax(adj_score)))
+    else:
+        order = np.argsort(-score, kind="stable")
+        chosen, seen = [], set()
+        for index in order:
+            point = tuple(X[index])
+            if point not in seen:
+                chosen.append(int(index))
+                seen.add(point)
+            if len(chosen) == k:
+                break
     if len(chosen) < k:
         raise ValueError("k exceeds the number of distinct feature vectors.")
     return X[chosen].copy(), {"dc": dc, "dc_mode": mode, "dc_pairs": pairs,
