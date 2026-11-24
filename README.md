@@ -1,8 +1,11 @@
-# Dự án Tái tạo và So sánh các Mô hình Phân cụm DP-GA-PFCM
+# Dự án Nghiên cứu, Tái tạo & Cải tiến Thuật toán Phân cụm DP-GA-PFCM $\rightarrow$ SD-MGA-PFCM
 
-Dự án nghiên cứu và tái tạo thực nghiệm bài báo khoa học về thuật toán phân cụm lai **DP-GA-PFCM** (*Density Peak Clustering + Genetic Algorithm + Possibilistic Fuzzy C-Means*).
+Dự án nghiên cứu, tái tạo thực nghiệm bài báo **DP-GA-PFCM** (Kuo et al., 2023 - *JESTECH, Elsevier*) và phát triển mô hình cải tiến **SD-MGA-PFCM** (*Spatial-Diversity Memetic Genetic Algorithm - Possibilistic Fuzzy C-Means*).
 
-Toàn bộ dự án đã được tái cấu trúc thành **3 thư mục cốt lõi** (+ tài liệu đính kèm) giúp dễ dàng theo dõi, chạy thử và đánh giá kết quả:
+> 📄 **[ĐỌC TRỰC TIẾP BÀI BÁO KHOA HỌC HOÀN CHỈNH (PDF)](./4_documents/overleaf_paper/SD_MGA_PFCM_Research_Paper.pdf)**  
+> 📂 **[Thư mục mã nguồn LaTeX & Biểu đồ bài báo](./4_documents/overleaf_paper/)** | 📊 **[Báo cáo Ablation Study 30 Runs (HTML)](./4_documents/BAO_CAO_CAI_TIEN_DP_GA_PFCM.html)** | 📘 **[Giải thích kiến trúc & công thức toán (HTML)](./4_documents/GIAI_THICH_TOAN_HOC_VA_KIEN_TRUC_SD_MGA_PFCM.html)**
+
+Toàn bộ dự án đã được tổ chức thành **4 thư mục cốt lõi** giúp dễ dàng đọc bài báo, theo dõi thực nghiệm, chạy thử và đánh giá kết quả:
 
 ---
 
@@ -46,10 +49,17 @@ D:\DA_NCKHphu\
 │   ├── 04_do_hoi_tu_va_thoi_gian_chay/ # Đồ thị hội tụ GA (100 thế hệ) & Biểu đồ Runtime (giây)
 │   └── HUONG_DAN_DANH_GIA_KET_QUA.md # Hướng dẫn chi tiết đối chiếu ảnh với Bảng 6-8, 11-13 bài báo
 │
-├── 📁 4_documents/              # THƯ MỤC 4: TÀI LIỆU BÀI BÁO VÀ BÁO CÁO NGHIÊN CỨU
-│   ├── 1-s2.0-S2215098623002033-main.pdf    # Bài báo gốc Elsevier
-│   ├── 1-s2.0-S2215098623002033-main-vi.pdf # Bản dịch tiếng Việt bài báo
-│   ├── danh-gia-kha-nang-tai-tao.md         # Báo cáo đánh giá mức độ tái tạo (65/100)
+├── 📁 4_documents/              # THƯ MỤC 4: BÀI BÁO ĐỀ XUẤT, TÀI LIỆU & BÁO CÁO NGHIÊN CỨU
+│   ├── overleaf_paper/                      # Bài báo SD-MGA-PFCM hoàn chỉnh (PDF + LaTeX + Figures)
+│   │   ├── SD_MGA_PFCM_Research_Paper.pdf   # Bản PDF hoàn chỉnh (đọc trực tiếp trên GitHub)
+│   │   ├── main.tex & references.bib        # Mã nguồn LaTeX chuẩn Elsevier / JESTECH
+│   │   ├── COVER_LETTER.tex                 # Thư gửi Tổng biên tập khi nộp tạp chí
+│   │   └── figures/                         # Biểu đồ vector Boxplot 30 runs & Convergence curves
+│   ├── BAO_CAO_CAI_TIEN_DP_GA_PFCM.html     # Báo cáo Ablation Study 30 Runs (HTML & DOCX)
+│   ├── GIAI_THICH_TOAN_HOC_VA_KIEN_TRUC_SD_MGA_PFCM.html # Cẩm nang kiến trúc & công thức toán học
+│   ├── 1-s2.0-S2215098623002033-main.pdf    # Bài báo gốc Kuo et al. (2023 - Elsevier)
+│   ├── 1-s2.0-S2215098623002033-main-vi.pdf # Bản dịch tiếng Việt bài báo gốc
+│   ├── danh-gia-kha-nang-tai-tao.md         # Báo cáo đánh giá mức độ tái tạo bài báo gốc
 │   ├── DP-GA-PFCM-danh-dau-va-danh-gia-tai-tao.pdf # Bản PDF có đánh dấu phân tích chuyên gia
 │   └── research_notes/                      # Ghi chú kiến trúc, bằng chứng thẩm định code
 │

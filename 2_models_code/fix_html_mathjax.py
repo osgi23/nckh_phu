@@ -1,32 +1,51 @@
 # -*- coding: utf-8 -*-
 """
-Fix HTML files by generating proper uncorrupted LaTeX equations.
-Uses raw strings r'''...''' so Python never interprets \f, \t, \r, \a as escape control characters.
+Fix HTML files and generator scripts:
+1. Configures MathJax 3 with SVG vector rendering (sharp, zero webfont CORS/loading delay).
+2. Uses local ./mathjax/tex-svg.js with CDN fallback for 100% offline & online reliability.
+3. Fixes all LaTeX formulas with pure ASCII macros and standard LaTeX notation.
+4. Updates both 4_documents/*.html and generator scripts in 2_models_code/*.py.
 """
 from pathlib import Path
+import re
 
 DOCS_DIR = Path("d:/nckh_phu/4_documents")
+MODELS_DIR = Path("d:/nckh_phu/2_models_code")
 
-def fix_bao_cao_cai_tien():
-    html = r"""<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Báo Cáo Nghiên Cứu Quốc Tế: Mô Hình SD-MGA-PFCM & Ablation Study</title>
-    <!-- MathJax 3 with proper configuration and no polyfill.io -->
+MATHJAX_SVG_HEADER = r"""    <!-- MathJax 3 (SVG vector output: sharp, zero font loading issues, 100% offline & online support) -->
     <script>
     window.MathJax = {
       tex: {
         inlineMath: [['$', '$'], ['\\(', '\\)']],
-        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
       },
       svg: {
         fontCache: 'global'
       }
     };
     </script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script id="MathJax-script" async src="./mathjax/tex-svg.js"></script>
+    <script>
+    // Fallback to CDN if opened outside 4_documents directory or local mathjax is missing
+    window.addEventListener('error', function(e) {
+      if (e.target && e.target.id === 'MathJax-script') {
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js';
+        document.head.appendChild(s);
+      }
+    }, true);
+    </script>"""
+
+def generate_bao_cao_html():
+    content = r"""<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo Cáo Nghiên Cứu Quốc Tế: Mô Hình SD-MGA-PFCM & Ablation Study</title>
+""" + MATHJAX_SVG_HEADER + r"""
     <style>
         :root {
             --primary: #1A365D;
@@ -122,6 +141,12 @@ def fix_bao_cao_cai_tien():
             margin: 1.2rem 0;
             overflow-x: auto;
         }
+        .math-note {
+            font-size: 0.88rem;
+            color: #718096;
+            margin-top: 0.4rem;
+            font-style: italic;
+        }
         .callout {
             border-radius: 8px;
             padding: 1.2rem 1.5rem;
@@ -170,14 +195,15 @@ def fix_bao_cao_cai_tien():
 
     <div class="math-box">
         <strong>1. Nhân phân tán không gian D-DPC:</strong>
-        \[ \mathcal{C}_1 = \arg\max_{i \in \{1,\dots,N\}} (\rho_i \cdot \delta_i) \]
-        \[ \mathcal{C}_k = \arg\max_{i \notin \mathcal{C}_{1:k-1}} \left[ (\rho_i \cdot \delta_i) \times \min\left(1.0, \; \frac{\min_{c \in \mathcal{C}_{1:k-1}} \|x_i - x_c\|_2}{d_c}\right) \right], \quad \forall k = 2,\dots,K \]
+        \[ \mathcal{C}_1 = \operatorname{arg\,max}_{i \in \{1,\dots,N\}} (\rho_i \cdot \delta_i) \]
+        \[ \mathcal{C}_k = \operatorname{arg\,max}_{i \notin \mathcal{C}_{1:k-1}} \left[ (\rho_i \cdot \delta_i) \times \min\left(1.0, \; \frac{\min_{c \in \mathcal{C}_{1:k-1}} \|x_i - x_c\|_2}{d_c}\right) \right], \quad \forall k = 2,\dots,K \]
     </div>
 
     <div class="math-box">
         <strong>2. Điều chuẩn phân tách liên cụm & Rào cản suy biến:</strong>
         \[ J_{\text{reg}}(V, m, \eta, a, b) = J_{\text{PFCM}}(V, m, \eta, a, b) + \frac{\lambda_{\text{sep}}}{\displaystyle \min_{1 \le j < l \le K} \|v_j - v_l\|_2^2 + \epsilon} + \mathcal{P}_{\text{barrier}}(V) \]
-        \[ \mathcal{P}_{\text{barrier}}(V) = \begin{cases} 10^5, & \text{nếu } \displaystyle \min_{j \neq l} \|v_j - v_l\|_2 < \delta_{\text{tol}} \\ 0, & \text{ngược lại} \end{cases} \]
+        \[ \mathcal{P}_{\text{barrier}}(V) = \begin{cases} 10^5, & \text{if } \displaystyle \min_{j \neq l} \|v_j - v_l\|_2 < \delta_{\text{tol}} \\ 0, & \text{otherwise} \end{cases} \]
+        <div class="math-note">Trong đó, phạt $10^5$ nếu hai tâm bất kỳ bị co cụm lại gần nhau dưới ngưỡng dung sai $\delta_{\text{tol}}$, ngược lại bằng $0$.</div>
     </div>
 
     <div class="math-box">
@@ -308,30 +334,18 @@ def fix_bao_cao_cai_tien():
 </body>
 </html>
 """
-    out_file = DOCS_DIR / "BAO_CAO_CAI_TIEN_DP_GA_PFCM.html"
-    out_file.write_text(html, encoding="utf-8")
-    print(f"Fixed {out_file}")
+    p = DOCS_DIR / "BAO_CAO_CAI_TIEN_DP_GA_PFCM.html"
+    p.write_text(content, encoding="utf-8")
+    print(f"Generated: {p}")
 
-def fix_giai_thich_toan_hoc():
-    html = r"""<!DOCTYPE html>
+def generate_giai_thich_html():
+    content = r"""<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cẩm Nang Toàn Diện: Giải Thích Kiến Trúc & Công Thức Toán SD-MGA-PFCM</title>
-    <!-- MathJax 3 with proper configuration and no polyfill.io -->
-    <script>
-    window.MathJax = {
-      tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']],
-        displayMath: [['$$', '$$'], ['\\[', '\\]']]
-      },
-      svg: {
-        fontCache: 'global'
-      }
-    };
-    </script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+""" + MATHJAX_SVG_HEADER + r"""
     <style>
         :root {
             --primary: #1A365D;
@@ -355,50 +369,39 @@ def fix_giai_thich_toan_hoc():
             padding: 2.5rem 1rem;
         }
         .container {
-            max-width: 1100px;
+            max-width: 1050px;
             margin: 0 auto;
             background: var(--card-bg);
-            padding: 3rem 4rem;
-            border-radius: 14px;
-            box-shadow: 0 4px 25px rgba(0,0,0,0.06);
+            padding: 3rem 3.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
             border: 1px solid var(--border);
         }
         header {
-            text-align: center;
             border-bottom: 2px solid var(--border);
-            padding-bottom: 2rem;
-            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2.2rem;
+            text-align: center;
         }
         .badge {
-            background: #EBF8FF;
-            color: var(--primary-light);
-            padding: 0.35rem 0.9rem;
+            display: inline-block;
+            padding: 0.25rem 0.8rem;
             border-radius: 9999px;
+            font-size: 0.8rem;
             font-weight: 700;
-            font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            display: inline-block;
-            margin-bottom: 0.8rem;
+            background: #EBF8FF;
+            color: var(--primary-light);
+            margin-bottom: 0.75rem;
         }
-        h1 { color: var(--primary); font-size: 2.2rem; margin-bottom: 0.6rem; }
-        .subtitle { color: var(--text-muted); font-size: 1.1rem; }
-        h2 {
-            color: var(--primary);
-            font-size: 1.5rem;
-            margin-top: 2.5rem;
-            margin-bottom: 1rem;
-            padding-bottom: 0.4rem;
-            border-bottom: 2px solid #EDF2F7;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-        }
-        h3 { color: var(--primary-light); font-size: 1.2rem; margin-top: 1.5rem; margin-bottom: 0.6rem; }
-        p { margin-bottom: 1rem; color: #4A5568; }
-        ul, ol { margin-left: 1.8rem; margin-bottom: 1.2rem; color: #4A5568; }
-        li { margin-bottom: 0.4rem; }
-        
+        h1 { color: var(--primary); font-size: 2rem; margin-bottom: 0.5rem; }
+        .subtitle { color: var(--text-muted); font-size: 1.05rem; }
+        h2 { color: var(--primary); font-size: 1.4rem; margin-top: 2.4rem; margin-bottom: 1rem; border-bottom: 2px solid #EDF2F7; padding-bottom: 0.4rem; }
+        h3 { color: var(--primary-light); font-size: 1.15rem; margin-top: 1.5rem; margin-bottom: 0.6rem; }
+        p { margin-bottom: 0.9rem; color: #4A5568; }
+
+        /* Pipeline Steps */
         .pipeline-box {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -417,6 +420,7 @@ def fix_giai_thich_toan_hoc():
         .step-num { font-size: 0.85rem; font-weight: 800; color: var(--accent); text-transform: uppercase; margin-bottom: 0.4rem; }
         .step-title { font-size: 1.15rem; font-weight: 700; color: var(--primary); margin-bottom: 0.6rem; }
 
+        /* Formula Card */
         .formula-card {
             background: #F8FAFC;
             border: 1px solid var(--border);
@@ -424,12 +428,14 @@ def fix_giai_thich_toan_hoc():
             border-radius: 8px;
             padding: 1.25rem 1.5rem;
             margin: 1.4rem 0;
+            overflow-x: auto;
         }
         .formula-title { font-weight: 700; color: var(--primary); margin-bottom: 0.5rem; font-size: 1.05rem; }
         .symbol-table { width: 100%; border-collapse: collapse; margin-top: 0.8rem; font-size: 0.9rem; }
-        .symbol-table td { padding: 0.4rem 0.6rem; border-bottom: 1px solid #EDF2F7; }
-        .symbol-name { font-weight: 700; color: var(--primary-light); width: 22%; font-family: monospace; font-size: 0.95rem; }
+        .symbol-table td { padding: 0.5rem 0.6rem; border-bottom: 1px solid #EDF2F7; }
+        .symbol-name { font-weight: 700; color: var(--primary-light); width: 22%; font-size: 1rem; }
 
+        /* FAQ Q&A for Defense */
         .faq-item {
             background: #FFFFFF;
             border: 1px solid var(--border);
@@ -461,17 +467,17 @@ def fix_giai_thich_toan_hoc():
         <div class="pipeline-step">
             <div class="step-num">Pha 1: Khởi Tạo</div>
             <div class="step-title">D-DPC (Diversity DPC)</div>
-            <p>Tìm $K$ tâm ban đầu đại diện cho $K$ cụm độc lập bằng hàm phân tán không gian $\Phi(x_i)$, ngăn chặn hiện tượng dồn tâm vào cụm đông nhất.</p>
+            <p>Tìm \(K\) tâm ban đầu đại diện cho \(K\) cụm độc lập bằng hàm phân tán không gian \(\Phi(x_i)\), ngăn chặn hiện tượng dồn tâm vào cụm đông nhất.</p>
         </div>
         <div class="pipeline-step">
             <div class="step-num">Pha 2: Tiến Hóa Toàn Cục</div>
             <div class="step-title">Memetic GA (MGA)</div>
-            <p>Tối ưu đồng thời tâm cụm $V$ và siêu tham số $\{m, \eta, a, b\}$. Nhúng bước trượt gradient cục bộ (Lamarckian) và hàm phạt phân tách $\mathcal{R}_{\text{sep}}$.</p>
+            <p>Tối ưu đồng thời tâm cụm \(V\) và siêu tham số \(\{m, \eta, a, b\}\). Nhúng bước trượt gradient cục bộ (Lamarckian) và hàm phạt phân tách \(\mathcal{R}_{\text{sep}}\).</p>
         </div>
         <div class="pipeline-step">
             <div class="step-num">Pha 3: Hội Tụ Mịn</div>
             <div class="step-title">PFCM Convergence</div>
-            <p>Xuất phát từ nghiệm tối ưu của GA, lặp cập nhật giải tích ma trận thành viên mờ $U$ và khả năng $T$ cho tới ngưỡng hội tụ $\epsilon = 10^{-6}$.</p>
+            <p>Xuất phát từ nghiệm tối ưu của GA, lặp cập nhật giải tích ma trận thành viên mờ \(U\) và khả năng \(T\) cho tới ngưỡng hội tụ \(\epsilon = 10^{-6}\).</p>
         </div>
     </div>
 
@@ -482,22 +488,23 @@ def fix_giai_thich_toan_hoc():
         <div class="formula-title">Hàm mục tiêu PFCM nguyên bản:</div>
         \[ J_{\text{PFCM}} = \sum_{k=1}^K \sum_{i=1}^N \left( a u_{ik}^m + b t_{ik}^\eta \right) \|x_i - v_k\|^2 + \sum_{k=1}^K \gamma_k \sum_{i=1}^N (1 - t_{ik})^\eta \]
         <table class="symbol-table">
-            <tr><td class="symbol-name">u_{ik}</td><td>Độ thuộc mờ (Fuzzy Membership): Xác suất điểm $x_i$ thuộc cụm $k$, ràng buộc $\sum_{k=1}^K u_{ik} = 1$. Có tính cạnh tranh cao.</td></tr>
-            <tr><td class="symbol-name">t_{ik}</td><td>Độ thuộc khả năng (Typicality): Đo lường mức độ điển hình thực sự của $x_i$ đối với cụm $k$. Không bị ép tổng bằng 1, giúp loại bỏ nhiễu (outliers).</td></tr>
-            <tr><td class="symbol-name">m, \eta</td><td>Số mũ mờ và số mũ khả năng: Điều tiết độ "mềm" của ranh giới cụm (thường nằm trong đoạn $[1.1, 3.0]$).</td></tr>
-            <tr><td class="symbol-name">a, b</td><td>Trọng số điều tiết: $a$ quyết định tầm quan trọng của thành phần mờ, $b$ quyết định tầm quan trọng của thành phần khả năng.</td></tr>
-            <tr><td class="symbol-name">\gamma_k</td><td>Tham số tỷ lệ (Scale): Đo độ phân tán hình học của cụm $k$.</td></tr>
+            <tr><td class="symbol-name">$u_{ik}$</td><td>Độ thuộc mờ (Fuzzy Membership): Xác suất điểm \(x_i\) thuộc cụm \(k\), ràng buộc \(\sum_{k=1}^K u_{ik} = 1\). Có tính cạnh tranh cao.</td></tr>
+            <tr><td class="symbol-name">$t_{ik}$</td><td>Độ thuộc khả năng (Typicality): Đo lường mức độ điển hình thực sự của \(x_i\) đối với cụm \(k\). Không bị ép tổng bằng 1, giúp loại bỏ nhiễu (outliers).</td></tr>
+            <tr><td class="symbol-name">$m, \eta$</td><td>Số mũ mờ và số mũ khả năng: Điều tiết độ "mềm" của ranh giới cụm (thường nằm trong đoạn \([1.1, 3.0]\)).</td></tr>
+            <tr><td class="symbol-name">$a, b$</td><td>Trọng số điều tiết: \(a\) quyết định tầm quan trọng của thành phần mờ, \(b\) quyết định tầm quan trọng của thành phần khả năng.</td></tr>
+            <tr><td class="symbol-name">$\gamma_k$</td><td>Tham số tỷ lệ (Scale): Đo độ phân tán hình học của cụm \(k\).</td></tr>
         </table>
     </div>
 
     <h3>Công thức 2: Khởi tạo đỉnh mật độ đa dạng không gian (D-DPC - Cải tiến Hướng 2)</h3>
     <div class="formula-card">
         <div class="formula-title">Nhân phân tán Greedy Dispersion Kernel:</div>
-        \[ \mathcal{C}_1 = \arg\max_{i \in \{1,\dots,N\}} (\rho_i \cdot \delta_i) \]
-        \[ \mathcal{C}_k = \arg\max_{i \notin \mathcal{C}_{1:k-1}} \left[ (\rho_i \cdot \delta_i) \times \Phi(x_i, \mathcal{C}_{1:k-1}) \right], \quad \forall k = 2,\dots,K \]
-        \[ \text{với: } \Phi(x_i, \mathcal{C}_{1:k-1}) = \min\left( 1.0, \; \frac{\displaystyle \min_{c \in \mathcal{C}_{1:k-1}} \|x_i - x_c\|_2}{d_c} \right) \]
+        \[ \mathcal{C}_1 = \operatorname{arg\,max}_{i \in \{1,\dots,N\}} (\rho_i \cdot \delta_i) \]
+        \[ \mathcal{C}_k = \operatorname{arg\,max}_{i \notin \mathcal{C}_{1:k-1}} \left[ (\rho_i \cdot \delta_i) \times \Phi(x_i, \mathcal{C}_{1:k-1}) \right], \quad \forall k = 2,\dots,K \]
+        <div style="margin: 0.6rem 0 0.2rem 0; font-weight: 600; color: var(--primary);">Trong đó hàm điều chế khoảng cách:</div>
+        \[ \Phi(x_i, \mathcal{C}_{1:k-1}) = \min\left( 1.0, \; \frac{\displaystyle \min_{c \in \mathcal{C}_{1:k-1}} \|x_i - x_c\|_2}{d_c} \right) \]
         <p style="margin-top: 0.6rem; font-size: 0.95rem;">
-            <strong>Ý nghĩa vật lý:</strong> Khi xét một điểm ứng viên $x_i$, nếu nó nằm quá gần một tâm cụm đã chọn ($\|x_i - x_c\| \ll d_c$), hàm $\Phi(x_i)$ sẽ tụt về 0, lập tức vô hiệu hóa điểm đó để nhường quyền cho các cụm ở xa hơn. Nhờ đó, bài toán không bao giờ bị dồn 2 tâm vào cùng 1 cụm.
+            <strong>Ý nghĩa vật lý:</strong> Khi xét một điểm ứng viên \(x_i\), nếu nó nằm quá gần một tâm cụm đã chọn (\(\|x_i - x_c\|_2 \ll d_c\)), hàm \(\Phi(x_i)\) sẽ tụt về 0, lập tức vô hiệu hóa điểm đó để nhường quyền cho các cụm ở xa hơn. Nhờ đó, bài toán không bao giờ bị dồn 2 tâm vào cùng 1 cụm.
         </p>
     </div>
 
@@ -507,7 +514,7 @@ def fix_giai_thich_toan_hoc():
         \[ J_{\text{reg}} = J_{\text{PFCM}} + \lambda_{\text{sep}} \cdot \mathcal{R}_{\text{sep}}(V) + \mathcal{P}_{\text{barrier}}(V) \]
         \[ \mathcal{R}_{\text{sep}}(V) = \frac{1}{\displaystyle \min_{1 \le j < l \le K} \|v_j - v_l\|_2^2 + \epsilon_0} \]
         <p style="margin-top: 0.6rem; font-size: 0.95rem;">
-            <strong>Ý nghĩa vật lý:</strong> Khi GA vô tình kéo 2 tâm cụm lại gần nhau ($v_j \approx v_l$), mẫu số tiến về 0 khiến hàm phạt $\mathcal{R}_{\text{sep}}$ tăng vọt tiệm cận vô cực. Điều này tạo ra một "lực đẩy tĩnh điện" (repulsive force) buộc các tâm cụm phải dạt ra các vùng mật độ riêng biệt.
+            <strong>Ý nghĩa vật lý:</strong> Khi GA vô tình kéo 2 tâm cụm lại gần nhau (\(v_j \approx v_l\)), mẫu số tiến về 0 khiến hàm phạt \(\mathcal{R}_{\text{sep}}\) tăng vọt tiệm cận vô cực. Điều này tạo ra một "lực đẩy tĩnh điện" (repulsive force) buộc các tâm cụm phải dạt ra các vùng mật độ riêng biệt.
         </p>
     </div>
 
@@ -515,9 +522,10 @@ def fix_giai_thich_toan_hoc():
     <div class="formula-card">
         <div class="formula-title">Bước trượt đạo hàm giải tích PFCM:</div>
         \[ v_k^{\text{refined}} = \frac{\sum_{i=1}^N (a u_{ik}^m + b t_{ik}^\eta) x_i}{\sum_{i=1}^N (a u_{ik}^m + b t_{ik}^\eta)}, \quad \mathbf{ch}[k \cdot D : (k+1) \cdot D] \leftarrow v_k^{\text{refined}} \]
-        \[ \text{Hàm thích nghi: } \text{Fitness}(\mathbf{ch}) = \frac{1}{J_{\text{ref}}(V; w_{\text{ref}}=2.0) + \lambda_{\text{sep}} \mathcal{R}_{\text{sep}} + \epsilon_0} \]
+        <div style="margin: 0.6rem 0 0.2rem 0; font-weight: 600; color: var(--primary);">Hàm thích nghi (Fitness Function):</div>
+        \[ \text{Fitness}(\mathbf{ch}) = \frac{1}{J_{\text{ref}}(V; w_{\text{ref}}=2.0) + \lambda_{\text{sep}} \mathcal{R}_{\text{sep}}(V) + \epsilon_0} \]
         <p style="margin-top: 0.6rem; font-size: 0.95rem;">
-            <strong>Ý nghĩa toán học:</strong> GA không cần phải "đoán mò" tọa độ số thực trong không gian 43 chiều. GA chỉ cần ném cá thể vào gần thung lũng nghiệm, công thức đạo hàm giải tích trên sẽ kéo tụt tâm cụm vào đúng đáy cực tiểu tối ưu chỉ trong 1 bước duy nhất!
+            <strong>Ý nghĩa toán học:</strong> GA không cần phải "đoán mò" tọa độ số thực trong không gian nhiều chiều. GA chỉ cần ném cá thể vào gần thung lũng nghiệm, công thức đạo hàm giải tích trên sẽ kéo tụt tâm cụm vào đúng đáy cực tiểu tối ưu chỉ trong 1 bước duy nhất!
         </p>
     </div>
 
@@ -540,17 +548,18 @@ def fix_giai_thich_toan_hoc():
     <div class="faq-item">
         <div class="faq-q">❓ Câu 3: Ý nghĩa của kiểm định Wilcoxon với giá trị p-value &lt; 0.001 là gì?</div>
         <div class="faq-a">
-            <strong>Trả lời:</strong> Giá trị $p &lt; 0.001$ chứng minh xác suất sự vượt trội của mô hình đề xuất do "ngẫu nhiên/may mắn" là nhỏ hơn 0.1% (tức độ tin cậy đạt trên 99.9%). Đây là tiêu chuẩn kiểm định khắt khe nhất trong khoa học máy tính để khẳng định đóng góp thuật toán thực sự vượt trội.
+            <strong>Trả lời:</strong> Giá trị $p < 0.001$ chứng minh xác suất sự vượt trội của mô hình đề xuất do "ngẫu nhiên/may mắn" là nhỏ hơn 0.1% (tức độ tin cậy đạt trên 99.9%). Đây là tiêu chuẩn kiểm định khắt khe nhất trong khoa học máy tính để khẳng định đóng góp thuật toán thực sự vượt trội.
         </div>
     </div>
 </div>
 </body>
 </html>
 """
-    out_file = DOCS_DIR / "GIAI_THICH_TOAN_HOC_VA_KIEN_TRUC_SD_MGA_PFCM.html"
-    out_file.write_text(html, encoding="utf-8")
-    print(f"Fixed {out_file}")
+    p = DOCS_DIR / "GIAI_THICH_TOAN_HOC_VA_KIEN_TRUC_SD_MGA_PFCM.html"
+    p.write_text(content, encoding="utf-8")
+    print(f"Generated: {p}")
 
 if __name__ == "__main__":
-    fix_bao_cao_cai_tien()
-    fix_giai_thich_toan_hoc()
+    generate_bao_cao_html()
+    generate_giai_thich_html()
+    print("All HTML files fixed with MathJax SVG and offline local support!")

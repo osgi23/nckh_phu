@@ -4,19 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Báo Cáo Nghiên Cứu Quốc Tế: Mô Hình SD-MGA-PFCM & Ablation Study</title>
-    <!-- MathJax 3 with proper configuration and no polyfill.io -->
+    <!-- MathJax 3 (SVG vector output: sharp, zero font loading issues, 100% offline & online support) -->
     <script>
     window.MathJax = {
       tex: {
         inlineMath: [['$', '$'], ['\\(', '\\)']],
-        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
       },
       svg: {
         fontCache: 'global'
       }
     };
     </script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script id="MathJax-script" async src="./mathjax/tex-svg.js"></script>
+    <script>
+    // Fallback to CDN if opened outside 4_documents directory or local mathjax is missing
+    window.addEventListener('error', function(e) {
+      if (e.target && e.target.id === 'MathJax-script') {
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js';
+        document.head.appendChild(s);
+      }
+    }, true);
+    </script>
     <style>
         :root {
             --primary: #1A365D;
@@ -112,6 +124,12 @@
             margin: 1.2rem 0;
             overflow-x: auto;
         }
+        .math-note {
+            font-size: 0.88rem;
+            color: #718096;
+            margin-top: 0.4rem;
+            font-style: italic;
+        }
         .callout {
             border-radius: 8px;
             padding: 1.2rem 1.5rem;
@@ -160,14 +178,15 @@
 
     <div class="math-box">
         <strong>1. Nhân phân tán không gian D-DPC:</strong>
-        \[ \mathcal{C}_1 = \arg\max_{i \in \{1,\dots,N\}} (\rho_i \cdot \delta_i) \]
-        \[ \mathcal{C}_k = \arg\max_{i \notin \mathcal{C}_{1:k-1}} \left[ (\rho_i \cdot \delta_i) \times \min\left(1.0, \; \frac{\min_{c \in \mathcal{C}_{1:k-1}} \|x_i - x_c\|_2}{d_c}\right) \right], \quad \forall k = 2,\dots,K \]
+        \[ \mathcal{C}_1 = \operatorname{arg\,max}_{i \in \{1,\dots,N\}} (\rho_i \cdot \delta_i) \]
+        \[ \mathcal{C}_k = \operatorname{arg\,max}_{i \notin \mathcal{C}_{1:k-1}} \left[ (\rho_i \cdot \delta_i) \times \min\left(1.0, \; \frac{\min_{c \in \mathcal{C}_{1:k-1}} \|x_i - x_c\|_2}{d_c}\right) \right], \quad \forall k = 2,\dots,K \]
     </div>
 
     <div class="math-box">
         <strong>2. Điều chuẩn phân tách liên cụm & Rào cản suy biến:</strong>
         \[ J_{\text{reg}}(V, m, \eta, a, b) = J_{\text{PFCM}}(V, m, \eta, a, b) + \frac{\lambda_{\text{sep}}}{\displaystyle \min_{1 \le j < l \le K} \|v_j - v_l\|_2^2 + \epsilon} + \mathcal{P}_{\text{barrier}}(V) \]
-        \[ \mathcal{P}_{\text{barrier}}(V) = \begin{cases} 10^5, & \text{nếu } \displaystyle \min_{j \neq l} \|v_j - v_l\|_2 < \delta_{\text{tol}} \\ 0, & \text{ngược lại} \end{cases} \]
+        \[ \mathcal{P}_{\text{barrier}}(V) = \begin{cases} 10^5, & \text{if } \displaystyle \min_{j \neq l} \|v_j - v_l\|_2 < \delta_{\text{tol}} \\ 0, & \text{otherwise} \end{cases} \]
+        <div class="math-note">Trong đó, phạt $10^5$ nếu hai tâm bất kỳ bị co cụm lại gần nhau dưới ngưỡng dung sai $\delta_{\text{tol}}$, ngược lại bằng $0$.</div>
     </div>
 
     <div class="math-box">
